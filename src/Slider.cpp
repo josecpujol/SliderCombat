@@ -1,6 +1,6 @@
 #include "Slider.h"
 
-#include <gl\glew.h>
+#include <GL/glew.h>
 
 #include "Logger.h"
 #include "EventManager.h"

@@ -2,7 +2,7 @@
 
 #include <thread>
 
-#include <gl\glew.h>
+#include <GL/glew.h>
 #include <glm/gtx/norm.hpp>
 
 #include "ResourcesManager.h"
