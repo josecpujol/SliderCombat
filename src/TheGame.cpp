@@ -42,6 +42,12 @@ bool TheGame::init() {
   }
   // OpenGL context is available now!
 
+  // Load resources
+  if (!ResourcesManager::getInstance().loadModels()) {
+    LOG_ERROR("Could not load models");
+    return false;
+  }
+
   return true;
 }
 
@@ -90,7 +96,9 @@ void TheGame::runLoop() {
     processEvents(events, &done);
     TimePoint current_time = Clock::now();
     Duration elapsed_between_update = counter == 1 ? time_per_cycle : current_time - last_update_call;
-    stage_.update(SDL_GetKeyboardState(nullptr), std::chrono::duration_cast<std::chrono::microseconds>(elapsed_between_update).count());
+    stage_.update(
+      SDL_GetKeyboardState(nullptr), 
+      (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_between_update).count());
     last_update_call = current_time;
     stage_.render();  // TODO: we are assuming render time is short. Add condition to discard render if time is critical
     window_->display();

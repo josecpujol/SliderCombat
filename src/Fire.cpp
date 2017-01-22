@@ -7,7 +7,7 @@
 
 void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
   // Positions wrt local system reference 
-  glm::vec2 vel_rel(0, vel_y_);
+  glm::vec2 vel_rel(0, vel_);
   
   // update relative position
   glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);
@@ -20,7 +20,7 @@ void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
 }
 
 void Fire::onCollision(GameObject* with) {
-  Event event(EventType::RemoveObject, this);
+  RemoveObjectEvent event(this);
   event.send();
 }
 

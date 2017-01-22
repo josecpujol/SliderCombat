@@ -5,23 +5,30 @@
 
 EventManager Event::manager = EventManager();
 
-int EventManager::Register(EventType type, std::function<void(const Event&)> callback) {
+int EventManager::subscribeToFireEvent(std::function<void(const FireEvent&)> callback) {
   int id = last_assigned_id_++;
-  type_to_ids_map_[type].push_back(id);
-  id_to_callback_map_[id] = callback;
+  fire_callbacks_[id] = callback;
   return id;
 }
 
-void EventManager::Unregister(int id) {
+int EventManager::subscribeToRemoveObjectEvent(std::function<void(GameObject*)> callback) {
+  int id = last_assigned_id_++;
+  remove_object_callbacks_[id] = callback;
+  return id;
+}
+
+void EventManager::unsubscribe(int id) {
   assert(false && "Implement");
 }
 
-void EventManager::notify(const Event& event) {
-  if (type_to_ids_map_.count(event.getType()) == 0) {
-    return;
+void EventManager::notifyFireEvent(const FireEvent& event) {
+  for (auto& entry : fire_callbacks_) {
+    entry.second(event);
   }
-  auto& ids = type_to_ids_map_[event.getType()];
-  for (auto id : ids) {
-    id_to_callback_map_[id](event);
+}
+
+void EventManager::notifyRemoveObjectEvent(const RemoveObjectEvent& event) {
+  for (auto& entry : remove_object_callbacks_) {
+    entry.second(event.getSender());
   }
 }

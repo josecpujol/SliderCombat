@@ -7,3 +7,5 @@ Install the following dependencies:
 * libglm-dev 
 * libglew-dev
 
+## Libraries used
+* tinyobjloader, by Syoyo Fujita. https://github.com/syoyo/tinyobjloader

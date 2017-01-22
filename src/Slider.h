@@ -4,11 +4,13 @@
 
 #include "GameObject.h"
 #include "Time.h"
+#include "ResourcesManager.h"
 
 class Slider : public GameObject {
 public:
   Slider() = delete;
-  Slider(GameObjectType type, const glm::vec2& pos, float rot) : GameObject(GameObjectType::LocalPlayer, glm::vec3(pos, 0.1), rot) {
+  Slider(GameObjectType type, const glm::vec2& pos, float rot) : 
+    GameObject(GameObjectType::LocalPlayer, glm::vec3(pos, 0.1), rot, 1.0) {
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override {};
   void render() override;
@@ -21,7 +23,9 @@ protected:
   float vel_y_ = 5.0;
   float vel_rot_ = 20.0;
   Duration shot_cadence_ = 200ms;
+  int health_ = 100;
   TimePoint last_shot_;
+  Model3d* model_ = nullptr;
 };
 
 class SliderLocalPlayer : public Slider {

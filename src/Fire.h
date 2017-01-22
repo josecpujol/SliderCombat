@@ -1,10 +1,12 @@
+#pragma once
+
 #include "SDL.h"
 
 #include "GameObject.h"
 
 class Fire : public GameObject {
 public:
-  Fire(const GameObject& origin) : GameObject(origin, GameObjectType::Fire) { 
+  Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot, 0.5) {
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override;
   void render() override;
@@ -13,7 +15,5 @@ public:
 
 private:
   // m/s
-  float vel_x_ = 15.0;
-  float vel_y_ = 15.0;
-
+  float vel_ = 20.0;
 };

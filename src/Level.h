@@ -5,17 +5,17 @@
 
 #include "SDL.h"
 #include "GameObject.h"
+#include "EventManager.h"
 //#include "EventListener.h"
 
-class Event;
 class Level {
 public:
   Level();
   void render();
   void update(const Uint8*, uint32_t elapsed_us);
-  void onEvent(const Event& event);
 
 private:
+  void onFire(const FireEvent& event);
   void addObject(GameObject*);
   void removeObject(GameObject*);
   void addObjects();

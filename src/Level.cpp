@@ -9,30 +9,25 @@
 #include "Logger.h"
 #include "Slider.h"
 #include "Fire.h"
-#include "EventManager.h"
 
 Level::Level() {
-  objects_.push_back(std::make_shared<SliderLocalPlayer>(glm::vec2(0.0, 0.0), 0.0f));
-  objects_.push_back(std::make_shared<SliderComputerEnemy>(glm::vec2(20.0, 0.0), 0.0f));
+  // Add objects to the level
+  objects_.push_back(std::make_shared<SliderLocalPlayer>(glm::vec2(10.0, 0.0), 0.0f));
+  objects_.push_back(std::make_shared<SliderComputerEnemy>(glm::vec2(0.0, 0.0), 180.0f));
 
-
-  Event::manager.Register(EventType::Fire, [this](const Event& event) {
-    this->onEvent(event);
+  // TODO: unregister?
+  Event::manager.subscribeToFireEvent([this](const FireEvent& event) {
+    this->onFire(event);
   });
 
-  Event::manager.Register(EventType::RemoveObject, [this](const Event& event) {
-    this->onEvent(event);
+  Event::manager.subscribeToRemoveObjectEvent([this](GameObject* object) {
+    this->removeObject(object);
   });
 }
 
-void Level::onEvent(const Event& event) {
-  if (event.getType() == EventType::Fire) {
+void Level::onFire(const FireEvent& event) {
   //  LOG_DEBUG("Fire!!");
-    addObject(new Fire(*event.getSender()));
-  }
-  if (event.getType() == EventType::RemoveObject) {
-    removeObject(event.getSender());
-  }
+  addObject(new Fire(event.pos_, event.rot_z_));
 }
 
 void Level::addObject(GameObject* object) {
@@ -75,7 +70,6 @@ void Level::addObjects() {
 }
 
 void Level::removeObjects() {
-
   for (auto object_to_remove : objects_to_remove_) {
     auto i = std::begin(objects_);
 
@@ -95,7 +89,6 @@ void Level::removeObjects() {
   objects_to_remove_.clear();
 }
 
-
 void Level::checkCollisions() {
   size_t objects_size = objects_.size();
   for (int i = 0; i < (objects_size - 1); i++) {
@@ -105,15 +98,18 @@ void Level::checkCollisions() {
   }
 }
 
+// TODO: improve collision check
 void Level::checkCollision(GameObject* obj1, GameObject* obj2) {
   float distance2 = glm::distance2(obj1->getPosition(), obj2->getPosition());
-  if (distance2 < 1) {
-    LOG_INFO("Collision!!");
+  float radius_sum = obj1->getRadius() + obj2->getRadius();
+  if (distance2 < radius_sum * radius_sum) {
+    LOG_INFO("Collision!! "  << rand());
+    obj1->onCollision(obj2);
+    obj2->onCollision(obj1);
   }
 }
 
 void Level::render() {
-
   int width = 0;
   int height = 0;
   ResourcesManager::getInstance().getWindowDimensions(&width, &height);
@@ -142,7 +138,7 @@ void Level::render() {
 
   glLoadIdentity();
   // Camera
-  gluLookAt(10, -10, 100, 0, 0, 0, 0, 0, 1);
+  gluLookAt(5, -20, 20, 0, 0, 0, 0, 0, 1);
 
   // draw floor
   glColor3f(1, 1, 1);
@@ -156,12 +152,10 @@ void Level::render() {
   glEnd();
   glPopMatrix();
   
-
   // Draw object
   for (auto obj : objects_) {
     glPushMatrix();
     obj->render();
     glPopMatrix();
   }
- 
 }
