@@ -3,17 +3,20 @@
 #include <thread>
 
 #include <GL/glew.h>
-#include <glm/gtx/norm.hpp>
 
 #include "ResourcesManager.h"
 #include "Logger.h"
 #include "Slider.h"
 #include "Fire.h"
+#include "Map.h"
 
-Level::Level() {
+Level::Level(Map* map) : map_(map) {
   // Add objects to the level
-  objects_.push_back(std::make_shared<SliderLocalPlayer>(glm::vec2(10.0, 0.0), 0.0f));
-  objects_.push_back(std::make_shared<SliderComputerEnemy>(glm::vec2(0.0, 0.0), 180.0f));
+  objects_.push_back(std::make_shared<SliderLocalPlayer>(map->getPlayerInitialPosition(), 0.0f));
+  auto enemy_positions = map->getEnemiesInitialPositions();
+  for (auto &enemy_position : enemy_positions) {
+    objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_position, 180.0f));
+  }
 
   // TODO: unregister?
   Event::manager.subscribeToFireEvent([this](const FireEvent& event) {
@@ -38,9 +41,13 @@ void Level::removeObject(GameObject* object) {
 }
 
 void Level::update(const Uint8* keys, uint32_t elapsed_us) {
+  // Pause!!!
+  if (keys[SDL_SCANCODE_P]) {
+    return;
+  }
   loop_count_++;
 
-  addObjects();
+  addPendingObjects();
 
   for (auto obj : objects_) {
     obj->update(keys, elapsed_us);
@@ -48,28 +55,26 @@ void Level::update(const Uint8* keys, uint32_t elapsed_us) {
 
   // Check boundaries with map
   for (auto obj : objects_) {
-    const glm::vec3& pos3 = obj->getPosition();
-    glm::vec2 pos2 = glm::abs(glm::vec2(pos3));
-    if (pos2.x > 50 || pos2.y > 50) {
-      if (obj->getType() == GameObjectType::Fire) {
+    if (obj->getType() == GameObjectType::Fire) {
+      if (map_->isCollision(obj.get())) {
         obj->onCollision(nullptr);
       }
     }
   }
 
-  removeObjects();
-  
+  removePendingObjects();
+
   checkCollisions();
 }
 
-void Level::addObjects() {
+void Level::addPendingObjects() {
   for (auto obj : objects_to_add_) {
     objects_.push_back(obj);
   }
   objects_to_add_.clear();
 }
 
-void Level::removeObjects() {
+void Level::removePendingObjects() {
   for (auto object_to_remove : objects_to_remove_) {
     auto i = std::begin(objects_);
 
@@ -77,8 +82,7 @@ void Level::removeObjects() {
     while (i != std::end(objects_)) {
       if (i->get() == object_to_remove) {
         i = objects_.erase(i);
-      }
-      else {
+      } else {
         ++i;
       }
     }
@@ -92,20 +96,15 @@ void Level::removeObjects() {
 void Level::checkCollisions() {
   size_t objects_size = objects_.size();
   for (int i = 0; i < (objects_size - 1); i++) {
+    GameObject* obj1 = (&objects_[i])->get();
     for (int j = i + 1; j < objects_size; j++) {
-      checkCollision((&objects_[i])->get(), (&objects_[j])->get());
+      GameObject* obj2 = (&objects_[j])->get();
+      if (GameObject::isCollision(obj1, obj2)) {
+        LOG_INFO("Collision!! " << rand());
+        obj1->onCollision(obj2);
+        obj2->onCollision(obj1);
+      }
     }
-  }
-}
-
-// TODO: improve collision check
-void Level::checkCollision(GameObject* obj1, GameObject* obj2) {
-  float distance2 = glm::distance2(obj1->getPosition(), obj2->getPosition());
-  float radius_sum = obj1->getRadius() + obj2->getRadius();
-  if (distance2 < radius_sum * radius_sum) {
-    LOG_INFO("Collision!! "  << rand());
-    obj1->onCollision(obj2);
-    obj2->onCollision(obj1);
   }
 }
 
@@ -132,26 +131,16 @@ void Level::render() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  gluPerspective(45.0f, ratio, 0.1f, 200.0f);
+  gluPerspective(45.0f, ratio, 0.1f, 400.0f);
 
   glMatrixMode(GL_MODELVIEW);
 
   glLoadIdentity();
   // Camera
-  gluLookAt(5, -20, 20, 0, 0, 0, 0, 0, 1);
+  gluLookAt(0, 0, 25, 30, 30, 0, 0, 0, 1);
 
-  // draw floor
-  glColor3f(1, 1, 1);
-  glPushMatrix();
-  glTranslatef(-50., -50., 0);  // center
-  glBegin(GL_LINES);
-  for (int i = 0; i < 100; i++) {
-    glVertex3f((float)i, 0, 0.0f); glVertex3f((float)i, 100, 0);
-    glVertex3f(0, (float)i, 0.0f); glVertex3f(100, (float)i, 0);
-  }
-  glEnd();
-  glPopMatrix();
-  
+  map_->render();
+
   // Draw object
   for (auto obj : objects_) {
     glPushMatrix();

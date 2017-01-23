@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="left-down" width="64" height="64" tilewidth="32" tileheight="32" nextobjectid="11">
+ <properties>
+  <property name="unitspertile" type="float" value="1"/>
+ </properties>
  <tileset firstgid="1" name="regions" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="tileset.png" width="256" height="256"/>
   <tile id="8">
@@ -8,10 +11,7 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Tile Layer 1" width="64" height="64">
-  <properties>
-   <property name="unitspertile" type="float" value="1"/>
-  </properties>
+ <layer name="MainMap" width="64" height="64">
   <data encoding="csv">
 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
 9,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,9,
@@ -81,6 +81,6 @@
  </layer>
  <objectgroup name="StartPositions">
   <object id="8" name="Player" x="1002" y="714" width="13" height="12"/>
-  <object id="10" name="Enemy1" x="1000" y="1316" width="20" height="20"/>
+  <object id="10" name="Enemy0" x="1018" y="1371" width="12" height="12" rotation="180"/>
  </objectgroup>
 </map>

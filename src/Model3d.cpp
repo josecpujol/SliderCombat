@@ -37,6 +37,7 @@ glm::vec3 Model3d::getVertex(int index) {
 // A suitable opengl context is assumed to be initialized
 // make this opengl 2.0 with buffers
 void Model3d::render() {
+  glColor3f(1, 1, 1);
   glPolygonMode(GL_FRONT, GL_LINE);
   glPolygonMode(GL_BACK, GL_LINE);
   glEnableClientState(GL_VERTEX_ARRAY);

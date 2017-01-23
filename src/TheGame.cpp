@@ -40,13 +40,23 @@ bool TheGame::init() {
   if (!window_->create(width, height)) {
     return false;
   }
+
+  // --------------------------------
   // OpenGL context is available now!
+  // --------------------------------
 
   // Load resources
   if (!ResourcesManager::getInstance().loadModels()) {
     LOG_ERROR("Could not load models");
     return false;
   }
+
+  if (!ResourcesManager::getInstance().loadMaps()) {
+    LOG_ERROR("Could not load maps");
+    return false;
+  }
+
+  stage_ = std::make_unique<Level>(ResourcesManager::getInstance().getMap());
 
   return true;
 }
@@ -76,6 +86,10 @@ void TheGame::processEvents(std::vector<SDL_Event>& events, bool *done) {
 }
 
 void TheGame::runLoop() {
+  if (!stage_) {
+    LOG_ERROR("No stage loaded");
+    return;
+  }
   bool done = false;
   SDL_Event event;
   std::vector<SDL_Event> events;
@@ -96,11 +110,11 @@ void TheGame::runLoop() {
     processEvents(events, &done);
     TimePoint current_time = Clock::now();
     Duration elapsed_between_update = counter == 1 ? time_per_cycle : current_time - last_update_call;
-    stage_.update(
+    stage_->update(
       SDL_GetKeyboardState(nullptr), 
       (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_between_update).count());
     last_update_call = current_time;
-    stage_.render();  // TODO: we are assuming render time is short. Add condition to discard render if time is critical
+    stage_->render();  // TODO: we are assuming render time is short. Add condition to discard render if time is critical
     window_->display();
     Duration elapsed = Clock::now() - start;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SDL.h"
-#include <glm/glm.hpp>
+#include "Math.h"
 
 enum class GameObjectType {Undefined, Fire, LocalPlayer, ComputerEnemy};
 
@@ -24,6 +24,16 @@ public:
   virtual ~GameObject() {}
 
   const glm::vec3& getPosition() { return pos_; }
+
+  // TODO: improve collision check
+  static bool isCollision(GameObject* obj1, GameObject* obj2) {
+    float distance_squared = glm::distance2(obj1->getPosition(), obj2->getPosition());
+    float radius_sum = obj1->getRadius() + obj2->getRadius();
+    if (distance_squared < radius_sum * radius_sum) {
+      return true;
+    }
+    return false;
+  }
 
 protected:
   glm::vec3 pos_ = glm::vec3(0.0, 0.0, 0.1);

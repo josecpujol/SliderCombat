@@ -1,0 +1,3 @@
+id: meaning
+0: regular terrain
+8: wall. Cant go thru

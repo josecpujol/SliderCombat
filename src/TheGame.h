@@ -17,7 +17,7 @@ public:
 private:
   void processEvents(std::vector<SDL_Event>& events, bool *done);
   std::unique_ptr<OpenGlWindow> window_;  // Need to destroy this before this class' destructor
-  Level stage_;
+  std::unique_ptr<Level> stage_;
   SDL_Joystick *joystick_ = nullptr;
   uint32_t target_fps_ = 60;
 };

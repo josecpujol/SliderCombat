@@ -74,9 +74,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_MINIZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -84,10 +88,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_MINIZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -97,11 +105,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_MINIZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -111,20 +123,47 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_MINIZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ext\tinyobjloader\tinyobjloader.cpp" />
+    <ClCompile Include="ext\tinyxml\tinyxml2.cpp" />
+    <ClCompile Include="ext\tmxparser\base64\base64.cpp" />
+    <ClCompile Include="ext\tmxparser\miniz.c" />
+    <ClCompile Include="ext\tmxparser\TmxEllipse.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxImage.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxImageLayer.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxLayer.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxMap.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxObject.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxObjectGroup.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxPolygon.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxPolyline.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxProperty.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxPropertySet.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxTerrain.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxTerrainArray.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxTile.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxTileLayer.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxTileOffset.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxTileset.cpp" />
+    <ClCompile Include="ext\tmxparser\TmxUtil.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
     <ClCompile Include="src\Fire.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\Math.cpp" />
     <ClCompile Include="src\Model3d.cpp" />
     <ClCompile Include="src\OpenGlResources.cpp" />
@@ -133,14 +172,36 @@
     <ClCompile Include="src\Slider.cpp" />
     <ClCompile Include="src\TheGame.cpp" />
     <ClCompile Include="src\Time.cpp" />
-    <ClCompile Include="src\tinyobjloader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ext\tinyobjloader\tinyobjloader.h" />
+    <ClInclude Include="ext\tinyxml\tinyxml2.h" />
+    <ClInclude Include="ext\tmxparser\TmxEllipse.h" />
+    <ClInclude Include="ext\tmxparser\TmxImage.h" />
+    <ClInclude Include="ext\tmxparser\TmxImageLayer.h" />
+    <ClInclude Include="ext\tmxparser\TmxLayer.h" />
+    <ClInclude Include="ext\tmxparser\TmxMap.h" />
+    <ClInclude Include="ext\tmxparser\TmxMapTile.h" />
+    <ClInclude Include="ext\tmxparser\TmxObject.h" />
+    <ClInclude Include="ext\tmxparser\TmxObjectGroup.h" />
+    <ClInclude Include="ext\tmxparser\TmxPoint.h" />
+    <ClInclude Include="ext\tmxparser\TmxPolygon.h" />
+    <ClInclude Include="ext\tmxparser\TmxPolyline.h" />
+    <ClInclude Include="ext\tmxparser\TmxProperty.h" />
+    <ClInclude Include="ext\tmxparser\TmxPropertySet.h" />
+    <ClInclude Include="ext\tmxparser\TmxTerrain.h" />
+    <ClInclude Include="ext\tmxparser\TmxTerrainArray.h" />
+    <ClInclude Include="ext\tmxparser\TmxTile.h" />
+    <ClInclude Include="ext\tmxparser\TmxTileLayer.h" />
+    <ClInclude Include="ext\tmxparser\TmxTileOffset.h" />
+    <ClInclude Include="ext\tmxparser\TmxTileset.h" />
+    <ClInclude Include="ext\tmxparser\TmxUtil.h" />
     <ClInclude Include="src\EventManager.h" />
     <ClInclude Include="src\Fire.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\Level.h" />
     <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\Model3d.h" />
     <ClInclude Include="src\OpenGlResources.h" />
@@ -149,9 +210,10 @@
     <ClInclude Include="src\Slider.h" />
     <ClInclude Include="src\TheGame.h" />
     <ClInclude Include="src\Time.h" />
-    <ClInclude Include="src\tinyobjloader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ext\tmxparser\Tmx.h.in" />
+    <None Include="ext\tmxparser\tmxparser.pc.in" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

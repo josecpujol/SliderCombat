@@ -38,9 +38,10 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   // Fire after we have updated the position and rotation
   if (fire_event) {
     float cannon_offset = 1.2f;  // TODO: change: now hardcoded to avoid collision with oneself
+    float cannon_height = 0.7;
     FireEvent event(
       this, 
-      pos_ + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z_), 0.0),
+      pos_ + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z_), cannon_height),
       rot_z_);
     event.send();
   }
