@@ -22,7 +22,7 @@ bool ResourcesManager::loadMaps() {
   std::unique_ptr<Map> map = std::make_unique<Map>();
   std::string data_dir = ResourcesManager::getResourceBaseDirectory();
   data_dir += std::string("maps\\");  
-  if (!map->load(data_dir + "\\map1.tmx")) {
+  if (!map->load(data_dir + "\\map2.tmx")) {
     return false;
   }
   map_ = std::move(map);
@@ -35,8 +35,8 @@ Map* ResourcesManager::getMap() {
 
 bool ResourcesManager::loadModels() {
   std::map<ModelType, std::string> models_location = {
-    {ModelType::kCube, "cube.obj"},
-    {ModelType::kVio, "vio.obj"},
+    {ModelType::kTile0, "tile0.obj"},
+    {ModelType::kTile8, "tile8.obj"},
     {ModelType::kTank, "tank.obj"}
   };
 

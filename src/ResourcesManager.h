@@ -6,8 +6,8 @@
 
 
 enum class ModelType {
-  kCube,
-  kVio,
+  kTile0,
+  kTile8,
   kTank
 };
 

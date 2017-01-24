@@ -5,6 +5,8 @@
 
 #include "Logger.h"
 #include "GameObject.h"
+#include "Model3d.h"
+#include "ResourcesManager.h"
 
 constexpr char kUnitsPerTile[] = "unitspertile";
 constexpr char kCollidableProperty[] = "collidable";
@@ -37,12 +39,17 @@ bool Map::load(const std::string& file) {
 
   // Create geometry: a buffer per type of tile
   // TODO
- /* collision_map_.resize(tile_layer->GetWidth());
+   
+  const Tmx::TileLayer* tile_layer = tmx_map_.GetTileLayer(0);
+  tile_map_.resize(tile_layer->GetWidth());
   for (int x = 0; x < tile_layer->GetWidth(); x++) {
-    collision_map_[i].resize(tile_layer->GetHeight());
+    tile_map_[x].resize(tile_layer->GetHeight());
   }
 
-  
+  std::map<int, ModelType> tile_id_to_model = {
+    {0, ModelType::kTile0}, 
+    {8, ModelType::kTile8}
+  };
  
   for (int x = 0; x < tile_layer->GetWidth(); x++) {
     for (int y = 0; y < tile_layer->GetHeight(); y++) {
@@ -52,10 +59,24 @@ bool Map::load(const std::string& file) {
       const Tmx::MapTile& map_tile = tile_layer->GetTile(x, y);
       const Tmx::Tileset* tileset = tmx_map_.GetTileset(map_tile.tilesetId);
 
-      collision_map_[x][y].exists = true;
+      Tile* gametile = &(tile_map_[x][y]);
+      gametile->exists = true;
+      gametile->x = x * units_per_tile_;
+      gametile->y = y * units_per_tile_;
+      gametile->model3d = ResourcesManager::getInstance().getModel3d(tile_id_to_model[map_tile.id]);
+      if (!gametile->model3d) {
+        LOG_ERROR("Could not find tile model for tile " << map_tile.id);
+        return false;
+      }
+
+      const Tmx::Tile* tile = tileset->GetTile(map_tile.id);
+      if (tile) {
+        Tmx::PropertySet properties = tile->GetProperties();
+        gametile->is_collidable = properties.GetBoolProperty(std::string(kCollidableProperty, false));
+      }
     }
   }
-  */
+
   
   return true;
 }
@@ -82,58 +103,20 @@ bool Map::isCollision(GameObject* obj) {
 
 void Map::render() {
 
-  glPushMatrix();
-  float z = 3;
-  glm::vec2 p0;
-  glm::vec2 p1;
-  const Tmx::TileLayer *tile_layer = tmx_map_.GetTileLayer(0);
 
-  for (int x = 0; x < tile_layer->GetWidth(); x++) {
-    for (int y = 0; y < tile_layer->GetHeight(); y++) {
-      if (tile_layer->GetTileTilesetIndex(x, y) == -1) {
+  for (int x = 0; x < tile_map_.size(); x++) {
+    for (int y = 0; y < tile_map_[x].size(); y++) {
+      Tile* gametile = &(tile_map_[x][y]);
+      if (!gametile->exists) {
         continue;
       }
-   //   LOG_DEBUG("Tile info: " << x << " " << y << " " << tile_layer->GetTile(x, y).id);
-      switch (tile_layer->GetTile(x, y).id) {
-      case 0:  // Normal
-        glBegin(GL_QUADS);
-
-        glColor3f((x + y) % 2 ? 0.5 : 0, 0.0, 0.0);
-        glVertex2f(x * units_per_tile_, y * units_per_tile_);
-        glVertex2f(x * units_per_tile_, (y + 1) * units_per_tile_);
-        glVertex2f((x + 1) * units_per_tile_, (y + 1) * units_per_tile_);
-        glVertex2f((x + 1) * units_per_tile_, y * units_per_tile_);
-        glEnd();
-
-        break;
-      case 8:  // Wall
-        glBegin(GL_QUAD_STRIP);
-
-        glColor3f(0.5, 0.5, 0.5);
-        p0 = glm::vec2(x * units_per_tile_, y * units_per_tile_);
-        p1 = glm::vec2((x + 1) * units_per_tile_, (y + 1) * units_per_tile_);
-        glVertex2f(p0.x, p0.y); glVertex3f(p0.x, p0.y, z); 
-        glVertex2f(p0.x, p1.y); glVertex3f(p0.x, p1.y, z);
-        glVertex2f(p1.x, p1.y); glVertex3f(p1.x, p1.y, z);
-        glVertex2f(p1.x, p0.y); glVertex3f(p1.x, p0.y, z);
-        glEnd();
-
-        glBegin(GL_QUADS);
-
-        glVertex3f(p0.x, p0.y, z);
-        glVertex3f(p0.x, p1.y, z);
-        glVertex3f(p1.x, p1.y, z);
-        glVertex3f(p1.x, p0.y, z);
-        glEnd();
-
-
-        break;
-      default:
-        assert(false);
-      }
+      glPushMatrix();
+      glTranslated(gametile->x, gametile->y, 0.0);
+      glScalef(units_per_tile_, units_per_tile_, units_per_tile_);
+      gametile->model3d->render();
+      glPopMatrix();
     }
   }
-  glPopMatrix();
 }
 
 
