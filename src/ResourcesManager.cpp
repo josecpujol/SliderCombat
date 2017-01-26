@@ -13,8 +13,10 @@ void ResourcesManager::getWindowDimensions(int* w, int* h) {
 }
 
 std::string ResourcesManager::getResourceBaseDirectory() {
-  std::string dir(SDL_GetBasePath());
+  char* base_path = SDL_GetBasePath();
+  std::string dir(base_path);
   dir += std::string("..\\..\\data\\");
+  SDL_free(base_path);
   return dir;
 }
 
@@ -36,7 +38,8 @@ Map* ResourcesManager::getMap() {
 bool ResourcesManager::loadModels() {
   std::map<ModelType, std::string> models_location = {
     {ModelType::kTile0, "tile0.obj"},
-    {ModelType::kTile8, "tile8.obj"},
+  //  {ModelType::kTile8, "tile8.obj"},
+    {ModelType::kTile8, "materialtest.obj"},
     {ModelType::kTank, "tank.obj"}
   };
 

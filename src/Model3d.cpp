@@ -1,10 +1,13 @@
 #include "Model3d.h"
 #include "Logger.h"
 #include <GL/glew.h>
+#include <experimental/filesystem>
 bool Model3d::load(std::string file) {
   std::string err;
-
-  bool result = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, file.c_str());
+  
+  std::experimental::filesystem::path mypath(file);
+  std::string parent_path = mypath.parent_path().string() + "/";
+  bool result = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, file.c_str(), parent_path.c_str());
   if (!result) {
     return false;
   }

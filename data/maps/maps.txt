@@ -1,0 +1,2 @@
+map: add float property "unitspertile"
+tile: (optional bool) "collidable"
