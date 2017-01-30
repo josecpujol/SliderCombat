@@ -20,13 +20,13 @@ public:
   void setRotationZ(float degrees) { rotation_z_ = degrees; }
   void setTranslation(glm::vec3 translation) { translation_ = translation; }
   void setObject3d(Object3d* obj) { object_ = obj;  }
-  void setScale(float scale) { scale_ = scale; }
+  void setScale(glm::vec3 scale) { scale_ = scale; }
   void render();
 private:
   Object3d* object_ = nullptr;
   float rotation_z_ = 0;
   glm::vec3 translation_;
-  float scale_ = 1.0;
+  glm::vec3 scale_ = glm::vec3(1.0);
 };
 
 

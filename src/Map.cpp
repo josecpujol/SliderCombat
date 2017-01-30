@@ -78,7 +78,7 @@ bool Map::load(const std::string& file) {
       gametile->object3d.setObject3d(obj3d);
       // Tiles are -0.5 -> 0.5 in the model. We need to move them to 0 -> 1
       gametile->object3d.setTranslation(units_per_tile_ * glm::vec3(x + 0.5, y + 0.5, 0)); 
-      gametile->object3d.setScale(units_per_tile_);
+      gametile->object3d.setScale(glm::vec3(units_per_tile_, -units_per_tile_, units_per_tile_));
       float angle = getRotation(map_tile);
       gametile->object3d.setRotationZ(angle);
 

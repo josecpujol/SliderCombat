@@ -6,7 +6,7 @@
 void Object3dHolder::render() {
   glPushMatrix();
   glTranslated(translation_.x, translation_.y, translation_.z);
-  glScalef(scale_, scale_, scale_);
+  glScalef(scale_.x, scale_.y, scale_.z);
   glRotatef(rotation_z_, 0, 0, 1);
   object_->render();
   glPopMatrix();
