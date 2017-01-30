@@ -35,11 +35,20 @@ Map* ResourcesManager::getMap() {
   return map_.get();
 }
 
+bool ResourcesManager::loadResources() {
+  if (!loadModels()) {
+    LOG_ERROR("Could not load models");
+    return false;
+  }
+  if (!loadMaps()) {
+    LOG_ERROR("Could not load maps");
+    return false;
+  }
+}
+
 bool ResourcesManager::loadModels() {
   std::map<ModelType, std::string> models_location = {
-    {ModelType::kTile0, "tile0.obj"},
-  //  {ModelType::kTile8, "tile8.obj"},
-    {ModelType::kTile8, "materialtest.obj"},
+    {ModelType::kTiles, "tiles.obj"},
     {ModelType::kTank, "tank.obj"}
   };
 
@@ -51,6 +60,7 @@ bool ResourcesManager::loadModels() {
     if (!model->load(model_dir + model_location.second)) {
       return false;
     }
+    LOG_INFO("Model loaded correctly: " << model_location.second);
     models_[model_location.first] = std::move(model);
   }
   

@@ -11,7 +11,14 @@
 constexpr char kUnitsPerTile[] = "unitspertile";
 constexpr char kCollidableProperty[] = "collidable";
 
-
+float getRotation(const Tmx::MapTile& map_tile) {
+  if (!map_tile.flippedVertically && !map_tile.flippedHorizontally && !map_tile.flippedDiagonally) return 0;
+  if ( map_tile.flippedVertically && !map_tile.flippedHorizontally &&  map_tile.flippedDiagonally) return 90;
+  if ( map_tile.flippedVertically &&  map_tile.flippedHorizontally && !map_tile.flippedDiagonally) return 180;
+  if (!map_tile.flippedVertically &&  map_tile.flippedHorizontally &&  map_tile.flippedDiagonally) return -90;
+  LOG_ERROR("Tiles with rotation only are supported. Map may not be drawn correctly");
+  return 0;
+}
 
 bool Map::load(const std::string& file) {
   tmx_map_.ParseFile(file);
@@ -46,11 +53,9 @@ bool Map::load(const std::string& file) {
     tile_map_[x].resize(tile_layer->GetHeight());
   }
 
-  std::map<int, ModelType> tile_id_to_model = {
-    {0, ModelType::kTile0}, 
-    {8, ModelType::kTile8}
-  };
- 
+  Model3d* model3d = ResourcesManager::getInstance().getModel3d(ModelType::kTiles);
+  if (!model3d) return false;
+
   for (int x = 0; x < tile_layer->GetWidth(); x++) {
     for (int y = 0; y < tile_layer->GetHeight(); y++) {
       if (tile_layer->GetTileTilesetIndex(x, y) == -1) {
@@ -63,11 +68,19 @@ bool Map::load(const std::string& file) {
       gametile->exists = true;
       gametile->x = x * units_per_tile_;
       gametile->y = y * units_per_tile_;
-      gametile->model3d = ResourcesManager::getInstance().getModel3d(tile_id_to_model[map_tile.id]);
-      if (!gametile->model3d) {
+      std::string object_name = std::string("tile") + std::to_string(map_tile.id);
+      Object3d* obj3d = model3d->getObject3d(object_name);
+
+      if (!obj3d) {
         LOG_ERROR("Could not find tile model for tile " << map_tile.id);
         return false;
       }
+      gametile->object3d.setObject3d(obj3d);
+      // Tiles are -0.5 -> 0.5 in the model. We need to move them to 0 -> 1
+      gametile->object3d.setTranslation(units_per_tile_ * glm::vec3(x + 0.5, y + 0.5, 0)); 
+      gametile->object3d.setScale(units_per_tile_);
+      float angle = getRotation(map_tile);
+      gametile->object3d.setRotationZ(angle);
 
       const Tmx::Tile* tile = tileset->GetTile(map_tile.id);
       if (tile) {
@@ -110,11 +123,7 @@ void Map::render() {
       if (!gametile->exists) {
         continue;
       }
-      glPushMatrix();
-      glTranslated(gametile->x, gametile->y, 0.0);
-      glScalef(units_per_tile_, units_per_tile_, units_per_tile_);
-      gametile->model3d->render();
-      glPopMatrix();
+      gametile->render();
     }
   }
 }

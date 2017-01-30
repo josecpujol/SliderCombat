@@ -6,8 +6,7 @@
 
 
 enum class ModelType {
-  kTile0,
-  kTile8,
+  kTiles,
   kTank
 };
 
@@ -25,12 +24,15 @@ public:
 
   void setWindowDimensions(int w, int h);
   void getWindowDimensions(int* w, int* h);
-  bool loadModels();
-  bool loadMaps();
+  bool loadResources();
+
   Model3d* getModel3d(ModelType);
   Map* getMap();
 private:
   ResourcesManager() {}
+
+  bool loadModels();
+  bool loadMaps();
 
   int window_width_ = 0;
   int window_height_ = 0;

@@ -2,9 +2,10 @@
 
 #include "Tmx.h"
 #include "Math.h"
+#include "Model3d.h"
 
 class GameObject;
-class Model3d;
+class Object3d;
 
 /**
  * Internal class to store the processed data from the tmx file, along with geometry info
@@ -14,7 +15,8 @@ struct Tile {
   float y = 0;
   bool exists = false;
   bool is_collidable = false;
-  Model3d* model3d = nullptr;
+  Object3dHolder object3d;
+  void render() { object3d.render(); }
 };
 
 /**

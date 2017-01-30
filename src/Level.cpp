@@ -137,7 +137,17 @@ void Level::render() {
 
   glLoadIdentity();
   // Camera
-  gluLookAt(0, 0, 25, 30, 30, 0, 0, 0, 1);
+ // gluLookAt(1, 0, 5, 1, 1, 0, 0, 0, 1);
+  gluLookAt(-5, -5, 20, 20, 20, 0, 0, 0, 1);
+
+  glBegin(GL_LINES);
+  glColor3f(1, 0, 0);
+  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
+  glColor3f(0, 1, 0);
+  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
+  glColor3f(0, 0, 1);
+  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
+  glEnd();
 
   map_->render();
 

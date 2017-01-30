@@ -45,14 +45,7 @@ bool TheGame::init() {
   // OpenGL context is available now!
   // --------------------------------
 
-  // Load resources
-  if (!ResourcesManager::getInstance().loadModels()) {
-    LOG_ERROR("Could not load models");
-    return false;
-  }
-
-  if (!ResourcesManager::getInstance().loadMaps()) {
-    LOG_ERROR("Could not load maps");
+  if (!ResourcesManager::getInstance().loadResources()) {
     return false;
   }
 
