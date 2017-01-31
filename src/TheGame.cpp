@@ -8,6 +8,7 @@
 #include "ResourcesManager.h"
 #include "Logger.h"
 #include "Time.h"
+#include "Stats.h"
 
 TheGame::TheGame() {
   window_ = std::make_unique<OpenGlWindow>();
@@ -94,6 +95,8 @@ void TheGame::runLoop() {
   while (!done) {
 
     TimePoint start = Clock::now();
+    Stats& stats = Stats::getInstance();
+    stats.reset();
 
     counter++;
     events.clear();
@@ -115,7 +118,10 @@ void TheGame::runLoop() {
     if (time_left > 0s) {
       std::this_thread::sleep_for(time_left);
     } else {
-      LOG_ERROR("Time for cycle exceeded max: " << counter << " " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count());
+      LOG_ERROR("Time for cycle exceeded max. Frame #" << counter << ", time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count());
+    }
+    if (counter % 300 == 0) {
+      LOG_DEBUG("Triangles rendered: " << stats.num_triangles);
     }
   }
 }

@@ -1,5 +1,6 @@
 #include "Model3d.h"
 #include "Logger.h"
+#include "Stats.h"
 #include <GL/glew.h>
 #include <experimental/filesystem>
 
@@ -16,6 +17,8 @@ void Object3dHolder::render() {
 // Dont push the matrix!!
 void Object3d::render() {
   int num_triangles = (int)vertices_buffer.size() / 3;
+  Stats::getInstance().num_triangles += num_triangles;
+
   // glPolygonMode(GL_FRONT, GL_LINE);
   // glPolygonMode(GL_BACK, GL_LINE);
   glEnableClientState(GL_VERTEX_ARRAY);
