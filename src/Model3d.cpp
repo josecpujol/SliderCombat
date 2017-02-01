@@ -70,6 +70,7 @@ void Model3d::createBuffers() {
         }
       }
     }
+    LOG_DEBUG("Object " << obj3d.name << " has " << obj3d.vertices_buffer.size() / 3 << " triangles");
     objects_.push_back(obj3d);
   }
 }

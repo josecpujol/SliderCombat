@@ -94,12 +94,45 @@ bool Map::load(const std::string& file) {
   return true;
 }
 
-glm::vec2 Map::getPlayerInitialPosition() const {
-  return glm::vec2(20.0, 20.0);
+bool Map::getInitialPosition(std::string name, glm::vec2* position) {
+  
+  for (auto& object_group : tmx_map_.GetObjectGroups()) {
+    if (object_group->GetName() != "StartPositions") {
+      continue;
+    }
+    for (auto& object : object_group->GetObjects()) {
+      if (object->GetName() == name) {
+        *position = glm::vec2(
+          (object->GetX() * units_per_tile_) / tmx_map_.GetTileWidth(),
+          (object->GetY() * units_per_tile_ )/ tmx_map_.GetTileHeight()) ;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+glm::vec2 Map::getPlayerInitialPosition() {
+  glm::vec2 position;
+  if (!getInitialPosition(std::string("Player"), &position)) {
+    LOG_ERROR("Could not find player initial position");
+  }
+  return position;
 }
 
 std::vector<glm::vec2> Map::getEnemiesInitialPositions() {
-  return {glm::vec2(40.0, 20.0), glm::vec2(40.0, 40.0)};
+  std::vector<glm::vec2> positions;
+  bool found = true;
+  for (int i = 0; ; i++) {
+    std::string name = std::string("Enemy") + std::to_string(i);
+    glm::vec2 position;
+    if (!getInitialPosition(name, &position)) {
+      break;
+    }
+    positions.push_back(position);
+  }
+  return positions;
 }
 
 bool Map::isCollision(GameObject* obj) {

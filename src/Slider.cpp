@@ -100,12 +100,12 @@ void Slider::render() {
     model_ = ResourcesManager::getInstance().getModel3d(ModelType::kTank);
   }
   model_->render();
-  glBegin(GL_LINES);
+/*  glBegin(GL_LINES);
   glColor3f(1, 0, 0);
   glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
   glColor3f(0, 1, 0);
   glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
   glColor3f(0, 0, 1);
   glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-  glEnd();
+  glEnd();*/
 }
