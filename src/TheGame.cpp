@@ -92,11 +92,12 @@ void TheGame::runLoop() {
   Duration lag = std::chrono::milliseconds{0};
   TimePoint last_update_call;
 
+  Stats& stats = Stats::getInstance();
+  stats.reset();
+
   while (!done) {
 
     TimePoint start = Clock::now();
-    Stats& stats = Stats::getInstance();
-    stats.reset();
 
     counter++;
     events.clear();
@@ -110,9 +111,17 @@ void TheGame::runLoop() {
       SDL_GetKeyboardState(nullptr), 
       (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_between_update).count());
     last_update_call = current_time;
+    TimePoint render_start = Clock::now();
     stage_->render();  // TODO: we are assuming render time is short. Add condition to discard render if time is critical
     window_->display();
-    Duration elapsed = Clock::now() - start;
+    TimePoint render_end = Clock::now();
+    Duration elapsed = render_end - start;
+    Duration render_time = render_end - render_start;
+
+    // Update time stats
+    stats.time_to_render_ms += std::chrono::duration_cast<std::chrono::milliseconds>(render_time).count();
+
+
 
     Duration time_left = time_per_cycle - elapsed;
     if (time_left > 0s) {
@@ -121,7 +130,9 @@ void TheGame::runLoop() {
       LOG_ERROR("Time for cycle exceeded max. Frame #" << counter << ", time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count());
     }
     if (counter % 300 == 0) {
-      LOG_DEBUG("Triangles rendered: " << stats.num_triangles);
+      LOG_DEBUG("Avg triangles rendered: " << stats.num_triangles / 300);
+      LOG_DEBUG("Avg render time ms: " << stats.time_to_render_ms / 300);
+      stats.reset();
     }
   }
 }

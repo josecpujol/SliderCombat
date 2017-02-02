@@ -44,6 +44,7 @@ bool ResourcesManager::loadResources() {
     LOG_ERROR("Could not load maps");
     return false;
   }
+  return true;
 }
 
 bool ResourcesManager::loadModels() {

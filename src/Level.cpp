@@ -9,6 +9,7 @@
 #include "Slider.h"
 #include "Fire.h"
 #include "Map.h"
+#include "Camera.h"
 
 Level::Level(Map* map) : map_(map) {
   // Add objects to the level
@@ -137,8 +138,13 @@ void Level::render() {
 
   glLoadIdentity();
   // Camera
- // gluLookAt(1, 0, 5, 1, 1, 0, 0, 0, 1);
-  gluLookAt(-5, -5, 20, 20, 20, 0, 0, 0, 1);
+  Camera camera;
+  camera.lookAt(
+    glm::vec3(-5, -5, 20),
+    glm::vec3(20, 20, 0),
+    glm::vec3(0, 0, 1));
+  camera.apply();
+
 
   glBegin(GL_LINES);
   glColor3f(1, 0, 0);

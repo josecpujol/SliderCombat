@@ -7,6 +7,7 @@ public:
 
   void reset() {
     num_triangles = 0;
+    time_to_render_ms = 0;
   }
 
   static Stats& getInstance() {
@@ -15,6 +16,8 @@ public:
   }
 
   int num_triangles = 0;
+  int time_to_render_ms = 0;
+
 
 private:
   Stats() {}
