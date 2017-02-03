@@ -24,6 +24,7 @@ public:
   virtual ~GameObject() {}
 
   const glm::vec3& getPosition() { return pos_; }
+  float getRotation() const { return rot_z_; }
 
   // TODO: improve collision check
   static bool isCollision(GameObject* obj1, GameObject* obj2) {

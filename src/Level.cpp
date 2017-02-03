@@ -139,10 +139,11 @@ void Level::render() {
   glLoadIdentity();
   // Camera
   Camera camera;
-  camera.lookAt(
+ /* camera.lookAt(
     glm::vec3(-5, -5, 20),
     glm::vec3(20, 20, 0),
-    glm::vec3(0, 0, 1));
+    glm::vec3(0, 0, 1));*/
+  camera.follow(objects_[0].get(), glm::vec3(0));
   camera.apply();
 
 

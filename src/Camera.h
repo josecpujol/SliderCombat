@@ -19,12 +19,12 @@ public:
 
 private:
   void getOpenglMatrix(glm::mat4*);
+  void getMatrixFromObject(glm::mat4*);
 
 private:
-  enum class CameraMode {Static, Moving};
+  enum class CameraMode {Static, Flying, Following};
   CameraMode mode_ = CameraMode::Static;
   glm::mat4 matrix_;
 
-
-
+  GameObject* object_to_follow_ = nullptr;
 };
