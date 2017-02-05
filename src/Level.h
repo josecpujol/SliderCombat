@@ -6,6 +6,8 @@
 #include "SDL.h"
 #include "GameObject.h"
 #include "EventManager.h"
+#include "Camera.h"
+#include "Slider.h"
 //#include "EventListener.h"
 
 class Map;
@@ -23,11 +25,14 @@ private:
   void addPendingObjects();
   void removePendingObjects();
   void checkCollisions();
+  void updateCameraSetup(const Uint8*);
   inline static void checkCollision(GameObject* obj1, GameObject* obj2);
   int loop_count_ = 0;
   std::vector < std::shared_ptr< GameObject> > objects_;
   std::vector < std::shared_ptr< GameObject> > objects_to_add_;  // need to add objects outside the update loop
   std::vector < GameObject* > objects_to_remove_;  // need to add objects outside the update loop
   Map* map_ = nullptr;
+  Camera camera_;
+  std::shared_ptr<SliderLocalPlayer> local_player_;
 
 };

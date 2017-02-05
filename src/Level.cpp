@@ -6,18 +6,20 @@
 
 #include "ResourcesManager.h"
 #include "Logger.h"
-#include "Slider.h"
 #include "Fire.h"
 #include "Map.h"
-#include "Camera.h"
 
 Level::Level(Map* map) : map_(map) {
+  local_player_ = std::make_shared<SliderLocalPlayer>(map->getPlayerInitialPosition(), 0.0f);
   // Add objects to the level
-  objects_.push_back(std::make_shared<SliderLocalPlayer>(map->getPlayerInitialPosition(), 0.0f));
+  objects_.push_back(local_player_);
   auto enemy_positions = map->getEnemiesInitialPositions();
   for (auto &enemy_position : enemy_positions) {
     objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_position, 180.0f));
   }
+
+  camera_.lookAt(glm::vec3(0, 0, 10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
+
 
   // TODO: unregister?
   Event::manager.subscribeToFireEvent([this](const FireEvent& event) {
@@ -41,12 +43,30 @@ void Level::removeObject(GameObject* object) {
   objects_to_remove_.push_back(object);
 }
 
+void Level::updateCameraSetup(const Uint8* keys) {
+  if (keys[SDL_SCANCODE_1]) {
+    camera_.lookAt(glm::vec3(0,0,10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
+  }
+  if (keys[SDL_SCANCODE_2]) {
+    camera_.follow(local_player_.get(), glm::vec3(0, -5, 4), glm::vec3(0, 2, 2));  // Follow from behind
+  }
+  if (keys[SDL_SCANCODE_3]) {
+    camera_.follow(local_player_.get(), glm::vec3(0, 0.2, 1), glm::vec3(0, 2, 1));  // subjective view
+  }
+  if (keys[SDL_SCANCODE_4]) {
+    camera_.follow(local_player_.get(), glm::vec3(0, -1, 50), glm::vec3(0,10,0));  // follow from top
+  }
+
+}
+
 void Level::update(const Uint8* keys, uint32_t elapsed_us) {
   // Pause!!!
   if (keys[SDL_SCANCODE_P]) {
     return;
   }
   loop_count_++;
+
+  updateCameraSetup(keys);
 
   addPendingObjects();
 
@@ -123,28 +143,19 @@ void Level::render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-  GLfloat ratio;
-
-  ratio = (GLfloat)width / (GLfloat)height;
+  GLfloat ratio = (GLfloat)width / (GLfloat)height;
 
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  gluPerspective(45.0f, ratio, 0.1f, 400.0f);
+  gluPerspective(45.0f, ratio, 0.5f, 100.0f);
 
   glMatrixMode(GL_MODELVIEW);
 
   glLoadIdentity();
-  // Camera
-  Camera camera;
- /* camera.lookAt(
-    glm::vec3(-5, -5, 20),
-    glm::vec3(20, 20, 0),
-    glm::vec3(0, 0, 1));*/
-  camera.follow(objects_[0].get(), glm::vec3(0));
-  camera.apply();
+  camera_.apply();
 
 
   glBegin(GL_LINES);

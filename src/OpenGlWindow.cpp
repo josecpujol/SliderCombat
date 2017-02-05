@@ -1,5 +1,7 @@
 #include "OpenGlWindow.h"
 
+#include <GL/glew.h>
+
 #include "Logger.h"
 #include "ResourcesManager.h"
 
@@ -34,6 +36,11 @@ bool OpenGlWindow::create(int width, int height) {
 
   gl_context_ = SDL_GL_CreateContext(window_);
   LOG_DEBUG("Window and opengl context created successfully");
+  GLint depth_bits;
+  glGetIntegerv(GL_DEPTH_BITS, &depth_bits);
+  LOG_DEBUG("Depth bits: " << depth_bits);
+
+
 
   return true;
 }
