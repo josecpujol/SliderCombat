@@ -6,7 +6,7 @@
 
 class Fire : public GameObject {
 public:
-  Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot, 0.5) {
+  Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot, 0.2f) {
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override;
   void render() override;

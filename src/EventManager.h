@@ -45,7 +45,7 @@ private:
 
 class FireEvent : public Event {
 public:
-  FireEvent(GameObject* sender, glm::vec3& pos, float rot_z) : 
+  FireEvent(GameObject* sender, const glm::vec3& pos, float rot_z) : 
     Event(EventType::Fire, sender), pos_(pos), rot_z_(rot_z) {}
   void send() override {
     manager.notifyFireEvent(*this);

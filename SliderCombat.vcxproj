@@ -159,6 +159,7 @@
     <ClCompile Include="ext\tmxparser\TmxTileset.cpp" />
     <ClCompile Include="ext\tmxparser\TmxUtil.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Collision.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
     <ClCompile Include="src\Fire.cpp" />
     <ClCompile Include="src\Level.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="ext\tmxparser\TmxTileset.h" />
     <ClInclude Include="ext\tmxparser\TmxUtil.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\EventManager.h" />
     <ClInclude Include="src\Fire.h" />
     <ClInclude Include="src\GameObject.h" />

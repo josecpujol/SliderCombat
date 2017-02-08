@@ -120,7 +120,7 @@ void Level::checkCollisions() {
     GameObject* obj1 = (&objects_[i])->get();
     for (int j = i + 1; j < objects_size; j++) {
       GameObject* obj2 = (&objects_[j])->get();
-      if (GameObject::isCollision(obj1, obj2)) {
+      if (Collision::isCollision(obj1->getCollisionArea(), obj2->getCollisionArea())) {
         LOG_INFO("Collision!! " << rand());
         obj1->onCollision(obj2);
         obj2->onCollision(obj1);
