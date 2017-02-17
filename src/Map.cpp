@@ -38,15 +38,13 @@ bool Map::load(const std::string& file) {
 
   units_per_tile_ = properties.GetFloatProperty(kUnitsPerTile, 1.0);
 
-  int num_tile_layers = tmx_map_.GetNumTileLayers();
+  size_t num_tile_layers = tmx_map_.GetNumTileLayers();
   if (num_tile_layers != 1) {
     LOG_ERROR("# tile layers different from 1, " << num_tile_layers);
     return false;
   }
 
-  // Create geometry: a buffer per type of tile
-  // TODO
-   
+  // Create geometry
   const Tmx::TileLayer* tile_layer = tmx_map_.GetTileLayer(0);
   tile_map_.resize(tile_layer->GetWidth());
   for (int x = 0; x < tile_layer->GetWidth(); x++) {
@@ -66,8 +64,7 @@ bool Map::load(const std::string& file) {
 
       Tile* gametile = &(tile_map_[x][y]);
       gametile->exists = true;
-      gametile->x = x * units_per_tile_;
-      gametile->y = y * units_per_tile_;
+
       std::string object_name = std::string("tile") + std::to_string(map_tile.id);
       Object3d* obj3d = model3d->getObject3d(object_name);
 
@@ -81,11 +78,16 @@ bool Map::load(const std::string& file) {
       gametile->object3d.setScale(glm::vec3(units_per_tile_, -units_per_tile_, units_per_tile_));
       float angle = getRotation(map_tile);
       gametile->object3d.setRotationZ(angle);
-
+      
       const Tmx::Tile* tile = tileset->GetTile(map_tile.id);
       if (tile) {
         Tmx::PropertySet properties = tile->GetProperties();
-        gametile->is_collidable = properties.GetBoolProperty(std::string(kCollidableProperty, false));
+        if (properties.GetBoolProperty(std::string(kCollidableProperty), false)) {
+          Rectangle rect;
+          rect.origin = glm::vec2(x * units_per_tile_, y * units_per_tile_);
+          rect.dimensions = glm::vec2(units_per_tile_, units_per_tile_);
+          gametile->collision_area.setCollisionPrimivite(rect);
+        }
       }
     }
   }
@@ -148,8 +150,6 @@ bool Map::isCollision(GameObject* obj) {
 }
 
 void Map::render() {
-
-
   for (int x = 0; x < tile_map_.size(); x++) {
     for (int y = 0; y < tile_map_[x].size(); y++) {
       Tile* gametile = &(tile_map_[x][y]);
@@ -157,6 +157,20 @@ void Map::render() {
         continue;
       }
       gametile->render();
+    }
+  }
+}
+
+void Map::renderCollisionArea() {
+  for (int x = 0; x < tile_map_.size(); x++) {
+    for (int y = 0; y < tile_map_[x].size(); y++) {
+      Tile* gametile = &(tile_map_[x][y]);
+      if (!gametile->exists) {
+        continue;
+      }
+      if (gametile->isCollidable()) {
+        gametile->collision_area.render();
+      }
     }
   }
 }

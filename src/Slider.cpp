@@ -95,6 +95,8 @@ void Slider::onCollision(GameObject* with) {
 }
 
 void Slider::render() {
+  renderCollisionArea();
+
   glm::vec3 pos = getPosition();
   glTranslatef(pos.x, pos.y, pos.z);
 
@@ -103,6 +105,8 @@ void Slider::render() {
     model_ = ResourcesManager::getInstance().getModel3d(ModelType::kTank);
   }
   model_->render();
+
+
 /*  glBegin(GL_LINES);
   glColor3f(1, 0, 0);
   glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);

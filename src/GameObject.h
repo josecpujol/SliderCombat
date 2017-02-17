@@ -10,8 +10,9 @@ class GameObject {
 public:
   GameObject() = delete;
   GameObject(GameObjectType type, glm::vec3 pos, float rot, float radius) : type_(type), rot_z_(rot) {
-    collision_area_.type = CollisionAreaType::Circle;
-    collision_area_.circle.radius = radius;
+    Circle circle;
+    circle.radius = radius;
+    collision_area_.setCollisionPrimivite(circle);
     setPosition(pos);
   }
 
@@ -22,6 +23,7 @@ public:
     this->collision_area_ = obj.collision_area_;
   }
   virtual void render() = 0;
+  void renderCollisionArea();
   virtual void update(const Uint8* keys, uint32_t elapsed_us) = 0;
   virtual void onCollision(GameObject* with) = 0;
   GameObjectType getType() const { return type_;  }

@@ -10,6 +10,11 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="9">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="11" height="11">
   <data encoding="csv">

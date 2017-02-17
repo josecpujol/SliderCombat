@@ -10,16 +10,22 @@ struct Circle {
 struct Rectangle {
   glm::vec2 origin;
   glm::vec2 dimensions{1,1};
-  float rot_z;  // radians
+  float rot_z = 0.0f;  // degrees
 };
 
-enum class CollisionAreaType { Circle, Rectangle };
+enum class CollisionAreaType { None, Circle, Rectangle };
 
-struct CollisionArea {
-  CollisionAreaType type;
+class CollisionArea {
+public:
   Circle circle;
-  Rectangle rentangle;
+  Rectangle rectangle;
+  CollisionAreaType getType() const { return type_; }
+  void setCollisionPrimivite(const Rectangle& rect);
+  void setCollisionPrimivite(const Circle& c);
   void setPosition(const glm::vec2& pos);
+  void render() const;  // for debugging purposes
+private:
+  CollisionAreaType type_ = CollisionAreaType::None;
 };
 
 class Collision {

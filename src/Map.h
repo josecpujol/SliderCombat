@@ -3,6 +3,7 @@
 #include "Tmx.h"
 #include "Math.h"
 #include "Model3d.h"
+#include "Collision.h"
 
 class GameObject;
 class Object3d;
@@ -11,10 +12,11 @@ class Object3d;
  * Internal class to store the processed data from the tmx file, along with geometry info
  */
 struct Tile {
-  float x = 0;
-  float y = 0;
   bool exists = false;
-  bool is_collidable = false;
+  bool isCollidable() const {
+    return collision_area.getType() != CollisionAreaType::None;
+  }
+  CollisionArea collision_area;
   Object3dHolder object3d;
   void render() { object3d.render(); }
 };
@@ -31,6 +33,7 @@ public:
   glm::vec2 getPlayerInitialPosition();
   std::vector<glm::vec2> getEnemiesInitialPositions();
   void render();
+  void renderCollisionArea();
   bool isCollision(GameObject*);
 
 private:

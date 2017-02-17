@@ -27,6 +27,7 @@ void Fire::onCollision(GameObject* with) {
 }
 
 void Fire::render() {
+  renderCollisionArea();
   glm::vec3 pos = getPosition();
   glTranslatef(pos.x, pos.y, pos.z);
 

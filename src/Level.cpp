@@ -167,7 +167,7 @@ void Level::render() {
   glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
   glEnd();
 
-  map_->render();
+  map_->renderCollisionArea();
 
   // Draw object
   for (auto obj : objects_) {
