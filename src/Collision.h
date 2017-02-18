@@ -8,7 +8,7 @@ struct Circle {
 };
 
 struct Rectangle {
-  glm::vec2 origin;
+  glm::vec2 center;
   glm::vec2 dimensions{1,1};
   float rot_z = 0.0f;  // degrees
 };
@@ -17,12 +17,21 @@ enum class CollisionAreaType { None, Circle, Rectangle };
 
 class CollisionArea {
 public:
+  CollisionArea() = default;
+  CollisionArea(const Circle& c) {
+    setCollisionPrimivite(c);
+  };
+  CollisionArea(const Rectangle& r) {
+    setCollisionPrimivite(r);
+  }
+
   Circle circle;
   Rectangle rectangle;
   CollisionAreaType getType() const { return type_; }
   void setCollisionPrimivite(const Rectangle& rect);
   void setCollisionPrimivite(const Circle& c);
   void setPosition(const glm::vec2& pos);
+  void setRotation(float rot_z);
   void render() const;  // for debugging purposes
 private:
   CollisionAreaType type_ = CollisionAreaType::None;

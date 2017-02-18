@@ -8,7 +8,15 @@ void CollisionArea::setPosition(const glm::vec2& pos) {
     circle.center = pos;
     break;
   case CollisionAreaType::Rectangle:
-    rectangle.origin = pos;
+    rectangle.center = pos;
+    break;
+  }
+}
+
+void CollisionArea::setRotation(float rot_z) {
+  switch (type_) {
+  case CollisionAreaType::Rectangle:
+    rectangle.rot_z = rot_z;
     break;
   }
 }
@@ -29,13 +37,14 @@ void DrawCircle(const Circle& c, int num_segments) {
 }
 
 void DrawRectangle(const Rectangle& r) {
-  glTranslatef(r.origin.x, r.origin.y, 0);
+  const glm::vec2& half_dim = r.dimensions * 0.5f;
+  glTranslatef(r.center.x, r.center.y, 0);
   glRotatef(r.rot_z, 0, 0, 1);
   glBegin(GL_LINE_LOOP);
-  glVertex2d(0, 0);
-  glVertex2d(0, r.dimensions.y);
-  glVertex2d(r.dimensions.x, r.dimensions.y);
-  glVertex2d(r.dimensions.x, 0);
+  glVertex2d(-half_dim.x, -half_dim.y);
+  glVertex2d(half_dim.x, -half_dim.y);
+  glVertex2d(half_dim.x, half_dim.y);
+  glVertex2d(-half_dim.x, half_dim.y);
   glEnd();
 }
 
@@ -73,6 +82,9 @@ bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& are
   }
   if (area1.getType() == CollisionAreaType::Rectangle && area2.getType() == CollisionAreaType::Circle) {
     return isCollision(area2.circle, area1.rectangle);
+  }
+  if (area1.getType() == CollisionAreaType::Rectangle && area2.getType() == CollisionAreaType::Rectangle) {
+    return isCollision(area1.rectangle, area2.rectangle);
   }
   assert(false && "Not implemented yet");
   return false;

@@ -31,6 +31,7 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   // update relative position
   glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);
   rot_z_ += (vel_rot * elapsed_us) / 1000000;
+  setRotation(rot_z_);
 
   // convert local positions to global
   glm::vec3 pos = getPosition();
@@ -81,6 +82,7 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   // update relative position
   glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);
   rot_z_ += (vel_rot * elapsed_us) / 1000000;
+  setRotation(rot_z_);
 
   // convert local positions to global
   glm::vec3 pos = getPosition();
@@ -95,8 +97,6 @@ void Slider::onCollision(GameObject* with) {
 }
 
 void Slider::render() {
-  renderCollisionArea();
-
   glm::vec3 pos = getPosition();
   glTranslatef(pos.x, pos.y, pos.z);
 
@@ -105,14 +105,4 @@ void Slider::render() {
     model_ = ResourcesManager::getInstance().getModel3d(ModelType::kTank);
   }
   model_->render();
-
-
-/*  glBegin(GL_LINES);
-  glColor3f(1, 0, 0);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-  glColor3f(0, 1, 0);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-  glColor3f(0, 0, 1);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-  glEnd();*/
 }

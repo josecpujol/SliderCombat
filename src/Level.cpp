@@ -2,7 +2,7 @@
 
 #include <thread>
 
-#include <GL/glew.h>
+#include "OpenGlResources.h"
 
 #include "ResourcesManager.h"
 #include "Logger.h"
@@ -43,6 +43,16 @@ void Level::removeObject(GameObject* object) {
   objects_to_remove_.push_back(object);
 }
 
+void Level::updateRenderFlags(const Uint8* keys) {
+  uint8_t count = ((render_collision_area_) * 2) + (render_objects_);
+  if (keys[SDL_SCANCODE_0] && Clock::now() > last_time_render_state_changed_ + 500ms) {
+    count = (count + 1) % 4;
+    last_time_render_state_changed_ = Clock::now();
+  }
+  render_collision_area_ = count >> 1;
+  render_objects_ = count & 0x01;
+}
+
 void Level::updateCameraSetup(const Uint8* keys) {
   if (keys[SDL_SCANCODE_1]) {
     camera_.lookAt(glm::vec3(0,0,10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
@@ -67,6 +77,7 @@ void Level::update(const Uint8* keys, uint32_t elapsed_us) {
   loop_count_++;
 
   updateCameraSetup(keys);
+  updateRenderFlags(keys);
 
   addPendingObjects();
 
@@ -158,21 +169,16 @@ void Level::render() {
   camera_.apply();
 
 
-  glBegin(GL_LINES);
-  glColor3f(1, 0, 0);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-  glColor3f(0, 1, 0);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-  glColor3f(0, 0, 1);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-  glEnd();
-
-  map_->renderCollisionArea();
+  OpenGlResources::drawAxis();
+  
+  if (render_objects_) map_->render();
+  if (render_collision_area_) map_->renderCollisionArea();
 
   // Draw object
   for (auto obj : objects_) {
     glPushMatrix();
-    obj->render();
+    if (render_collision_area_) obj->renderCollisionArea();
+    if (render_objects_) obj->render();
     glPopMatrix();
   }
 }

@@ -12,7 +12,11 @@ class Slider : public GameObject {
 public:
   Slider() = delete;
   Slider(GameObjectType type, const glm::vec2& pos, float rot) : 
-    GameObject(GameObjectType::LocalPlayer, glm::vec3(pos, 0.1), rot, 1.0) {
+    GameObject(GameObjectType::LocalPlayer, glm::vec3(pos, 0.1), rot) {
+    Rectangle rect;
+    rect.dimensions = glm::vec2(2, 2);
+    setCollisionArea(CollisionArea(rect));
+    
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override {};
   void render() override;

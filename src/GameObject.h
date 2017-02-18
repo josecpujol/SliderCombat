@@ -9,18 +9,20 @@ enum class GameObjectType {Undefined, Fire, LocalPlayer, ComputerEnemy};
 class GameObject {
 public:
   GameObject() = delete;
-  GameObject(GameObjectType type, glm::vec3 pos, float rot, float radius) : type_(type), rot_z_(rot) {
+  GameObject(GameObjectType type, glm::vec3 pos, float rot) : type_(type) {
     Circle circle;
-    circle.radius = radius;
+    circle.radius = 1.0;
     collision_area_.setCollisionPrimivite(circle);
     setPosition(pos);
+    setRotation(rot);
   }
 
   GameObject(const GameObject&) = delete;
-  GameObject(const GameObject& obj, GameObjectType type) : type_(type) {
+  GameObject(const GameObject& obj, GameObjectType type) {
+    this->type_ = type;
     this->pos_ = obj.pos_;
     this->rot_z_ = obj.rot_z_;
-    this->collision_area_ = obj.collision_area_;
+    // dont copy collision area
   }
   virtual void render() = 0;
   void renderCollisionArea();
@@ -32,13 +34,12 @@ public:
   const glm::vec3& getPosition() { return pos_; }
   float getRotation() const { return rot_z_; }
   const CollisionArea& getCollisionArea() const { return collision_area_; }
+  void setCollisionArea(const CollisionArea& ca);
 
 protected:
   float rot_z_ = 0.0;  // degrees
-  void setPosition(const glm::vec3& pos) {
-    pos_ = pos;
-    collision_area_.setPosition(glm::vec2(pos));
-  }
+  void setPosition(const glm::vec3& pos);
+  void setRotation(float rot);
 
 private:
 

@@ -26,6 +26,7 @@ private:
   void removePendingObjects();
   void checkCollisions();
   void updateCameraSetup(const Uint8*);
+  void updateRenderFlags(const Uint8*);
   inline static void checkCollision(GameObject* obj1, GameObject* obj2);
   int loop_count_ = 0;
   std::vector < std::shared_ptr< GameObject> > objects_;
@@ -34,5 +35,8 @@ private:
   Map* map_ = nullptr;
   Camera camera_;
   std::shared_ptr<SliderLocalPlayer> local_player_;
+  bool render_collision_area_ = false;
+  bool render_objects_ = true;
+  TimePoint last_time_render_state_changed_ = Clock::now();
 
 };

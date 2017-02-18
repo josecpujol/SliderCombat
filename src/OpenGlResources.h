@@ -13,6 +13,7 @@ public:
 
   static void printShaderLog(GLuint shader);
   static void printProgramLog(GLuint program);
+  static void drawAxis();
 
 private:
   GLuint gProgramID_;
