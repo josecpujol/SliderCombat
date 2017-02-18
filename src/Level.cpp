@@ -167,11 +167,10 @@ void Level::render() {
 
   glLoadIdentity();
   camera_.apply();
-
-
+  
   OpenGlResources::drawAxis();
   
-  if (render_objects_) map_->render();
+//  if (render_objects_) map_->render();
   if (render_collision_area_) map_->renderCollisionArea();
 
   // Draw object

@@ -13,8 +13,7 @@ public:
   Slider() = delete;
   Slider(GameObjectType type, const glm::vec2& pos, float rot) : 
     GameObject(GameObjectType::LocalPlayer, glm::vec3(pos, 0.1), rot) {
-    Rectangle rect;
-    rect.dimensions = glm::vec2(2, 2);
+    Rectangle rect(pos, glm::vec2(2, 2), rot);
     setCollisionArea(CollisionArea(rect));
     
   };

@@ -83,9 +83,10 @@ bool Map::load(const std::string& file) {
       if (tile) {
         Tmx::PropertySet properties = tile->GetProperties();
         if (properties.GetBoolProperty(std::string(kCollidableProperty), false)) {
-          Rectangle rect;
-          rect.center = glm::vec2(x * units_per_tile_, y * units_per_tile_) + glm::vec2(units_per_tile_ /2);
-          rect.dimensions = glm::vec2(units_per_tile_, units_per_tile_);
+          Rectangle rect(
+            glm::vec2(x * units_per_tile_, y * units_per_tile_) + glm::vec2(units_per_tile_ / 2),
+            glm::vec2(units_per_tile_, units_per_tile_)
+          );
           gametile->collision_area.setCollisionPrimivite(rect);
         }
       }

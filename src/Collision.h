@@ -1,17 +1,7 @@
 #pragma once
 
 #include "Math.h"
-
-struct Circle {
-  glm::vec2 center{0,0};
-  float radius{1.f};
-};
-
-struct Rectangle {
-  glm::vec2 center;
-  glm::vec2 dimensions{1,1};
-  float rot_z = 0.0f;  // degrees
-};
+#include "Geometry.h"
 
 enum class CollisionAreaType { None, Circle, Rectangle };
 

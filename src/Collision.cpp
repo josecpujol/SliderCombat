@@ -8,7 +8,7 @@ void CollisionArea::setPosition(const glm::vec2& pos) {
     circle.center = pos;
     break;
   case CollisionAreaType::Rectangle:
-    rectangle.center = pos;
+    rectangle.setCenter(pos);
     break;
   }
 }
@@ -16,7 +16,7 @@ void CollisionArea::setPosition(const glm::vec2& pos) {
 void CollisionArea::setRotation(float rot_z) {
   switch (type_) {
   case CollisionAreaType::Rectangle:
-    rectangle.rot_z = rot_z;
+    rectangle.setRotation(rot_z);
     break;
   }
 }
@@ -37,14 +37,12 @@ void DrawCircle(const Circle& c, int num_segments) {
 }
 
 void DrawRectangle(const Rectangle& r) {
-  const glm::vec2& half_dim = r.dimensions * 0.5f;
-  glTranslatef(r.center.x, r.center.y, 0);
-  glRotatef(r.rot_z, 0, 0, 1);
+  std::array<glm::vec2, 4> vertices;
+  r.getVertices(vertices);
   glBegin(GL_LINE_LOOP);
-  glVertex2d(-half_dim.x, -half_dim.y);
-  glVertex2d(half_dim.x, -half_dim.y);
-  glVertex2d(half_dim.x, half_dim.y);
-  glVertex2d(-half_dim.x, half_dim.y);
+  for (auto& v : vertices) {
+    glVertex2d(v.x, v.y);
+  }
   glEnd();
 }
 
