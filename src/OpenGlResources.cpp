@@ -13,6 +13,20 @@ void OpenGlResources::printShaderLog(GLuint shader) {
 
 }
 
+void OpenGlResources::drawCircle(float radius, int num_segments) {
+  glBegin(GL_LINE_LOOP);
+  for (int i = 0; i < num_segments; i++) {
+    float theta = (2.0f * 3.1415926f * i) / num_segments;
+
+    float x = radius * cosf(theta);
+    float y = radius * sinf(theta);
+
+    glVertex2f(x, y);//output vertex
+  }
+  glEnd();
+}
+
+
 void OpenGlResources::drawAxis() {
   glBegin(GL_LINES);
   glColor3f(1, 0, 0);

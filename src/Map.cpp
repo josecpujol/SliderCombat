@@ -139,13 +139,20 @@ std::vector<glm::vec2> Map::getEnemiesInitialPositions() {
 }
 
 bool Map::isCollision(GameObject* obj) {
-  // TODO: do per tile
   glm::vec2 pos = glm::vec2(obj->getPosition());
-  if (pos.x < 0 || 
-    pos.y < 0 || 
-    pos.x > tmx_map_.GetWidth() * units_per_tile_ || 
-    pos.y > tmx_map_.GetHeight() * units_per_tile_) {
-    return true;
+  int tile_x = pos.x / units_per_tile_;
+  int tile_y = pos.y / units_per_tile_;
+
+
+  for (int x = tile_x - 1; x <= tile_x + 1; x++) {
+    if (x < 0 || x >= tile_map_.size()) continue;
+    for (int y = tile_y - 1; y <= tile_y + 1; y++) {
+      if (y < 0 || y >= tile_map_[x].size()) continue;
+      Tile* tile = &(tile_map_[x][y]);
+      if (!tile->exists) continue;
+      bool is_collision = Collision::isCollision(obj->getCollisionArea(), tile->collision_area);
+      if (is_collision) return true;
+    }
   }
   return false;
 }

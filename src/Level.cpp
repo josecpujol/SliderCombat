@@ -85,18 +85,9 @@ void Level::update(const Uint8* keys, uint32_t elapsed_us) {
     obj->update(keys, elapsed_us);
   }
 
-  // Check boundaries with map
-  for (auto obj : objects_) {
-    if (obj->getType() == GameObjectType::Fire) {
-      if (map_->isCollision(obj.get())) {
-        obj->onCollision(nullptr);
-      }
-    }
-  }
+  checkCollisions();
 
   removePendingObjects();
-
-  checkCollisions();
 }
 
 void Level::addPendingObjects() {
@@ -126,6 +117,17 @@ void Level::removePendingObjects() {
 }
 
 void Level::checkCollisions() {
+
+  // Collisions of objects with map
+  for (auto obj : objects_) {
+    if (obj->getType() == GameObjectType::Fire) {
+      if (map_->isCollision(obj.get())) {
+        obj->onCollision(nullptr);
+      }
+    }
+  }
+
+  // Objects with objects
   size_t objects_size = objects_.size();
   for (int i = 0; i < (objects_size - 1); i++) {
     GameObject* obj1 = (&objects_[i])->get();
@@ -170,7 +172,7 @@ void Level::render() {
   
   OpenGlResources::drawAxis();
   
-//  if (render_objects_) map_->render();
+  if (render_objects_) map_->render();
   if (render_collision_area_) map_->renderCollisionArea();
 
   // Draw object

@@ -112,6 +112,7 @@ void TheGame::runLoop() {
       (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_between_update).count());
     last_update_call = current_time;
     TimePoint render_start = Clock::now();
+    stats.time_to_update_ms += toMs(render_start - current_time);
     stage_->render();  // TODO: we are assuming render time is short. Add condition to discard render if time is critical
     window_->display();
     TimePoint render_end = Clock::now();
@@ -119,9 +120,7 @@ void TheGame::runLoop() {
     Duration render_time = render_end - render_start;
 
     // Update time stats
-    stats.time_to_render_ms += std::chrono::duration_cast<std::chrono::milliseconds>(render_time).count();
-
-
+    stats.time_to_render_ms += toMs(render_time);
 
     Duration time_left = time_per_cycle - elapsed;
     if (time_left > 0s) {
@@ -132,6 +131,7 @@ void TheGame::runLoop() {
     if (counter % 300 == 0) {
       LOG_DEBUG("Avg triangles rendered: " << stats.num_triangles / 300);
       LOG_DEBUG("Avg render time ms: " << stats.time_to_render_ms / 300);
+      LOG_DEBUG("Avg update time ms: " << stats.time_to_update_ms / 300);
       stats.reset();
     }
   }

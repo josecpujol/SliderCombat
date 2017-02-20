@@ -1,11 +1,18 @@
 #include "Fire.h"
 
-#include <GL/glew.h>
+#include "OpenGlResources.h"
 
 #include "Logger.h"
 #include "EventManager.h"
 
+Fire::Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot) {
+  Circle c;
+  c.radius = 0.2f;
+  setCollisionArea(CollisionArea(c));
+};
+
 void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
+  update_counter_++;
   // Positions wrt local system reference 
   glm::vec2 vel_rel(0, vel_);
   
@@ -33,9 +40,6 @@ void Fire::render() {
   glRotated((float)rot_z_, 0, 0, 1);
 
   glColor3f(1, 1, 1);
-  glBegin(GL_TRIANGLES);
-  glVertex3f(0.5f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 1.0f, 0.0f);
-  glVertex3f(-0.5f, 0.0f, 0.0f);
-  glEnd();
+  glRotatef(-(float)(update_counter_) * 5, 1, 0, 0);
+  OpenGlResources::drawCircle(0.2, 10);
 }

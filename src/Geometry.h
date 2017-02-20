@@ -16,6 +16,9 @@ public:
   void setRotation(float rot_z);
   void setCenter(const glm::vec2&);
   void setDimensions(const glm::vec2&);
+  glm::vec2 getDimensions() const { return dimensions_; }
+  float getArea() const;
+  const glm::vec2& getCenter() const { return center_; }
   void getVertices(std::array<glm::vec2, 4>& vertices) const;
 
 private:
@@ -24,4 +27,10 @@ private:
   float rot_z_ = 0.0f;  // degrees
   mutable bool invalidate_ = true;
   mutable std::array<glm::vec2, 4> vertices_;
+};
+
+class Geometry {
+public:
+  static bool isPointInCircle(const glm::vec2&, const Circle&);
+  static bool isPointInRectangle(const glm::vec2&, const Rectangle&);
 };

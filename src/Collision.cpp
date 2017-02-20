@@ -1,6 +1,6 @@
 #include "Collision.h"
 
-#include <GL/glew.h>
+#include "OpenGlResources.h"
 
 void CollisionArea::setPosition(const glm::vec2& pos) {
   switch (type_) {
@@ -23,17 +23,8 @@ void CollisionArea::setRotation(float rot_z) {
 
 
 void DrawCircle(const Circle& c, int num_segments) {
-  glBegin(GL_LINE_LOOP);
-  for (int i = 0; i < num_segments; i++) {
-    float theta = (2.0f * 3.1415926f * i) / num_segments;
-
-    float x = c.radius * cosf(theta);
-    float y = c.radius * sinf(theta);
-
-    glVertex2f(x + c.center.x, y + c.center.y);//output vertex
-
-  }
-  glEnd();
+  glTranslatef(c.center.x, c.center.y, 0);
+  OpenGlResources::drawCircle(c.radius, 10);
 }
 
 void DrawRectangle(const Rectangle& r) {
@@ -71,6 +62,10 @@ void CollisionArea::render() const {
 }
 
 bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& area2) {
+  if (area1.getType() == CollisionAreaType::None || area2.getType() == CollisionAreaType::None) {
+    return false;
+  }
+
   if (area1.getType() == CollisionAreaType::Circle && area2.getType() == CollisionAreaType::Circle) {
     return isCollision(area1.circle, area2.circle);
   }
@@ -96,7 +91,10 @@ bool Collision::isCollision(const Circle& c1, const Circle& c2) {
 }
 
 bool Collision::isCollision(const Circle& c, const Rectangle& r) {
-  return false;
+  return
+    Geometry::isPointInRectangle(c.center, r) ||
+    Geometry::isPointInCircle(r.getCenter(), c);
+// TODO: add intersection of segments with circle
 }
 
 bool Collision::isCollision(const Rectangle& r1, const Rectangle& r2) {

@@ -14,6 +14,7 @@ public:
   static void printShaderLog(GLuint shader);
   static void printProgramLog(GLuint program);
   static void drawAxis();
+  static void drawCircle(float radius, int segments);
 
 private:
   GLuint gProgramID_;
