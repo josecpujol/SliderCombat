@@ -6,7 +6,46 @@
 
 #include "GameObject.h"
 #include "Time.h"
+#include "Math.h"
 #include "ResourcesManager.h"
+
+class Propeller {
+public:
+  Propeller(glm::vec2 location, glm::vec2 direction, Uint8 direct_key, Uint8 reverse_key) :
+    location_(location), direction_(direction), direct_key_(direct_key), reverse_key_(reverse_key) {
+    glm::vec3 v1 = glm::vec3(location_, 0);
+    glm::vec3 v2 = glm::vec3(direction_, 0);
+
+    unit_torque_ = (glm::cross(v1, v2)).z;
+  }
+
+  void update(const Uint8* keys) {
+    if (keys[direct_key_]) direct();
+    else if (keys[reverse_key_]) reverse();
+    else neutral();
+  }
+
+  glm::vec2 getForceVector() const {
+    return force_ * direction_;
+  }
+
+  // Assuming CoM to be in 0,0
+  float getTorque() const {
+    return force_ * unit_torque_;
+  }
+
+private:
+  void direct() { force_ = force_max_; }
+  void reverse() { force_ = -force_max_; }
+  void neutral() { force_ = 0.f; }
+  float unit_torque_ = 0.f;  // precompute cross vector and scale with force
+  float force_ = 0.0f;
+  float force_max_ = 100.f;
+  glm::vec2 location_;
+  glm::vec2 direction_;
+  Uint8 direct_key_;
+  Uint8 reverse_key_;
+};
 
 class Slider : public GameObject {
 public:
@@ -23,7 +62,11 @@ public:
 
 
 protected:
+ 
   // m/s
+  float mass_ = 10.f;
+  glm::vec2 global_speed_;
+  float angular_speed_ = 0.f;
   float vel_x_ = 5.0;
   float vel_y_ = 5.0;
   float vel_rot_ = 20.0;
@@ -31,6 +74,13 @@ protected:
   int health_ = 100;
   TimePoint last_shot_;
   Model3d* model_ = nullptr;
+
+  Propeller propellers_[4] = {
+    {glm::vec2(-0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_W, SDL_SCANCODE_S},
+    {glm::vec2(-1, 0), glm::vec2(-1, 0), SDL_SCANCODE_A, SDL_SCANCODE_D},
+    {glm::vec2(0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_I, SDL_SCANCODE_K},
+    {glm::vec2(1, 0), glm::vec2(1, 0), SDL_SCANCODE_L, SDL_SCANCODE_J}
+  };
 };
 
 class SliderLocalPlayer : public Slider {
