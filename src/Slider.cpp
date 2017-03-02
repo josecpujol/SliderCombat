@@ -42,6 +42,9 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   float rot_z = getRotation();
   float new_rot_z = rot_z + angular_speed_ * elapsed_secs;
   
+  // max speed: max force / drag_coeff_linear_motion
+  // drag_coeff_linear_motion for reaching 0.95 * max speed in t = -m * ln(1-0.95)/t
+
   float drag_coeff_linear_motion = 40.0f;
   // Compute forces: linear: sum vectors, it doesn't matter the origin
   glm::vec2 force(0);

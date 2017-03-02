@@ -146,7 +146,7 @@ void Level::render() {
   int width = 0;
   int height = 0;
   ResourcesManager::getInstance().getWindowDimensions(&width, &height);
-  glShadeModel(GL_SMOOTH);
+  glShadeModel(GL_FLAT);
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
@@ -155,6 +155,20 @@ void Level::render() {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // Lights!
+  float light_position[] = {0.2f, 0.f, 1.f, 0.f};  // last component: 0 -> directional
+  float light_diffuse[] = {0.5f, 0.5f, 0.5f, 1.f};
+  float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.f};
+  float light_specular[] = {0.f, 0.f, 0.f, 0.f};
+  
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_NORMALIZE);
+  
 
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
 

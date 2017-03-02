@@ -40,6 +40,6 @@ void Fire::render() {
   glRotated((float)rot_z_, 0, 0, 1);
 
   glColor3f(1, 1, 1);
-  glRotatef(-(float)(update_counter_) * 5, 1, 0, 0);
+  glRotatef(-(float)(update_counter_) * 10, 1, 0, 0);
   OpenGlResources::drawCircle(0.2f, 10);
 }

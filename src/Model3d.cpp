@@ -23,11 +23,19 @@ void Object3d::render() {
   // glPolygonMode(GL_BACK, GL_LINE);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  glEnable(GL_COLOR_MATERIAL);
+
   glVertexPointer(3, GL_FLOAT, 0, vertices_buffer.data());
   glColorPointer(3, GL_FLOAT, 0, colors_buffer.data());
+  glNormalPointer(GL_FLOAT, 0, normals_buffer.data());
   glDrawArrays(GL_TRIANGLES, 0, num_triangles);
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_NORMAL_ARRAY);
+  glDisable(GL_COLOR_MATERIAL);
   // glPolygonMode(GL_FRONT, GL_FILL);
   // glPolygonMode(GL_BACK, GL_FILL);
 }
@@ -54,13 +62,20 @@ void Model3d::createBuffers() {
 
       tinyobj::index_t idx;
       glm::vec3 vertex;
+      glm::vec3 normal;
 
       for (int i = 0; i < 3; i++) {
         idx = shape.mesh.indices[3 * f + i];
-        vertex = getVertex(idx.vertex_index);
+        vertex = getVertex(idx);
         obj3d.vertices_buffer.push_back(vertex.x);
         obj3d.vertices_buffer.push_back(vertex.y);
         obj3d.vertices_buffer.push_back(vertex.z);
+
+        normal = getNormal(idx);
+        obj3d.normals_buffer.push_back(normal.x);
+        obj3d.normals_buffer.push_back(normal.y);
+        obj3d.normals_buffer.push_back(normal.z);
+
       }
 
       int material_id = shape.mesh.material_ids[f];
@@ -75,8 +90,15 @@ void Model3d::createBuffers() {
   }
 }
 
-glm::vec3 Model3d::getVertex(int index) {
+glm::vec3 Model3d::getVertex(tinyobj::index_t idx) {
+  int index = idx.vertex_index;
   glm::vec3 v(attrib.vertices[index * 3], attrib.vertices[index * 3 + 1], attrib.vertices[index * 3 + 2]);
+  return v;
+}
+
+glm::vec3 Model3d::getNormal(tinyobj::index_t idx) {
+  int index = idx.normal_index;
+  glm::vec3 v(attrib.normals[index * 3], attrib.normals[index * 3 + 1], attrib.normals[index * 3 + 2]);
   return v;
 }
 

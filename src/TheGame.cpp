@@ -21,20 +21,29 @@ TheGame::~TheGame() {
 }
 
 bool TheGame::init() {
-  /*
-  if (!SDL_InitSubSystem())
+  
+  if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) != 0) {
+    LOG_ERROR("Could not initialize gamecontroller");
+    return false;
+  }
   int num_joysticks = SDL_NumJoysticks();
-  if (num_joysticks == 0) {
-    LOG_INFO("No joysticks found");
-  } else {
-    joystick_ = SDL_JoystickOpen(0);
+  LOG_INFO("#joysticks found: " << num_joysticks);
+  for (int i = 0; i < num_joysticks; i++) {
+    if (SDL_IsGameController(i)) {
+      LOG_DEBUG("Joystick " << i << " is supported by the game controller interface");
+    } else {
+      LOG_DEBUG("Joystick " << i << " is NOT supported by the game controller interface");
+    }
+    LOG_DEBUG("Joystick " << i << ": " << SDL_JoystickNameForIndex(i));
+    joystick_ = SDL_JoystickOpen(i);
     if (joystick_) {
       LOG_INFO("Joystick found: " << SDL_JoystickName(joystick_));
+      break;
     } else {
-      LOG_ERROR("Could not open joystick");
+      LOG_ERROR("Could not open joystick. Error: "  << SDL_GetError());
     }
   }
-  */
+  
   int width = 640;
   int height = 480;
 
@@ -62,10 +71,6 @@ void TheGame::processEvents(std::vector<SDL_Event>& events, bool *done) {
       *done = true;
     }
 
-    if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
- //     LOG_DEBUG("Key : " << e.key.keysym.sym << " " << (e.type == SDL_KEYUP ? "UP" : "DOWN"));
-    }
-
     if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
       LOG_DEBUG("Window resized: " << e.window.data1 << "x" << e.window.data2);
       ResourcesManager::getInstance().setWindowDimensions(e.window.data1, e.window.data2);
@@ -73,9 +78,9 @@ void TheGame::processEvents(std::vector<SDL_Event>& events, bool *done) {
     if (e.type == SDL_JOYBUTTONDOWN) {
       LOG_DEBUG("Joy button");
     }
-   /* if (e.type == SDL_JOYAXISMOTION) {
+    if (e.type == SDL_JOYAXISMOTION) {
       LOG_DEBUG("Joy axis");
-    }*/
+    }
   }
 }
 
@@ -86,7 +91,6 @@ void TheGame::runLoop() {
   }
   bool done = false;
   SDL_Event event;
-  std::vector<SDL_Event> events;
   int counter = 0;
   Duration time_per_cycle = std::chrono::milliseconds{1000 / target_fps_};
   Duration lag = std::chrono::milliseconds{0};
@@ -96,37 +100,47 @@ void TheGame::runLoop() {
   stats.reset();
 
   while (!done) {
+    counter++;
 
     TimePoint start = Clock::now();
 
-    counter++;
-    events.clear();
-    while (SDL_PollEvent(&event)) {
-      events.push_back(event);  // Get all the events now and process later
-    }
-    processEvents(events, &done);
-    TimePoint current_time = Clock::now();
-    Duration elapsed_between_update = counter == 1 ? time_per_cycle : current_time - last_update_call;
-    stage_->update(
-      SDL_GetKeyboardState(nullptr), 
-      (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_between_update).count());
-    last_update_call = current_time;
-    TimePoint render_start = Clock::now();
-    stats.time_to_update_ms += toMs(render_start - current_time);
-    stage_->render();  // TODO: we are assuming render time is short. Add condition to discard render if time is critical
-    window_->display();
-    TimePoint render_end = Clock::now();
-    Duration elapsed = render_end - start;
-    Duration render_time = render_end - render_start;
+    Duration poll_and_process_events_duration = measureFunction([&done, &event, this]{
+     std::vector<SDL_Event> events;
+     TimePoint start = Clock::now();
+     while (SDL_PollEvent(&event) && (Clock::now() - start) < 2ms) {
+       events.push_back(event);  // Get all the events now and process later
+     }
+     processEvents(events, &done);
+    });
 
-    // Update time stats
-    stats.time_to_render_ms += toMs(render_time);
+    Duration update_duration = measureFunction([this, &time_per_cycle] {
+      stage_->update(
+        SDL_GetKeyboardState(nullptr),
+        (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(time_per_cycle).count());
+    });
+    stats.time_to_update_ms += toMs(update_duration);
 
+    Duration render_duration = measureFunction([this] {
+      stage_->render();
+    });
+
+    Duration display_duration = measureFunction([this] {
+      window_->display();
+    });
+    stats.time_to_render_ms += toMs(render_duration);
+
+    Duration elapsed = (Clock::now() - start);
     Duration time_left = time_per_cycle - elapsed;
     if (time_left > 0s) {
       std::this_thread::sleep_for(time_left);
     } else {
-      LOG_ERROR("Time for cycle exceeded max. Frame #" << counter << ", time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count());
+      LOG_ERROR("Time for cycle exceeded max. Frame #" << counter
+        << ", time taken: " << toMs(elapsed)
+        << ", time per frame: " << toMs(time_per_cycle)
+        << ", poll_and_process_events_duration: " << toMs(poll_and_process_events_duration)
+        << ", update_duration: " << toMs(update_duration)
+        << ", render_duration: " << toMs(render_duration)
+        << ", display duration: " << toMs(display_duration));
     }
     if (counter % 300 == 0) {
       LOG_DEBUG("Avg triangles rendered: " << stats.num_triangles / 300);

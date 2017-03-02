@@ -9,6 +9,7 @@
 class Object3d {
 public:
   std::vector<float> vertices_buffer;
+  std::vector<float> normals_buffer;
   std::vector<float> colors_buffer;
   std::string name;
 
@@ -47,7 +48,8 @@ private:
   void createBuffers();
   std::vector<Object3d> objects_;
 
-  glm::vec3 getVertex(int index);
+  glm::vec3 getVertex(tinyobj::index_t);
+  glm::vec3 getNormal(tinyobj::index_t);
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
   std::vector<tinyobj::material_t> materials;
