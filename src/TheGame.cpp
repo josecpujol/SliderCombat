@@ -70,6 +70,11 @@ void TheGame::processEvents(std::vector<SDL_Event>& events, bool *done) {
     if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)) {
       *done = true;
     }
+ /*   if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_z) stage_->incAmbient(0.1f);
+    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_x) stage_->incAmbient(-0.1f);
+    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_c) stage_->incDiffuse(0.1f);
+    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_v) stage_->incDiffuse(-0.1f);
+  */
 
     if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
       LOG_DEBUG("Window resized: " << e.window.data1 << "x" << e.window.data2);

@@ -17,6 +17,18 @@ public:
   Level(Map*);
   void render();
   void update(const Uint8*, uint32_t elapsed_us);
+ /* void incAmbient(float inc) {
+    ambient_coeff_ += inc;
+    ambient_coeff_ = std::max(0.0f, ambient_coeff_);
+    ambient_coeff_ = std::min(1.0f, ambient_coeff_);
+    LOG_DEBUG("ambient: " << ambient_coeff_);
+  }
+  void incDiffuse(float inc) {
+    diffuse_coeff_ += inc;
+    diffuse_coeff_ = std::max(0.0f, diffuse_coeff_);
+    diffuse_coeff_ = std::min(1.0f, diffuse_coeff_);
+    LOG_DEBUG("diffuse: " << diffuse_coeff_);
+  }*/
 
 private:
   void onFire(const FireEvent& event);
@@ -38,5 +50,9 @@ private:
   bool render_collision_area_ = false;
   bool render_objects_ = true;
   TimePoint last_time_render_state_changed_ = Clock::now();
+
+  float ambient_coeff_ = 0.5;
+  float diffuse_coeff_ = 0.5;
+
 
 };

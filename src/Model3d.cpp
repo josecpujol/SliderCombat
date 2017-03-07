@@ -25,8 +25,8 @@ void Object3d::render() {
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   
-  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
   glEnable(GL_COLOR_MATERIAL);
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
   glVertexPointer(3, GL_FLOAT, 0, vertices_buffer.data());
   glColorPointer(3, GL_FLOAT, 0, colors_buffer.data());

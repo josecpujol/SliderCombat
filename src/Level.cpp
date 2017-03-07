@@ -156,11 +156,28 @@ void Level::render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Lights!
-  float light_position[] = {0.2f, 0.f, 1.f, 0.f};  // last component: 0 -> directional
-  float light_diffuse[] = {0.5f, 0.5f, 0.5f, 1.f};
+  glm::vec3 light_pos{0.0f, 0.3f, 1.f};
+  light_pos = glm::normalize(light_pos);
+  float light_position[4];
+  light_position[0] = light_pos.x;
+  light_position[1] = light_pos.y;
+  light_position[2] = light_pos.z;
+  light_position[3] = 0.f;  // w=0-> vector
+
+
+  float light_diffuse[] = {0.2f, 0.2f, 0.2f, 1.f};
   float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.f};
-  float light_specular[] = {0.f, 0.f, 0.f, 0.f};
+  float light_specular[] = {0.f, 0.f, 0.f, 1.f};
+  diffuse_coeff_ = 0.3f;
+  ambient_coeff_ = 0.5f;
+  for (int i = 0; i < 3; i++) {
+    light_diffuse[i] = diffuse_coeff_;
+    light_ambient[i] = ambient_coeff_;
+  }
   
+  GLfloat lmodel_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -169,7 +186,6 @@ void Level::render() {
   glEnable(GL_LIGHT0);
   glEnable(GL_NORMALIZE);
   
-
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
 
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
