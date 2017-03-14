@@ -39,6 +39,7 @@ private:
   void checkCollisions();
   void updateCameraSetup(const Uint8*);
   void updateRenderFlags(const Uint8*);
+  void setOpenGlLights();
   inline static void checkCollision(GameObject* obj1, GameObject* obj2);
   int loop_count_ = 0;
   std::vector < std::shared_ptr< GameObject> > objects_;
@@ -53,6 +54,10 @@ private:
 
   float ambient_coeff_ = 0.5;
   float diffuse_coeff_ = 0.5;
-
+  struct PointWithTimer {
+    glm::vec2 point;
+    TimePoint expiration;
+  };
+  std::vector<PointWithTimer> collision_points_;
 
 };

@@ -30,10 +30,10 @@ private:
 class Collision {
 public:
   Collision() = default;
-  static bool isCollision(const CollisionArea& area1, const CollisionArea& area2);
+  static bool isCollision(const CollisionArea& area1, const CollisionArea& area2, glm::vec2* collision_point);
   
 private:
-  static bool isCollision(const Circle&, const Circle&);
-  static bool isCollision(const Circle&, const Rectangle&);
-  static bool isCollision(const Rectangle&, const Rectangle&);
+  static bool isCollision(const Circle&, const Circle&, glm::vec2* collision_point);
+  static bool isCollision(const Circle&, const Rectangle&, glm::vec2* collision_point);
+  static bool isCollision(const Rectangle&, const Rectangle&, glm::vec2* collision_point);
 };

@@ -133,7 +133,12 @@ void Level::checkCollisions() {
     GameObject* obj1 = (&objects_[i])->get();
     for (int j = i + 1; j < objects_size; j++) {
       GameObject* obj2 = (&objects_[j])->get();
-      if (Collision::isCollision(obj1->getCollisionArea(), obj2->getCollisionArea())) {
+      glm::vec2 collision_point;
+      if (Collision::isCollision(obj1->getCollisionArea(), obj2->getCollisionArea(), &collision_point)) {
+        PointWithTimer point;
+        point.point = collision_point;
+        point.expiration = Clock::now() + 2s;
+        collision_points_.push_back(point);
         LOG_INFO("Collision!! " << rand());
         obj1->onCollision(obj2);
         obj2->onCollision(obj1);
@@ -142,20 +147,7 @@ void Level::checkCollisions() {
   }
 }
 
-void Level::render() {
-  int width = 0;
-  int height = 0;
-  ResourcesManager::getInstance().getWindowDimensions(&width, &height);
-  glShadeModel(GL_FLAT);
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glClearDepth(1.0f);
-  glEnable(GL_DEPTH_TEST);
-
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // Lights!
+void Level::setOpenGlLights() {
   glm::vec3 light_pos{0.0f, 0.3f, 1.f};
   light_pos = glm::normalize(light_pos);
   float light_position[4];
@@ -174,7 +166,7 @@ void Level::render() {
     light_diffuse[i] = diffuse_coeff_;
     light_ambient[i] = ambient_coeff_;
   }
-  
+
   GLfloat lmodel_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
@@ -184,6 +176,23 @@ void Level::render() {
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+}
+
+void Level::render() {
+  int width = 0;
+  int height = 0;
+  ResourcesManager::getInstance().getWindowDimensions(&width, &height);
+  glShadeModel(GL_FLAT);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearDepth(1.0f);
+  glEnable(GL_DEPTH_TEST);
+
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  setOpenGlLights();
+ 
   glEnable(GL_NORMALIZE);
   
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
@@ -201,6 +210,16 @@ void Level::render() {
   camera_.apply();
   
   OpenGlResources::drawAxis();
+  glColor3f(1.f, 0.f, 0.f);
+  for (auto &point : collision_points_) {
+    glPushMatrix();
+    glTranslatef(point.point.x, point.point.y, 0);
+    OpenGlResources::drawCircle(1, 10);
+    glPopMatrix();
+  }
+  collision_points_.erase(std::remove_if(collision_points_.begin(), collision_points_.end(),
+    [](const PointWithTimer& o) {return o.expiration < Clock::now(); }), collision_points_.end());
+
   
   if (render_objects_) map_->render();
   if (render_collision_area_) map_->renderCollisionArea();

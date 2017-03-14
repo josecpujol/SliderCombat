@@ -1,5 +1,7 @@
 #include "Collision.h"
 
+#include <map>
+
 #include "OpenGlResources.h"
 
 void CollisionArea::setPosition(const glm::vec2& pos) {
@@ -29,7 +31,7 @@ void DrawCircle(const Circle& c, int num_segments) {
 
 void DrawRectangle(const Rectangle& r) {
   std::array<glm::vec2, 4> vertices;
-  r.getVertices(vertices);
+  r.getVertices(&vertices);
   glBegin(GL_LINE_LOOP);
   for (auto& v : vertices) {
     glVertex2d(v.x, v.y);
@@ -61,42 +63,59 @@ void CollisionArea::render() const {
   glPopMatrix();
 }
 
-bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& area2) {
+bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& area2, glm::vec2* collision_point) {
   if (area1.getType() == CollisionAreaType::None || area2.getType() == CollisionAreaType::None) {
     return false;
   }
 
   if (area1.getType() == CollisionAreaType::Circle && area2.getType() == CollisionAreaType::Circle) {
-    return isCollision(area1.circle, area2.circle);
+    return isCollision(area1.circle, area2.circle, collision_point);
   }
   if (area1.getType() == CollisionAreaType::Circle && area2.getType() == CollisionAreaType::Rectangle) {
-    // Undo rotation of rectangle over circle
-    return isCollision(area1.circle, area2.rectangle);
+    return isCollision(area1.circle, area2.rectangle, collision_point);
   }
   if (area1.getType() == CollisionAreaType::Rectangle && area2.getType() == CollisionAreaType::Circle) {
-    return isCollision(area2.circle, area1.rectangle);
+    return isCollision(area2.circle, area1.rectangle, collision_point);
   }
   if (area1.getType() == CollisionAreaType::Rectangle && area2.getType() == CollisionAreaType::Rectangle) {
-    return isCollision(area1.rectangle, area2.rectangle);
+    return isCollision(area1.rectangle, area2.rectangle, collision_point);
   }
   assert(false && "Not implemented yet");
   return false;
 }
 
 
-bool Collision::isCollision(const Circle& c1, const Circle& c2) {
+bool Collision::isCollision(const Circle& c1, const Circle& c2, glm::vec2* collision_point) {
   float distance_squared = glm::distance2(c1.center, c2.center);
   float radius_sum = c1.radius + c2.radius;
-  return (distance_squared < radius_sum * radius_sum);
+  bool is_collision = distance_squared < radius_sum * radius_sum;
+  if (is_collision) {
+    *collision_point = (c2.center - c1.center) * c1.radius / radius_sum + c1.center;
+  }
+  return is_collision;
 }
 
-bool Collision::isCollision(const Circle& c, const Rectangle& r) {
-  return
+// Collision point: approximation
+bool Collision::isCollision(const Circle& c, const Rectangle& r, glm::vec2* collision_point) {
+  bool is_collision = 
     Geometry::isPointInRectangle(c.center, r) ||
     Geometry::isPointInCircle(r.getCenter(), c);
-// TODO: add intersection of segments with circle
+    // TODO: add condition of intersection of segments with circle
+
+  if (is_collision) {
+    std::array<LineSegment, 4> line_segments;
+    r.getLineSegments(&line_segments);
+    std::map<float, glm::vec2> distance_point_map;  // use map to order
+    for (auto& line_segment : line_segments) {
+      glm::vec2 point = Geometry::closestPointInLineSegmentToPoint(line_segment, c.center);
+      distance_point_map[glm::length(point-c.center)] = point;
+    }
+    *collision_point = distance_point_map.begin()->second;
+  }
+  return is_collision;
+    
 }
 
-bool Collision::isCollision(const Rectangle& r1, const Rectangle& r2) {
+bool Collision::isCollision(const Rectangle& r1, const Rectangle& r2, glm::vec2* collision_point) {
   return false;
 }

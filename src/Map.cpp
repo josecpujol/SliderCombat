@@ -150,7 +150,8 @@ bool Map::isCollision(GameObject* obj) {
       if (y < 0 || y >= tile_map_[x].size()) continue;
       Tile* tile = &(tile_map_[x][y]);
       if (!tile->exists) continue;
-      bool is_collision = Collision::isCollision(obj->getCollisionArea(), tile->collision_area);
+      glm::vec2 collision_point;
+      bool is_collision = Collision::isCollision(obj->getCollisionArea(), tile->collision_area, &collision_point);
       if (is_collision) return true;
     }
   }
