@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project (SliderCombar)
 
-set (CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS} -DUSE_MINIZ")
 
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
@@ -15,10 +15,11 @@ if (GLEW_FOUND)
     message(${GLEW_INCLUDE_DIRS})
 endif()
 
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser")
 
 
-FILE(GLOB MyCppSources src/*.cpp)
+FILE(GLOB_RECURSE MyCppSources ext/*.cpp ext/*.c src/*.cpp)
+
 ADD_EXECUTABLE(SliderCombat ${MyCppSources})
 MESSAGE(${SDL2_LIBRARIES})
-TARGET_LINK_LIBRARIES(SliderCombat "GL" "GLU" ${SDL2_LIBRARIES} ${GLEW_LIBRARIES})
+TARGET_LINK_LIBRARIES(SliderCombat "GL" "GLU" "stdc++fs" ${SDL2_LIBRARIES} ${GLEW_LIBRARIES})

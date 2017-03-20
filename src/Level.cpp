@@ -1,6 +1,7 @@
 #include "Level.h"
 
 #include <thread>
+#include <algorithm>
 
 #include "OpenGlResources.h"
 

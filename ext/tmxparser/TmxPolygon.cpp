@@ -39,7 +39,7 @@ namespace Tmx
 
     void Polygon::Parse(const tinyxml2::XMLNode *polygonNode)
     {
-        char *pointsLine = _strdup(polygonNode->ToElement()->Attribute("points"));
+        char *pointsLine = strdup(polygonNode->ToElement()->Attribute("points"));
         
         char *token = strtok(pointsLine, " ");
         while (token)

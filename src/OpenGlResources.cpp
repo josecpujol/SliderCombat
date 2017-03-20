@@ -1,6 +1,6 @@
 #include "OpenGlResources.h"
 
-
+#include <math.h>
 
 #include "Logger.h"
 
