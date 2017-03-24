@@ -1,6 +1,7 @@
 #include "ResourcesManager.h"
 #include "SDL.h"
 #include "Logger.h"
+#include <experimental/filesystem>
 
 void ResourcesManager::setWindowDimensions(int w, int h) {
   window_width_ = w;
@@ -13,10 +14,9 @@ void ResourcesManager::getWindowDimensions(int* w, int* h) {
 }
 
 std::string ResourcesManager::getResourceBaseDirectory() {
-  char* base_path = SDL_GetBasePath();
-  std::string dir(base_path);
-  dir += std::string("data/");
-  SDL_free(base_path);
+  std::string dir = std::experimental::filesystem::current_path().string();
+  LOG_DEBUG("Base path: " << dir);
+  dir += std::string("/data/");
   return dir;
 }
 
@@ -53,7 +53,6 @@ bool ResourcesManager::loadModels() {
     {ModelType::kTank, "tank.obj"}
   };
 
-  LOG_DEBUG("Base path: " << SDL_GetBasePath());
   std::string model_dir = ResourcesManager::getResourceBaseDirectory();
   model_dir += std::string("3dmodels/");
   for (auto& model_location : models_location) {
