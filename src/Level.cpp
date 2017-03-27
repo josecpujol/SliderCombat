@@ -122,8 +122,15 @@ void Level::checkCollisions() {
   // Collisions of objects with map
   for (auto obj : objects_) {
     if (obj->getType() == GameObjectType::Fire) {
-      if (map_->isCollision(obj.get())) {
+      glm::vec2 collision_point;
+      if (map_->isCollision(obj->getCollisionArea(), &collision_point)) {
         obj->onCollision(nullptr);
+
+        // Debug
+        PointWithTimer point;
+        point.point = collision_point;
+        point.expiration = Clock::now() + 2s;
+        collision_points_.push_back(point);
       }
     }
   }
@@ -136,10 +143,12 @@ void Level::checkCollisions() {
       GameObject* obj2 = (&objects_[j])->get();
       glm::vec2 collision_point;
       if (Collision::isCollision(obj1->getCollisionArea(), obj2->getCollisionArea(), &collision_point)) {
+        // Debug
         PointWithTimer point;
         point.point = collision_point;
         point.expiration = Clock::now() + 2s;
         collision_points_.push_back(point);
+        
         LOG_INFO("Collision!! " << rand());
         obj1->onCollision(obj2);
         obj2->onCollision(obj1);

@@ -15,6 +15,19 @@ void CollisionArea::setPosition(const glm::vec2& pos) {
   }
 }
 
+glm::vec2 CollisionArea::getPosition() const {
+  switch (type_) {
+  case CollisionAreaType::Circle:
+    return circle.center;
+    break;
+  case CollisionAreaType::Rectangle:
+    return rectangle.getCenter();
+    break;
+  }
+  assert(false);
+  return glm::vec2(0, 0);
+}
+
 void CollisionArea::setRotation(float rot_z) {
   switch (type_) {
   case CollisionAreaType::Rectangle:

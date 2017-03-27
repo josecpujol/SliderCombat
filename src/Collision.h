@@ -21,6 +21,7 @@ public:
   void setCollisionPrimivite(const Rectangle& rect);
   void setCollisionPrimivite(const Circle& c);
   void setPosition(const glm::vec2& pos);
+  glm::vec2 getPosition() const;
   void setRotation(float rot_z);
   void render() const;  // for debugging purposes
 private:
