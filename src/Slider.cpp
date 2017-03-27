@@ -68,10 +68,11 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   if (fire_event) {
     float cannon_offset = 1.2f;  // TODO: change: now hardcoded to avoid collision with oneself
     float cannon_height = 0.7f;
+    float rot_z = getRotation();
     FireEvent event(
       this, 
-      pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z_), cannon_height),
-      rot_z_);
+      pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height),
+      rot_z);
     event.send();
   }
 }
@@ -100,19 +101,20 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
     if (last_shot_ + shot_cadence_ < current_time) {
       // shot event
       last_shot_ = current_time;
-      FireEvent event(this, getPosition(), rot_z_);
+      FireEvent event(this, getPosition(), getRotation());
       event.send();
     }
   }
 
   // update relative position
+  float rot_z = getRotation();
   glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);
-  rot_z_ += (vel_rot * elapsed_us) / 1000000;
-  setRotation(rot_z_);
+  rot_z += (vel_rot * elapsed_us) / 1000000;
+  setRotation(rot_z);
 
   // convert local positions to global
   glm::vec3 pos = getPosition();
-  glm::vec2 inc_pos = applyRotation(pos_rel, rot_z_);
+  glm::vec2 inc_pos = applyRotation(pos_rel, rot_z);
   setPosition(pos + glm::vec3(inc_pos, 0));
 }
 
@@ -126,7 +128,7 @@ void Slider::render() {
   glm::vec3 pos = getPosition();
   glTranslatef(pos.x, pos.y, pos.z);
 
-  glRotated((float)rot_z_, 0, 0, 1);
+  glRotatef(getRotation(), 0, 0, 1);
   if (!model_) {  // lazy instantiation
     model_ = ResourcesManager::getInstance().getModel3d(ModelType::kTank);
   }

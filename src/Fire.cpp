@@ -19,7 +19,7 @@ void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
   // update relative position
   glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);
 
-  float rot_z_rad = glm::radians(rot_z_);
+  float rot_z_rad = glm::radians(getRotation());
 
   // convert local positions to global
   glm::vec3 pos = getPosition();
@@ -35,9 +35,10 @@ void Fire::onCollision(GameObject* with) {
 
 void Fire::render() {
   glm::vec3 pos = getPosition();
+  float rot_z = getRotation();
   glTranslatef(pos.x, pos.y, pos.z);
 
-  glRotated((float)rot_z_, 0, 0, 1);
+  glRotated((float)rot_z, 0, 0, 1);
 
   glColor3f(1, 1, 1);
   glRotatef(-(float)(update_counter_) * 10, 1, 0, 0);

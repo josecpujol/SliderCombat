@@ -37,12 +37,12 @@ public:
   void setCollisionArea(const CollisionArea& ca);
 
 protected:
-  float rot_z_ = 0.0;  // degrees
   void setPosition(const glm::vec3& pos);
   void setRotation(float rot);
 
 private:
 
+  float rot_z_ = 0.0;  // degrees
   glm::vec3 pos_ = glm::vec3(0.0, 0.0, 0.1);
   GameObjectType type_ = GameObjectType::Undefined;
   CollisionArea collision_area_;
