@@ -58,12 +58,11 @@ public:
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override {};
   void render() override;
-  void onCollision(GameObject* with) override;
+  void onCollision(GameObject* with, const glm::vec2& collision_point) override;
 
 
 protected:
  
-  // m/s
   float mass_ = 10.f;
   glm::vec2 global_speed_;
   float angular_speed_ = 0.f;
@@ -71,7 +70,8 @@ protected:
   float vel_y_ = 5.0;
   float vel_rot_ = 20.0;
   Duration shot_cadence_ = 200ms;
-  int health_ = 100;
+  const int max_health = 100;
+  int health_ = max_health;
   TimePoint last_shot_;
   Model3d* model_ = nullptr;
 

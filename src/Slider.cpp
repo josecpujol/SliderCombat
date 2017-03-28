@@ -45,8 +45,8 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   // max speed: max force / drag_coeff_linear_motion
   // drag_coeff_linear_motion for reaching 0.95 * max speed in t = -m * ln(1-0.95)/t
 
-  float drag_coeff_linear_motion = 40.0f;
   // Compute forces: linear: sum vectors, it doesn't matter the origin
+  float drag_coeff_linear_motion = 40.0f;
   glm::vec2 force(0);
   for (int i = 0; i < 4; i++) {
     force += propellers_[i].getForceVector();
@@ -118,10 +118,12 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   setPosition(pos + glm::vec3(inc_pos, 0));
 }
 
-void Slider::onCollision(GameObject* with) {
+void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
   LOG_DEBUG("Slider: onCollision");
-  health_ -= 5;
-  LOG_DEBUG("Slider: health: " << health_);
+  if (with->getType() == GameObjectType::Fire) {
+    health_ -= 5;
+    LOG_DEBUG("Slider: health: " << health_);
+  }
 }
 
 void Slider::render() {

@@ -28,7 +28,7 @@ void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
   setPosition(pos);
 }
 
-void Fire::onCollision(GameObject* with) {
+void Fire::onCollision(GameObject* with, const glm::vec2& collision_point) {
   RemoveObjectEvent event(this);
   event.send();
 }
