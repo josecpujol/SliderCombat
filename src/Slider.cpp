@@ -27,31 +27,47 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
     }
   }
 
+  float torque = 0;
+  glm::vec2 force(0);
+  for (int i = 0; i < 4; i++) {
+    torque += propellers_[i].getTorque();
+    force += propellers_[i].getForceVector();
+  }
+  
+  applyForceAndTorque(torque, force, elapsed_secs);
+  
+  // Fire after we have updated the position and rotation
+  if (fire_event) {
+    float cannon_offset = 1.2f;  // TODO: change: now hardcoded to avoid collision with oneself
+    float cannon_height = 0.7f;
+    float rot_z = getRotation();
+    glm::vec3 pos = getPosition();
+    FireEvent event(
+      this, 
+      pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height),
+      rot_z);
+    event.send();
+  }
+}
+
+
+
+void Slider::applyForceAndTorque(float torque, glm::vec2 force, float elapsed_secs) {
   float drag_coeff_rotation = 2.f;
   float moment_inertial = mass_ * 0.05f;  // tweaking physics...
 
-  // Compute forces: rotation
-  float torque = 0;
-  for (int i = 0; i < 4; i++) {
-    torque += propellers_[i].getTorque();
-  }
-
+                                          // Compute forces: rotation
   torque -= drag_coeff_rotation * angular_speed_;  // apply friction
   float angular_acceleration = torque / moment_inertial;
   angular_speed_ += angular_acceleration * elapsed_secs;
   float rot_z = getRotation();
   float new_rot_z = rot_z + angular_speed_ * elapsed_secs;
-  
+
   // max speed: max force / drag_coeff_linear_motion
   // drag_coeff_linear_motion for reaching 0.95 * max speed in t = -m * ln(1-0.95)/t
 
   // Compute forces: linear: sum vectors, it doesn't matter the origin
   float drag_coeff_linear_motion = 40.0f;
-  glm::vec2 force(0);
-  for (int i = 0; i < 4; i++) {
-    force += propellers_[i].getForceVector();
-  }
-
   force -= applyRotation(drag_coeff_linear_motion * global_speed_, -rot_z);  // apply friction
 
   glm::vec2 local_acceleration = (1.f / mass_) * force;
@@ -59,22 +75,9 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   global_speed_ += applyRotation(local_acceleration, rot_z) * elapsed_secs;
   glm::vec3 pos = getPosition();
   pos += glm::vec3(global_speed_, 0) * elapsed_secs;
-  
+
   setPosition(pos);
   setRotation(new_rot_z);
-
-
-  // Fire after we have updated the position and rotation
-  if (fire_event) {
-    float cannon_offset = 1.2f;  // TODO: change: now hardcoded to avoid collision with oneself
-    float cannon_height = 0.7f;
-    float rot_z = getRotation();
-    FireEvent event(
-      this, 
-      pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height),
-      rot_z);
-    event.send();
-  }
 }
 
 void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
@@ -86,37 +89,15 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   int i;
   for (i = 0; i < 7; i++) {
     if (ms % (100 + i) == 0) {
-   //   keys_state_[i] = !keys_state_[i];
+     //   keys_state_[i] = !keys_state_[i];
     }
   }
 
-  i = 0;
-  if (keys_state_[i++]) vel_rel.y = vel_y_;
-  if (keys_state_[i++]) vel_rel.y = -vel_y_;
-  if (keys_state_[i++]) vel_rel.x = -vel_x_;
-  if (keys_state_[i++]) vel_rel.x = vel_x_;
-  if (keys_state_[i++]) vel_rot = vel_rot_;
-  if (keys_state_[i++]) vel_rot = -vel_rot_;
-  if (keys_state_[i++]) {
-    if (last_shot_ + shot_cadence_ < current_time) {
-      // shot event
-      last_shot_ = current_time;
-      FireEvent event(this, getPosition(), getRotation());
-      event.send();
-    }
-  }
-
-  // update relative position
-  float rot_z = getRotation();
-  glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);
-  rot_z += (vel_rot * elapsed_us) / 1000000;
-  setRotation(rot_z);
-
-  // convert local positions to global
-  glm::vec3 pos = getPosition();
-  glm::vec2 inc_pos = applyRotation(pos_rel, rot_z);
-  setPosition(pos + glm::vec3(inc_pos, 0));
+  float elapsed_secs = (float)elapsed_us / 1000000;
+  //applyForceAndTorque(0, elapsed_secs);
 }
+
+
 
 void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
   LOG_DEBUG("Slider: onCollision");

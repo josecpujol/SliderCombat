@@ -62,18 +62,24 @@ public:
 
 
 protected:
+
+  void applyForceAndTorque(const float torque, glm::vec2 force, float elapsed_secs);
  
   float mass_ = 10.f;
-  glm::vec2 global_speed_;
+  glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
-  float vel_x_ = 5.0;
-  float vel_y_ = 5.0;
   float vel_rot_ = 20.0;
   Duration shot_cadence_ = 200ms;
   const int max_health = 100;
   int health_ = max_health;
   TimePoint last_shot_;
   Model3d* model_ = nullptr;
+
+  struct ImpactInfo {
+    glm::vec2 location;
+    glm::vec2 force;
+  };
+  std::vector<ImpactInfo> impacts_;  // local coordinates
 
   Propeller propellers_[4] = {
     {glm::vec2(-0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_W, SDL_SCANCODE_S},
