@@ -2,9 +2,8 @@
 
 
 #include <GL/glew.h>
+#include "Math.h"
 
-//#include <gl\GL.h>
-//#include <gl\GLU.h>
 
 class OpenGlResources {
 public:
@@ -15,6 +14,8 @@ public:
   static void printProgramLog(GLuint program);
   static void drawAxis();
   static void drawCircle(float radius, int segments);
+  static void drawVector(const glm::vec3& origin, const glm::vec3& end, const glm::vec3& color);
+  static void drawVector(const glm::vec2& origin, const glm::vec2& end, const glm::vec3& color);
 
 private:
   GLuint gProgramID_;

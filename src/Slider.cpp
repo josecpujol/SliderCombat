@@ -56,7 +56,7 @@ void Slider::applyForceAndTorque(float torque, glm::vec2 force, float elapsed_se
   float drag_coeff_rotation = 2.f;
   float moment_inertial = mass_ * 0.05f;  // tweaking physics...
 
-                                          // Compute forces: rotation
+  // Compute forces: rotation
   torque -= drag_coeff_rotation * angular_speed_;  // apply friction
   float angular_acceleration = torque / moment_inertial;
   angular_speed_ += angular_acceleration * elapsed_secs;
@@ -97,9 +97,7 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   //applyForceAndTorque(0, elapsed_secs);
 }
 
-
-
-void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
+void Slider::onCollision(GameObject* with, const BoundVector2& collision_point) {
   LOG_DEBUG("Slider: onCollision");
   if (with->getType() == GameObjectType::Fire) {
     health_ -= 5;

@@ -27,7 +27,7 @@ public:
   virtual void render() = 0;
   void renderCollisionArea();
   virtual void update(const Uint8* keys, uint32_t elapsed_us) = 0;
-  virtual void onCollision(GameObject* with, const glm::vec2& collision_point) = 0;
+  virtual void onCollision(GameObject* with, const BoundVector2& collision_point) = 0;
   GameObjectType getType() const { return type_;  }
   virtual ~GameObject() {}
 

@@ -1,9 +1,6 @@
 #include "OpenGlResources.h"
 
-#include <math.h>
-
 #include "Logger.h"
-
 
 void OpenGlResources::printProgramLog(GLuint program) {
 
@@ -26,16 +23,26 @@ void OpenGlResources::drawCircle(float radius, int num_segments) {
   glEnd();
 }
 
-
 void OpenGlResources::drawAxis() {
+
+  drawVector(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.f, 0.f, 0.f));
+  drawVector(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.f, 1.f, 0.f));
+  drawVector(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.f, 0.f, 1.f));
+}
+
+void OpenGlResources::drawVector(const glm::vec3& origin, const glm::vec3& end, const glm::vec3& color) {
+  GLboolean is_lighting_enabled = glIsEnabled(GL_LIGHTING);
+  if (is_lighting_enabled) glDisable(GL_LIGHTING);
   glBegin(GL_LINES);
-  glColor3f(1, 0, 0);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-  glColor3f(0, 1, 0);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-  glColor3f(0, 0, 1);
-  glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
+  glColor3f(color.r, color.g, color.b);
+  glVertex3f(origin.x, origin.y, origin.z); 
+  glVertex3f(end.x, end.y, end.z);
   glEnd();
+  if (is_lighting_enabled) glEnable(GL_LIGHTING);
+}
+
+void OpenGlResources::drawVector(const glm::vec2& origin, const glm::vec2& end, const glm::vec3& color) {
+  OpenGlResources::drawVector(glm::vec3(origin, 0), glm::vec3(end, 0), color);
 }
 
 bool OpenGlResources::init() {

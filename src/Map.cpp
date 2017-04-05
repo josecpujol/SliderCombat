@@ -138,7 +138,7 @@ std::vector<glm::vec2> Map::getEnemiesInitialPositions() {
   return positions;
 }
 
-bool Map::isCollision(const CollisionArea& collision_area, glm::vec2* collision_point) {
+bool Map::isCollision(const CollisionArea& collision_area, BoundVector2* collision_point) {
   glm::vec2 pos = glm::vec2(collision_area.getPosition());
   int tile_x = pos.x / units_per_tile_;
   int tile_y = pos.y / units_per_tile_;

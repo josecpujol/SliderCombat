@@ -54,10 +54,10 @@ private:
 
   float ambient_coeff_ = 0.5;
   float diffuse_coeff_ = 0.5;
-  struct PointWithTimer {
-    glm::vec2 point;
+  struct VectorWithTimer {
+    BoundVector2 bound_vector;
     TimePoint expiration;
   };
-  std::vector<PointWithTimer> collision_points_;
+  std::vector<VectorWithTimer> collision_points_;
 
 };
