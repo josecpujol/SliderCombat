@@ -172,6 +172,7 @@
     <ClCompile Include="src\Model3d.cpp" />
     <ClCompile Include="src\OpenGlResources.cpp" />
     <ClCompile Include="src\OpenGlWindow.cpp" />
+    <ClCompile Include="src\Physics.cpp" />
     <ClCompile Include="src\ResourcesManager.cpp" />
     <ClCompile Include="src\Slider.cpp" />
     <ClCompile Include="src\Stats.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="src\Model3d.h" />
     <ClInclude Include="src\OpenGlResources.h" />
     <ClInclude Include="src\OpenGlWindow.h" />
+    <ClInclude Include="src\Physics.h" />
     <ClInclude Include="src\ResourcesManager.h" />
     <ClInclude Include="src\Slider.h" />
     <ClInclude Include="src\Stats.h" />

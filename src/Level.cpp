@@ -122,13 +122,15 @@ void Level::checkCollisions() {
   // Collisions of objects with map
   for (auto obj : objects_) {
     if (obj->getType() == GameObjectType::Fire) {
-      BoundVector2 collision_point;
+      glm::vec2 collision_point;
       if (map_->isCollision(obj->getCollisionArea(), &collision_point)) {
         obj->onCollision(nullptr, collision_point);
 
         // Debug
         VectorWithTimer vector;
-        vector.bound_vector = collision_point;
+        vector.bound_vector.origin = collision_point;
+        vector.bound_vector.direction = glm::vec2(obj->getDisplacement());
+
         vector.expiration = Clock::now() + 2s;
         collision_points_.push_back(vector);
       }
@@ -141,19 +143,20 @@ void Level::checkCollisions() {
     GameObject* obj1 = (&objects_[i])->get();
     for (int j = i + 1; j < objects_size; j++) {
       GameObject* obj2 = (&objects_[j])->get();
-      BoundVector2 collision_vector;
+      glm::vec2 collision_point;
 
 
-      if (Collision::isCollision(obj1->getCollisionArea(), obj2->getCollisionArea(), &collision_vector)) {
+      if (Collision::isCollision(obj1->getCollisionArea(), obj2->getCollisionArea(), &collision_point)) {
         // Debug
         VectorWithTimer collision_info;
-        collision_info.bound_vector = collision_vector;
+        collision_info.bound_vector.origin = collision_point;
+        collision_info.bound_vector.direction = glm::vec2(obj1->getDisplacement());
         collision_info.expiration = Clock::now() + 2s;
         collision_points_.push_back(collision_info);
         
         LOG_INFO("Collision!! " << rand());
-        obj1->onCollision(obj2, collision_vector);
-        obj2->onCollision(obj1, collision_vector);  // TODO: -
+        obj1->onCollision(obj2, collision_point);
+        obj2->onCollision(obj1, collision_point);  // TODO: -
       }
     }
   }
@@ -223,12 +226,12 @@ void Level::render() {
   
   OpenGlResources::drawAxis();
   
- // glColor3f(1.f, 0.f, 0.f);
   for (auto &point : collision_points_) {
     glPushMatrix();
     glTranslatef(point.bound_vector.origin.x, point.bound_vector.origin.y, 0);
-    OpenGlResources::drawCircle(1, 10);
+    OpenGlResources::drawCircle(0.5, 10);
     glPopMatrix();
+    OpenGlResources::drawVector(point.bound_vector.origin, point.bound_vector.origin + point.bound_vector.direction, glm::vec3(1, 1, 1));
   }
   collision_points_.erase(std::remove_if(collision_points_.begin(), collision_points_.end(),
     [](const VectorWithTimer& o) {return o.expiration < Clock::now(); }), collision_points_.end());

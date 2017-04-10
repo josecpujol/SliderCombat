@@ -11,6 +11,7 @@ void GameObject::setCollisionArea(const CollisionArea& ca) {
 }
 
 void GameObject::setPosition(const glm::vec3& pos) {
+  displacement_ = pos - pos_;
   pos_ = pos;
   collision_area_.setPosition(glm::vec2(pos));
 }

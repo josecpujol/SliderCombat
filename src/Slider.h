@@ -8,15 +8,12 @@
 #include "Time.h"
 #include "Math.h"
 #include "ResourcesManager.h"
+#include "Physics.h"
 
 class Propeller {
 public:
-  Propeller(glm::vec2 location, glm::vec2 direction, Uint8 direct_key, Uint8 reverse_key) :
-    location_(location), direction_(direction), direct_key_(direct_key), reverse_key_(reverse_key) {
-    glm::vec3 v1 = glm::vec3(location_, 0);
-    glm::vec3 v2 = glm::vec3(direction_, 0);
-
-    unit_torque_ = (glm::cross(v1, v2)).z;
+  Propeller(glm::vec2 location, glm::vec2 direction, Uint8 direct_key, Uint8 reverse_key) : 
+    force_(BoundVector2(location, glm::normalize(direction))), direct_key_(direct_key), reverse_key_(reverse_key) {
   }
 
   void update(const Uint8* keys) {
@@ -26,23 +23,21 @@ public:
   }
 
   glm::vec2 getForceVector() const {
-    return force_ * direction_;
+    return force_magnitude_ * force_.getForceFreeVector();
   }
 
   // Assuming CoM to be in 0,0
   float getTorque() const {
-    return force_ * unit_torque_;
+    return force_magnitude_ * force_.getTorque();
   }
 
 private:
-  void direct() { force_ = force_max_; }
-  void reverse() { force_ = -force_max_; }
-  void neutral() { force_ = 0.f; }
-  float unit_torque_ = 0.f;  // precompute cross vector and scale with force
-  float force_ = 0.0f;
+  void direct() { force_magnitude_ = force_max_; }
+  void reverse() { force_magnitude_ = -force_max_; }
+  void neutral() { force_magnitude_ = 0.f; }
+  float force_magnitude_ = 0.0f;
   float force_max_ = 100.f;
-  glm::vec2 location_;
-  glm::vec2 direction_;
+  Force force_;
   Uint8 direct_key_;
   Uint8 reverse_key_;
 };
@@ -51,21 +46,20 @@ class Slider : public GameObject {
 public:
   Slider() = delete;
   Slider(GameObjectType type, const glm::vec2& pos, float rot) : 
-    GameObject(GameObjectType::LocalPlayer, glm::vec3(pos, 0.1), rot) {
+    GameObject(type, glm::vec3(pos, 0.1), rot, 10.f) {
     Rectangle rect(pos, glm::vec2(2, 2), rot);
-    setCollisionArea(CollisionArea(rect));
-    
+    setCollisionArea(CollisionArea(rect)); 
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override {};
   void render() override;
-  void onCollision(GameObject* with, const BoundVector2& collision_point) override;
+  void onCollision(GameObject* with, const glm::vec2& collision_point) override;
 
 
 protected:
 
   void applyForceAndTorque(const float torque, glm::vec2 force, float elapsed_secs);
  
-  float mass_ = 10.f;
+
   glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
   float vel_rot_ = 20.0;
@@ -75,11 +69,7 @@ protected:
   TimePoint last_shot_;
   Model3d* model_ = nullptr;
 
-  struct ImpactInfo {
-    glm::vec2 location;
-    glm::vec2 force;
-  };
-  std::vector<ImpactInfo> impacts_;  // local coordinates
+  std::vector<Force> impacts_;  // local coordinates
 
   Propeller propellers_[4] = {
     {glm::vec2(-0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_W, SDL_SCANCODE_S},

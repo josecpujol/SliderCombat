@@ -76,22 +76,22 @@ void CollisionArea::render() const {
   glPopMatrix();
 }
 
-bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& area2, BoundVector2* collision_vector) {
+bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& area2, glm::vec2* collision_point) {
   if (area1.getType() == CollisionAreaType::None || area2.getType() == CollisionAreaType::None) {
     return false;
   }
 
   if (area1.getType() == CollisionAreaType::Circle && area2.getType() == CollisionAreaType::Circle) {
-    return isCollision(area1.circle, area2.circle, &collision_vector->origin);
+    return isCollision(area1.circle, area2.circle, collision_point);
   }
   if (area1.getType() == CollisionAreaType::Circle && area2.getType() == CollisionAreaType::Rectangle) {
-    return isCollision(area1.circle, area2.rectangle, &collision_vector->origin);
+    return isCollision(area1.circle, area2.rectangle, collision_point);
   }
   if (area1.getType() == CollisionAreaType::Rectangle && area2.getType() == CollisionAreaType::Circle) {
-    return isCollision(area2.circle, area1.rectangle, &collision_vector->origin);
+    return isCollision(area2.circle, area1.rectangle, collision_point);
   }
   if (area1.getType() == CollisionAreaType::Rectangle && area2.getType() == CollisionAreaType::Rectangle) {
-    return isCollision(area1.rectangle, area2.rectangle, &collision_vector->origin);
+    return isCollision(area1.rectangle, area2.rectangle, collision_point);
   }
   assert(false && "Not implemented yet");
   return false;

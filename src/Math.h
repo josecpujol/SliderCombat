@@ -13,6 +13,8 @@ struct BoundVector3 {
 };
 
 struct BoundVector2 {
+  BoundVector2() = default;
+  BoundVector2(const glm::vec2& o, const glm::vec2& d) : origin(o), direction(d) {}
   glm::vec2 origin;
   glm::vec2 direction;
 };

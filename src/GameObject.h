@@ -9,7 +9,7 @@ enum class GameObjectType {Undefined, Fire, LocalPlayer, ComputerEnemy};
 class GameObject {
 public:
   GameObject() = delete;
-  GameObject(GameObjectType type, glm::vec3 pos, float rot) : type_(type) {
+  GameObject(GameObjectType type, glm::vec3 pos, float rot, float mass) : type_(type), mass_(mass) {
     Circle circle;
     circle.radius = 1.0;
     collision_area_.setCollisionPrimivite(circle);
@@ -27,11 +27,13 @@ public:
   virtual void render() = 0;
   void renderCollisionArea();
   virtual void update(const Uint8* keys, uint32_t elapsed_us) = 0;
-  virtual void onCollision(GameObject* with, const BoundVector2& collision_point) = 0;
+  virtual void onCollision(GameObject* with, const glm::vec2& collision_point) = 0;
   GameObjectType getType() const { return type_;  }
+  float getMass() const { return mass_; }
   virtual ~GameObject() {}
 
-  const glm::vec3& getPosition() { return pos_; }
+  const glm::vec3& getPosition() const { return pos_; }
+  const glm::vec3& getDisplacement() const { return displacement_; }
   float getRotation() const { return rot_z_; }
   const CollisionArea& getCollisionArea() const { return collision_area_; }
   void setCollisionArea(const CollisionArea& ca);
@@ -42,6 +44,8 @@ protected:
 
 private:
 
+  float mass_ = 0.f;
+  glm::vec3 displacement_;
   float rot_z_ = 0.0;  // degrees
   glm::vec3 pos_ = glm::vec3(0.0, 0.0, 0.1);
   GameObjectType type_ = GameObjectType::Undefined;
