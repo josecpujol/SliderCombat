@@ -5,10 +5,18 @@
 #include "Math.h"
 
 struct LineSegment {
+  LineSegment() {};
+  LineSegment(const glm::vec2& p1, const glm::vec2 p2) { 
+    points[0] = p1;
+    points[1] = p2;
+  }
   glm::vec2 points[2];
+  glm::vec2 getVector() const { return points[1] - points[0]; }
 };
 
 struct Circle {
+  Circle() = default;
+  Circle(const glm::vec2& center, float radius) : center(center), radius(radius) {}
   glm::vec2 center{0,0};
   float radius{1.f};
 };
@@ -37,6 +45,7 @@ private:
 class Geometry {
 public:
   static bool isPointInCircle(const glm::vec2&, const Circle&);
+  static bool isSegmentInCircle(const LineSegment&, const Circle&);
   static bool isPointInRectangle(const glm::vec2&, const Rectangle&);
   static glm::vec2 closestPointInLineSegmentToPoint(const LineSegment&, const glm::vec2&);
 

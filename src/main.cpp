@@ -1,5 +1,5 @@
 #include "TheGame.h"
-#include "../test/GeometryTest.h"
+#include "../test/TestsMain.h"
 
 int main(int argc, char* args[]) {
   bool run_tests = true;

@@ -117,6 +117,10 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
 
 void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
   LOG_DEBUG("Slider: onCollision");
+  if (with == nullptr) {
+    // Collision with map border
+    return;
+  }
   if (with->getType() == GameObjectType::Fire) {
     health_ -= 5;
     LOG_DEBUG("Slider: health: " << health_);
@@ -127,10 +131,9 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
     // Impulse: F * t = m * Av
     // t = 0.01 seconds (arbitrary)
     // Av = displacement / 0.02
+    // TODO: get Av directly from object instead of Ax/At
     collision_force.direction = applyRotation(glm::vec2(with->getDisplacement()), -rot_z);  // convert to local coordinates
     collision_force.direction *= (with->getMass() / 0.02) / 0.01;
-   // LOG_DEBUG("force magnitude: " << glm::length(collision_force.direction));
-
     impacts_.push_back(Force(collision_force));
   }
 }

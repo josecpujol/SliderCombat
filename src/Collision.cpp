@@ -110,14 +110,17 @@ bool Collision::isCollision(const Circle& c1, const Circle& c2, glm::vec2* colli
 
 // Collision point: approximation
 bool Collision::isCollision(const Circle& c, const Rectangle& r, glm::vec2* collision_point) {
-  bool is_collision = 
+  std::array<LineSegment, 4> line_segments;
+  r.getLineSegments(&line_segments);
+  bool is_collision =
     Geometry::isPointInRectangle(c.center, r) ||
-    Geometry::isPointInCircle(r.getCenter(), c);
-    // TODO: add condition of intersection of segments with circle
+    Geometry::isPointInCircle(r.getCenter(), c) ||
+    Geometry::isSegmentInCircle(line_segments[0], c) ||
+    Geometry::isSegmentInCircle(line_segments[1], c) ||
+    Geometry::isSegmentInCircle(line_segments[2], c) ||
+    Geometry::isSegmentInCircle(line_segments[3], c);
 
   if (is_collision) {
-    std::array<LineSegment, 4> line_segments;
-    r.getLineSegments(&line_segments);
     std::map<float, glm::vec2> distance_point_map;  // use map to order
     for (auto& line_segment : line_segments) {
       glm::vec2 point = Geometry::closestPointInLineSegmentToPoint(line_segment, c.center);

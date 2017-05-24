@@ -178,6 +178,7 @@
     <ClCompile Include="src\Stats.cpp" />
     <ClCompile Include="src\TheGame.cpp" />
     <ClCompile Include="src\Time.cpp" />
+    <ClCompile Include="test\GeometryTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ext\tinyobjloader\tinyobjloader.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\Stats.h" />
     <ClInclude Include="src\TheGame.h" />
     <ClInclude Include="src\Time.h" />
+    <ClInclude Include="test\GeometryTest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ext\tmxparser\Tmx.h.in" />

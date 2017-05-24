@@ -86,22 +86,23 @@ glm::vec2 Geometry::closestPointInLineSegmentToPoint(const LineSegment& line_seg
   // Closest point in line (A + lambda * v) to point (B).
   // Pr = A + (B-A).v * v/|v|
   glm::vec2 A = line_segment.points[0];
-  glm::vec2 v_orig = line_segment.points[1] - line_segment.points[0];
+  glm::vec2 v_orig = line_segment.getVector();
   glm::vec2 v = glm::normalize(v_orig);
-  result = A + glm::dot(B - A, v) * v;
+  float result_param = glm::dot(B - A, v);  // can be + or -
+  float segment_length = glm::length(v_orig);
 
-  glm::vec2 candidate_vector = result - A;
-  float factor = 0.0f;
-  if (v_orig.x != 0) {
-    factor = candidate_vector.x / v_orig.x;
+  if (result_param > segment_length) {
+    return line_segment.points[1];
+  } else if (result_param < 0) {
+    return line_segment.points[0];
   } else {
-    factor = candidate_vector.y / v_orig.y;
+    return A + result_param * v;
   }
-  if (factor > 1) {
-    result = B;
-  } else if (factor < 0) {
-    result = A;
-  }
+  
   return result;
 }
 
+bool Geometry::isSegmentInCircle(const LineSegment& segment, const Circle& c) {
+  glm::vec2 point = Geometry::closestPointInLineSegmentToPoint(segment, c.center);
+  return glm::distance2(point, c.center) < (c.radius * c.radius);
+}
