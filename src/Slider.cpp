@@ -10,7 +10,6 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   float elapsed_secs = (float)elapsed_us / 1000000;
   // Positions wrt local system reference 
   glm::vec2 vel_rel(0, 0);
-  float vel_rot = 0;
 
   bool fire_event = false;
 
@@ -85,8 +84,7 @@ void Slider::applyForceAndTorque(float torque, glm::vec2 force, float elapsed_se
   glm::vec3 pos = getPosition();
   pos += glm::vec3(global_speed_, 0) * elapsed_secs;
 
-  setPosition(pos);
-  setRotation(new_rot_z);
+  setPose(pos, new_rot_z);
 }
 
 void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
@@ -94,7 +92,6 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch()).count();
   // Positions wrt local system reference 
   glm::vec2 vel_rel(0, 0);
-  float vel_rot = 0;
   int i;
   for (i = 0; i < 7; i++) {
     if (ms % (100 + i) == 0) {
@@ -117,8 +114,10 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
 
 void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
   LOG_DEBUG("Slider: onCollision");
-  if (with == nullptr) {
-    // Collision with map border
+  if (with == nullptr) {  // Collision with map border
+    angular_speed_ = 0.0;
+    global_speed_ = glm::vec2(0, 0);
+    undoPose();
     return;
   }
   if (with->getType() == GameObjectType::Fire) {

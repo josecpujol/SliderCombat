@@ -133,6 +133,7 @@ void TheGame::runLoop() {
       window_->display();
     });
     stats.time_to_render_ms += toMs(render_duration);
+    stats.frames_rendered++;
 
     Duration elapsed = (Clock::now() - start);
     Duration time_left = time_per_cycle - elapsed;
@@ -151,6 +152,7 @@ void TheGame::runLoop() {
       LOG_DEBUG("Avg triangles rendered: " << stats.num_triangles / 300);
       LOG_DEBUG("Avg render time ms: " << stats.time_to_render_ms / 300);
       LOG_DEBUG("Avg update time ms: " << stats.time_to_update_ms / 300);
+      LOG_DEBUG("Fps: " << (1000 * stats.frames_rendered) / toMs(Clock::now() - stats.reset_time));
       stats.reset();
     }
   }

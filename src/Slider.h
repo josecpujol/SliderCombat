@@ -47,8 +47,10 @@ public:
   Slider() = delete;
   Slider(GameObjectType type, const glm::vec2& pos, float rot) : 
     GameObject(type, glm::vec3(pos, 0.1), rot, 10.f) {
-    Rectangle rect(pos, glm::vec2(2, 2), rot);
-    setCollisionArea(CollisionArea(rect)); 
+ //   Rectangle rect(pos, glm::vec2(2, 2), rot);
+ //   setCollisionArea(CollisionArea(rect)); 
+    Circle circle(pos, 1);
+    setCollisionArea(CollisionArea(circle));
   };
   void update(const Uint8* keys, uint32_t elapsed_us) override {};
   void render() override;
@@ -62,7 +64,6 @@ protected:
 
   glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
-  float vel_rot_ = 20.0;
   Duration shot_cadence_ = 200ms;
   const int max_health = 100;
   int health_ = max_health;

@@ -1,10 +1,19 @@
 #pragma once
 
+#include <deque>
+
 #include "SDL.h"
 #include "Math.h"
 #include "Collision.h"
 
 enum class GameObjectType {Undefined, Fire, LocalPlayer, ComputerEnemy};
+
+struct Pose {
+  Pose(const glm::vec3& pos, float rot) : position(pos), rotation(rot) {}
+  Pose() = delete;
+  glm::vec3 position;
+  float rotation;
+};
 
 class GameObject {
 public:
@@ -13,8 +22,7 @@ public:
     Circle circle;
     circle.radius = 1.0;
     collision_area_.setCollisionPrimivite(circle);
-    setPosition(pos);
-    setRotation(rot);
+    setPose(pos, rot);
   }
 
   GameObject(const GameObject&) = delete;
@@ -38,16 +46,19 @@ public:
   const CollisionArea& getCollisionArea() const { return collision_area_; }
   void setCollisionArea(const CollisionArea& ca);
 
+  void undoPose();
+
 protected:
-  void setPosition(const glm::vec3& pos);
-  void setRotation(float rot);
-
+  void setPose(glm::vec3 pos, float rot);
+  void setPose(glm::vec3 pos);
+  
 private:
-
   float mass_ = 0.f;
   glm::vec3 displacement_;
   float rot_z_ = 0.0;  // degrees
   glm::vec3 pos_ = glm::vec3(0.0, 0.0, 0.1);
   GameObjectType type_ = GameObjectType::Undefined;
   CollisionArea collision_area_;
+  std::deque<Pose> poses_;
+  size_t max_poses_ = 5;
 };

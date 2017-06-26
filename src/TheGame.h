@@ -19,6 +19,6 @@ private:
   std::unique_ptr<OpenGlWindow> window_;  // Need to destroy this before this class' destructor
   std::unique_ptr<Level> stage_;
   SDL_Joystick *joystick_ = nullptr;
-  uint32_t target_fps_ = 50;
+  uint32_t target_fps_ = 60;
 };
 

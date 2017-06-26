@@ -25,7 +25,7 @@ void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
   glm::vec3 pos = getPosition();
   pos.x += (pos_rel.x * cos(rot_z_rad) + pos_rel.y * (-sin(rot_z_rad)));
   pos.y += (pos_rel.x * sin(rot_z_rad) + pos_rel.y * cos(rot_z_rad));
-  setPosition(pos);
+  setPose(pos);
 }
 
 void Fire::onCollision(GameObject* with, const glm::vec2& collision_point) {
