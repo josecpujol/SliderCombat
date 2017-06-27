@@ -138,7 +138,7 @@ std::vector<glm::vec2> Map::getEnemiesInitialPositions() {
   return positions;
 }
 
-bool Map::isCollision(const CollisionArea& collision_area, glm::vec2* collision_point) {
+bool Map::isCollision(const CollisionArea& collision_area, glm::vec2* collision_point, glm::vec2* normal) {
   glm::vec2 pos = glm::vec2(collision_area.getPosition());
   int tile_x = pos.x / units_per_tile_;
   int tile_y = pos.y / units_per_tile_;
@@ -151,7 +151,18 @@ bool Map::isCollision(const CollisionArea& collision_area, glm::vec2* collision_
       Tile* tile = &(tile_map_[x][y]);
       if (!tile->exists) continue;
       bool is_collision = Collision::isCollision(collision_area, tile->collision_area, collision_point);
-      if (is_collision) return true;
+      if (is_collision) {
+        // Compute normal: tile based: rectangle, no rotations
+        glm::vec2 v = *collision_point - tile->collision_area.getPosition();
+        if (abs(v.x) > abs(v.y)) {
+          if (v.x > 0) *normal = glm::vec2(1, 0);
+          else *normal = glm::vec2(-1, 0);
+        } else {
+          if (v.y > 0) *normal = glm::vec2(0, 1);
+          else *normal = glm::vec2(0, -1);
+        }
+        return true;
+      }
     }
   }
   return false;

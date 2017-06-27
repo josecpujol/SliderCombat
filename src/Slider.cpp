@@ -112,11 +112,12 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   applyForceAndTorque(torque, force_vector, elapsed_secs);
 }
 
-void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
+void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
   LOG_DEBUG("Slider: onCollision");
   if (with == nullptr) {  // Collision with map border
-    angular_speed_ = 0.0;
-    global_speed_ = glm::vec2(0, 0);
+    assert(normal);
+    // reflection vector: r = d - 2 dot(d.n)* n
+    global_speed_ = global_speed_ - 2 * glm::dot(global_speed_, *normal) * (*normal);
     undoPose();
     return;
   }
@@ -133,6 +134,7 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point) {
     // TODO: get Av directly from object instead of Ax/At
     collision_force.direction = applyRotation(glm::vec2(with->getDisplacement()), -rot_z);  // convert to local coordinates
     collision_force.direction *= (with->getMass() / 0.02) / 0.01;
+
     impacts_.push_back(Force(collision_force));
   }
 }

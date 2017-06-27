@@ -121,20 +121,21 @@ void Level::checkCollisions() {
 
   // Collisions of objects with map
   for (auto obj : objects_) {
-    if (obj->getType() == GameObjectType::Fire) {
+   // if (obj->getType() == GameObjectType::Fire) {
       glm::vec2 collision_point;
-      if (map_->isCollision(obj->getCollisionArea(), &collision_point)) {
-        obj->onCollision(nullptr, collision_point);
+      glm::vec2 normal;
+      if (map_->isCollision(obj->getCollisionArea(), &collision_point, &normal)) {
+        obj->onCollision(nullptr, collision_point, &normal);
 
         // Debug
         VectorWithTimer vector;
         vector.bound_vector.origin = collision_point;
-        vector.bound_vector.direction = glm::vec2(obj->getDisplacement());
+        vector.bound_vector.direction = normal;
 
         vector.expiration = Clock::now() + 2s;
         collision_points_.push_back(vector);
       }
-    }
+  //  }
   }
 
   // Objects with objects
@@ -155,8 +156,8 @@ void Level::checkCollisions() {
         collision_points_.push_back(collision_info);
         
         LOG_INFO("Collision!! " << rand());
-        obj1->onCollision(obj2, collision_point);
-        obj2->onCollision(obj1, collision_point);  // TODO: -
+        obj1->onCollision(obj2, collision_point, nullptr);
+        obj2->onCollision(obj1, collision_point, nullptr);  // TODO: -
       }
     }
   }

@@ -5,7 +5,7 @@
 #include "Logger.h"
 #include "EventManager.h"
 
-Fire::Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot, 0.1f) {
+Fire::Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot, 1.f) {
   Circle c;
   c.radius = 0.2f;
   setCollisionArea(CollisionArea(c));
@@ -28,7 +28,7 @@ void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
   setPose(pos);
 }
 
-void Fire::onCollision(GameObject* with, const glm::vec2& collision_point) {
+void Fire::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
   RemoveObjectEvent event(this);
   event.send();
 }

@@ -34,7 +34,7 @@ public:
   std::vector<glm::vec2> getEnemiesInitialPositions();
   void render();
   void renderCollisionArea();
-  bool isCollision(const CollisionArea& collision_area, glm::vec2* collision_point);
+  bool isCollision(const CollisionArea& collision_area, glm::vec2* collision_point, glm::vec2* normal);
 
 private:
   bool getInitialPosition(std::string name, glm::vec2* position);  // return true if found
