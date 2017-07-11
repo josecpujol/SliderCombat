@@ -50,7 +50,8 @@ bool ResourcesManager::loadResources() {
 bool ResourcesManager::loadModels() {
   std::map<ModelType, std::string> models_location = {
     {ModelType::kTiles, "tiles.obj"},
-    {ModelType::kTank, "tank.obj"}
+    {ModelType::kTank, "tank.obj"},
+    {ModelType::kProjectiles, "projectiles.obj"}
   };
 
   std::string model_dir = ResourcesManager::getResourceBaseDirectory();

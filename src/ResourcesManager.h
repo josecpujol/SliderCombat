@@ -7,7 +7,8 @@
 
 enum class ModelType {
   kTiles,
-  kTank
+  kTank,
+  kProjectiles
 };
 
 class ResourcesManager {

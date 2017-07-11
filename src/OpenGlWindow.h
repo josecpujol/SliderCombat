@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SDL.h"
+#include "OpenGlResources.h"
 
 class OpenGlWindow {
 public:
@@ -12,4 +13,5 @@ public:
 private:
   SDL_Window* window_ = nullptr;
   SDL_GLContext gl_context_;
+  OpenGlResources opengl_;
 };

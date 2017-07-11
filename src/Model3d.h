@@ -8,12 +8,19 @@
 // It should be instantiated with a Object3dHolder
 class Object3d {
 public:
-  std::vector<float> vertices_buffer;
-  std::vector<float> normals_buffer;
-  std::vector<float> colors_buffer;
-  std::string name;
+  Object3d(const std::string& name) : name_(name) {}
+  void setVertices(const std::vector<float>& vertices) { vertices_buffer_ = vertices; }
+  void setNormals(const std::vector<float>& normals) { normals_buffer_ = normals; }
+  void addColors(const std::vector<float>& colors);
+  int getNumberTriangles() const { return vertices_buffer_.size() / 3; }
+  std::string getName() const { return name_; }
 
   void render();
+private:
+  std::vector<float> vertices_buffer_;
+  std::vector<float> normals_buffer_;
+  std::vector<std::vector<float>> array_colors_buffer_;
+  std::string name_;
 };
 
 class Object3dHolder {
@@ -42,7 +49,7 @@ public:
   
   // Renders all the object3d
   void render();
-  Object3d* getObject3d(std::string obj_prefix);
+  Object3d* getObject3d(const std::string& obj_prefix);
 
 private:
   void createBuffers();

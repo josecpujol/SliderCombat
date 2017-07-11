@@ -1,8 +1,9 @@
 #include "Model3d.h"
 #include "Logger.h"
 #include "Stats.h"
-#include <GL/glew.h>
 #include <experimental/filesystem>
+
+#include "OpenGlResources.h"
 
 void Object3dHolder::render() {
   glPushMatrix();
@@ -13,10 +14,9 @@ void Object3dHolder::render() {
   glPopMatrix();
 }
 
-
 // Dont push the matrix!!
 void Object3d::render() {
-  int num_triangles = (int)vertices_buffer.size() / 3;
+  int num_triangles = (int)vertices_buffer_.size() / 3;
   Stats::getInstance().num_triangles += num_triangles;
 
   // glPolygonMode(GL_FRONT, GL_LINE);
@@ -24,20 +24,28 @@ void Object3d::render() {
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
-  
-  glEnable(GL_COLOR_MATERIAL);
-  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-  glVertexPointer(3, GL_FLOAT, 0, vertices_buffer.data());
-  glColorPointer(3, GL_FLOAT, 0, colors_buffer.data());
-  glNormalPointer(GL_FLOAT, 0, normals_buffer.data());
+
+
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  glEnable(GL_COLOR_MATERIAL);
+  glColorPointer(4, GL_FLOAT, 0, array_colors_buffer_[0].data());
+
+  glVertexPointer(3, GL_FLOAT, 0, vertices_buffer_.data());
+  glNormalPointer(GL_FLOAT, 0, normals_buffer_.data());
   glDrawArrays(GL_TRIANGLES, 0, num_triangles);
+
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisable(GL_COLOR_MATERIAL);
   // glPolygonMode(GL_FRONT, GL_FILL);
   // glPolygonMode(GL_BACK, GL_FILL);
+}
+
+
+void Object3d::addColors(const std::vector<float>& colors) {
+  array_colors_buffer_.push_back(colors);
 }
 
 bool Model3d::load(std::string file) {
@@ -55,8 +63,11 @@ bool Model3d::load(std::string file) {
 
 void Model3d::createBuffers() {
   for (auto& shape : shapes) {
-    Object3d obj3d;
-    obj3d.name = shape.name;
+    Object3d obj3d(shape.name);
+    
+    std::vector<float> vertices_buffer;
+    std::vector<float> normals_buffer;
+    std::vector<float> colors_buffer;
 
     for (size_t f = 0; f < shape.mesh.indices.size() / 3; f++) {
 
@@ -67,25 +78,36 @@ void Model3d::createBuffers() {
       for (int i = 0; i < 3; i++) {
         idx = shape.mesh.indices[3 * f + i];
         vertex = getVertex(idx);
-        obj3d.vertices_buffer.push_back(vertex.x);
-        obj3d.vertices_buffer.push_back(vertex.y);
-        obj3d.vertices_buffer.push_back(vertex.z);
+        vertices_buffer.push_back(vertex.x);
+        vertices_buffer.push_back(vertex.y);
+        vertices_buffer.push_back(vertex.z);
 
         normal = getNormal(idx);
-        obj3d.normals_buffer.push_back(normal.x);
-        obj3d.normals_buffer.push_back(normal.y);
-        obj3d.normals_buffer.push_back(normal.z);
-
+        normals_buffer.push_back(normal.x);
+        normals_buffer.push_back(normal.y);
+        normals_buffer.push_back(normal.z);
       }
 
       int material_id = shape.mesh.material_ids[f];
       for (int repeat = 0; repeat < 3; repeat++) {  // have the color 3 times: 1 per vertex
         for (int i = 0; i < 3; i++) {
-          obj3d.colors_buffer.push_back(materials[material_id].diffuse[i]);
+          colors_buffer.push_back(materials[material_id].diffuse[i]);
         }
+        colors_buffer.push_back(1.f);  // alpha. Have 4 components
       }
     }
-    LOG_DEBUG("Object " << obj3d.name << " has " << obj3d.vertices_buffer.size() / 3 << " triangles");
+    obj3d.setVertices(vertices_buffer);
+    obj3d.setNormals(normals_buffer);
+    obj3d.addColors(colors_buffer);
+
+    // Add extra colors, for effects
+    // TODO: add maybe per object name?
+    for (auto& color : colors_buffer) {
+      color = 1.0f;
+    }
+    obj3d.addColors(colors_buffer);
+
+    LOG_DEBUG("Object " << obj3d.getName() << " has " << obj3d.getNumberTriangles() << " triangles");
     objects_.push_back(obj3d);
   }
 }
@@ -102,10 +124,10 @@ glm::vec3 Model3d::getNormal(tinyobj::index_t idx) {
   return v;
 }
 
-Object3d* Model3d::getObject3d(std::string obj_prefix) {
+Object3d* Model3d::getObject3d(const std::string& obj_prefix) {
   assert(!obj_prefix.empty());
   for (auto& obj : objects_) {
-    if (obj.name.find(obj_prefix) == 0) {
+    if (obj.getName().find(obj_prefix) == 0) {
       return &obj;
     }
   }

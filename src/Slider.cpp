@@ -46,7 +46,7 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   
   // Fire after we have updated the position and rotation
   if (fire_event) {
-    float cannon_offset = 1.2f;  // TODO: change: now hardcoded to avoid collision with oneself
+    float cannon_offset = 1.35f;  // TODO: change: now hardcoded to avoid collision with oneself
     float cannon_height = 0.7f;
     float rot_z = getRotation();
     glm::vec3 pos = getPosition();
@@ -122,24 +122,48 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm
     return;
   }
   if (with->getType() == GameObjectType::Fire) {
-    health_ -= 5;
-    LOG_DEBUG("Slider: health: " << health_);
-    float rot_z = getRotation();
-    BoundVector2 collision_force;
-    collision_force.origin = applyRotation(collision_point - glm::vec2(getPosition()), -rot_z);  // local coordinates
-    
-    // Impulse: F * t = m * Av
-    // t = 0.01 seconds (arbitrary)
-    // Av = displacement / 0.02
-    // TODO: get Av directly from object instead of Ax/At
-    collision_force.direction = applyRotation(glm::vec2(with->getDisplacement()), -rot_z);  // convert to local coordinates
-    collision_force.direction *= (with->getMass() / 0.02) / 0.01;
-
-    impacts_.push_back(Force(collision_force));
+    onHit(with, collision_point, normal);
   }
 }
 
+void Slider::onHit(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
+  health_ -= 5;
+  LOG_DEBUG("Slider: health: " << health_);
+
+  time_hit_start_ = Clock::now();
+  is_hit_ = true;
+
+  float rot_z = getRotation();
+  BoundVector2 collision_force;
+  collision_force.origin = applyRotation(collision_point - glm::vec2(getPosition()), -rot_z);  // local coordinates
+ 
+  // Impulse: F * t = m * Av
+  // t = 0.01 seconds (arbitrary)
+  // Av = displacement / 0.02
+  // TODO: get Av directly from object instead of Ax/At
+  collision_force.direction = applyRotation(glm::vec2(with->getDisplacement()), -rot_z);  // convert to local coordinates
+  collision_force.direction *= (with->getMass() / 0.02) / 0.01;
+
+  impacts_.push_back(Force(collision_force));
+}
+
 void Slider::render() {
+  // hit animation
+  if (is_hit_) {
+    std::chrono::milliseconds hit_max_duration = 200ms;
+    int period_ms = 100;
+
+    TimePoint current_time = Clock::now();
+    std::chrono::milliseconds hit_duration = std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - time_hit_start_);
+    if (hit_duration > hit_max_duration) {
+      is_hit_ = false;
+    } else {
+      float factor = (cos(6.28f * hit_duration.count() / period_ms) + 1) / 2;
+      GLfloat color[] = {factor, factor, factor, 1.f};
+      glMaterialfv(GL_FRONT, GL_EMISSION, color);
+    }
+  }
+
   glm::vec3 pos = getPosition();
   glTranslatef(pos.x, pos.y, pos.z);
 
@@ -148,4 +172,9 @@ void Slider::render() {
     model_ = ResourcesManager::getInstance().getModel3d(ModelType::kTank);
   }
   model_->render();
+
+  if (is_hit_) {
+    GLfloat color[] = {0.0f, 0.0f, 0.0f, 1.f};
+    glMaterialfv(GL_FRONT, GL_EMISSION, color);
+  }
 }

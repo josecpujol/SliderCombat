@@ -164,20 +164,12 @@ void Level::checkCollisions() {
 }
 
 void Level::setOpenGlLights() {
-  glm::vec3 light_pos{0.0f, 0.3f, 1.f};
-  light_pos = glm::normalize(light_pos);
-  float light_position[4];
-  light_position[0] = light_pos.x;
-  light_position[1] = light_pos.y;
-  light_position[2] = light_pos.z;
-  light_position[3] = 0.f;  // w=0-> vector
-
-
-  float light_diffuse[] = {0.2f, 0.2f, 0.2f, 1.f};
-  float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.f};
+  float light_position[] = {0.f, 0.0f, 1.f, 0.f};  // w=0-> vector
+  float light_diffuse[] = {0.f, 0.f, 0.f, 1.f};
+  float light_ambient[] = {0.f, 0.f, 0.f, 1.f};
   float light_specular[] = {0.f, 0.f, 0.f, 1.f};
-  diffuse_coeff_ = 0.3f;
-  ambient_coeff_ = 0.5f;
+  diffuse_coeff_ = 0.25f;
+  ambient_coeff_ = 0.75f;
   for (int i = 0; i < 3; i++) {
     light_diffuse[i] = diffuse_coeff_;
     light_ambient[i] = ambient_coeff_;

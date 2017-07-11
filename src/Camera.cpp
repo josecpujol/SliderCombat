@@ -1,8 +1,9 @@
 #include "Camera.h"
 #include "GameObject.h"
+#include "OpenGlResources.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <GL/glew.h>
+
 
 void Camera::follow(GameObject* object, glm::vec3 eye_offset, glm::vec3 center_offset) {
   mode_ = CameraMode::Following;

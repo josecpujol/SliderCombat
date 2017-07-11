@@ -1,12 +1,12 @@
 #include "Map.h"
 
 #include <sstream>
-#include <GL/glew.h>
 
 #include "Logger.h"
 #include "GameObject.h"
 #include "Model3d.h"
 #include "ResourcesManager.h"
+#include "OpenGlResources.h"
 
 constexpr char kUnitsPerTile[] = "unitspertile";
 constexpr char kCollidableProperty[] = "collidable";

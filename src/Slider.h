@@ -56,11 +56,9 @@ public:
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
 
-
 protected:
 
   void applyForceAndTorque(const float torque, glm::vec2 force, float elapsed_secs);
- 
 
   glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
@@ -69,6 +67,8 @@ protected:
   int health_ = max_health;
   TimePoint last_shot_;
   Model3d* model_ = nullptr;
+  TimePoint time_hit_start_;
+  bool is_hit_ = false;
 
   std::vector<Force> impacts_;  // local coordinates
 
@@ -78,6 +78,9 @@ protected:
     {glm::vec2(0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_I, SDL_SCANCODE_K},
     {glm::vec2(1, 0), glm::vec2(1, 0), SDL_SCANCODE_L, SDL_SCANCODE_J}
   };
+
+private:
+  void onHit(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal);
 };
 
 class SliderLocalPlayer : public Slider {
