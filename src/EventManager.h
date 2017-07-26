@@ -8,56 +8,48 @@
 #include "Logger.h"
 
 
-enum class EventType { Fire, RemoveObject };
-
 class Event;
-class FireEvent;
 class RemoveObjectEvent;
+class AddObjectEvent;
 class EventManager {
 public:
   EventManager() { }
-  int subscribeToFireEvent(std::function<void(const FireEvent&)>);
   int subscribeToRemoveObjectEvent(std::function<void(GameObject*)>);
+  int subscribeToAddObjectEvent(std::function<void(GameObject*)> callback);
 
   void unsubscribe(int id);
-  void notifyFireEvent(const FireEvent& event);
   void notifyRemoveObjectEvent(const RemoveObjectEvent& event);
+  void notifyAddObjectEvent(const AddObjectEvent& event);
 
 private:
-  std::map <int, std::function<void(const FireEvent&)>> fire_callbacks_;
   std::map <int, std::function<void(GameObject*)>> remove_object_callbacks_;
+  std::map <int, std::function<void(GameObject*)>> add_object_callbacks_;
 
   int last_assigned_id_ = 0;
 };
 
 class Event {
 public:
-  Event(EventType type, GameObject* sender) : type_(type), sender_(sender) {}
+  Event() {}
   static EventManager manager;
   virtual void send() = 0;
-  EventType getType() const { return type_; }
-  GameObject* getSender() const { return sender_; }
-
-private:
-  EventType type_;
-  GameObject* sender_ = nullptr;
 };
 
-class FireEvent : public Event {
-public:
-  FireEvent(GameObject* sender, const glm::vec3& pos, float rot_z) : 
-    Event(EventType::Fire, sender), pos_(pos), rot_z_(rot_z) {}
-  void send() override {
-    manager.notifyFireEvent(*this);
-  }
-  glm::vec3 pos_;
-  float rot_z_;
-};
 
 class RemoveObjectEvent : public Event {
 public:
-  RemoveObjectEvent(GameObject* sender) : Event(EventType::RemoveObject, sender) {}
+  RemoveObjectEvent(GameObject* object_to_remove) : object_to_remove(object_to_remove) {}
   void send() override {
     manager.notifyRemoveObjectEvent(*this);
   }
+  GameObject* object_to_remove = nullptr;
+};
+
+class AddObjectEvent : public Event {
+public:
+  AddObjectEvent(GameObject* object_to_add) :  object_to_add(object_to_add) {}
+  void send() override {
+    manager.notifyAddObjectEvent(*this);
+  }
+  GameObject* object_to_add = nullptr;
 };

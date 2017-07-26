@@ -5,17 +5,19 @@
 #include "GameObject.h"
 #include "ResourcesManager.h"
 
-class Fire : public GameObject {
+class Projectile : public GameObject {
 public:
-  Fire(glm::vec3 pos, float rot);
-  ~Fire() {}
+  Projectile(glm::vec3 pos, float rot);
+  ~Projectile() {}
   void update(const Uint8* keys, uint32_t elapsed_us) override;
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
+  int getDamage() { return damage_; }
 
 
 private:
   // m/s
   float vel_ = 25.0;
+  int damage_ = 5;
   Object3d* model_ = nullptr;
 };

@@ -10,6 +10,8 @@
 #include "ResourcesManager.h"
 #include "Physics.h"
 
+class Projectile;
+
 class Propeller {
 public:
   Propeller(glm::vec2 location, glm::vec2 direction, Uint8 direct_key, Uint8 reverse_key) : 
@@ -80,7 +82,7 @@ protected:
   };
 
 private:
-  void onHit(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal);
+  void onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal);
 };
 
 class SliderLocalPlayer : public Slider {

@@ -5,9 +5,14 @@ void GameObject::renderCollisionArea() {
 }
 
 void GameObject::setCollisionArea(const CollisionArea& ca) {
+  can_collide_ = true;
   collision_area_ = ca;
   setPose(pos_, rot_z_);  // Update the new collision area with current pose 
+}
 
+const CollisionArea& GameObject::getCollisionArea() const {
+  assert(canCollide());
+  return collision_area_;
 }
 
 void GameObject::setPose(glm::vec3 pos, float rot) {

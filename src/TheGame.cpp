@@ -10,12 +10,20 @@
 #include "Time.h"
 #include "Stats.h"
 
+
+
 TheGame::TheGame() {
   window_ = std::make_unique<OpenGlWindow>();
 }
 
 TheGame::~TheGame() {
+  // Release all resources: all the managers have some opengl stuff, so release them before deleting the context (window)
+  // call all singletons to release opengl resources
+  ResourcesManager::getInstance().releaseResources();
+  LoggerOpenGl::getInstance().releaseResources();
+
   window_.reset(nullptr);
+  TTF_Quit();
   SDL_JoystickClose(joystick_);
   SDL_Quit();
 }
@@ -42,6 +50,12 @@ bool TheGame::init() {
     } else {
       LOG_ERROR("Could not open joystick. Error: "  << SDL_GetError());
     }
+  }
+
+  // Text
+  if (TTF_Init() < 0) {
+    LOG_ERROR("Could not initialize text");
+    return false;
   }
   
   int width = 640;
@@ -127,10 +141,13 @@ void TheGame::runLoop() {
 
     Duration render_duration = measureFunction([this] {
       stage_->render();
+      LoggerOpenGl::getInstance().render();
+      glFinish();
     });
 
     Duration display_duration = measureFunction([this] {
       window_->display();
+
     });
     stats.time_to_render_ms += toMs(render_duration);
     stats.frames_rendered++;
@@ -140,7 +157,7 @@ void TheGame::runLoop() {
     if (time_left > 0s) {
       std::this_thread::sleep_for(time_left);
     } else {
-      LOG_ERROR("Time for cycle exceeded max. Frame #" << counter
+      LOG_ERROR_SCREEN("Time for cycle exceeded max. Frame #" << counter
         << ", time taken: " << toMs(elapsed)
         << ", time per frame: " << toMs(time_per_cycle)
         << ", poll_and_process_events_duration: " << toMs(poll_and_process_events_duration)
@@ -148,11 +165,12 @@ void TheGame::runLoop() {
         << ", render_duration: " << toMs(render_duration)
         << ", display duration: " << toMs(display_duration));
     }
-    if (counter % 300 == 0) {
-      LOG_DEBUG("Avg triangles rendered: " << stats.num_triangles / 300);
-      LOG_DEBUG("Avg render time ms: " << stats.time_to_render_ms / 300);
-      LOG_DEBUG("Avg update time ms: " << stats.time_to_update_ms / 300);
-      LOG_DEBUG("Fps: " << (1000 * stats.frames_rendered) / toMs(Clock::now() - stats.reset_time));
+    int counter_max = 200;
+    if (counter % counter_max == 0) {
+      LOG_SCREEN_N(0, "Fps: " << (1000 * stats.frames_rendered) / toMs(Clock::now() - stats.reset_time));
+      LOG_SCREEN_N(1, "Avg triangles rendered: " << stats.num_triangles / counter_max);
+      LOG_SCREEN_N(2, "Avg render time ms: " << stats.time_to_render_ms / counter_max);
+      LOG_SCREEN_N(3, "Avg update time ms: " << stats.time_to_update_ms / counter_max);
       stats.reset();
     }
   }

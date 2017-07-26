@@ -31,7 +31,6 @@ public:
   }*/
 
 private:
-  void onFire(const FireEvent& event);
   void addObject(GameObject*);
   void removeObject(GameObject*);
   void addPendingObjects();

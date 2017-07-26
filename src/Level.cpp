@@ -7,7 +7,8 @@
 
 #include "ResourcesManager.h"
 #include "Logger.h"
-#include "Fire.h"
+#include "Projectile.h"
+#include "Explosion.h"
 #include "Map.h"
 
 Level::Level(Map* map) : map_(map) {
@@ -23,18 +24,13 @@ Level::Level(Map* map) : map_(map) {
 
 
   // TODO: unregister?
-  Event::manager.subscribeToFireEvent([this](const FireEvent& event) {
-    this->onFire(event);
-  });
-
   Event::manager.subscribeToRemoveObjectEvent([this](GameObject* object) {
     this->removeObject(object);
   });
-}
 
-void Level::onFire(const FireEvent& event) {
-  //  LOG_DEBUG("Fire!!");
-  addObject(new Fire(event.pos_, event.rot_z_));
+  Event::manager.subscribeToAddObjectEvent([this](GameObject* object) {
+    this->addObject(object);
+  });
 }
 
 void Level::addObject(GameObject* object) {
@@ -56,7 +52,7 @@ void Level::updateRenderFlags(const Uint8* keys) {
 
 void Level::updateCameraSetup(const Uint8* keys) {
   if (keys[SDL_SCANCODE_1]) {
-    camera_.lookAt(glm::vec3(0,0,10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
+    camera_.lookAt(glm::vec3(0, 0, 10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
   }
   if (keys[SDL_SCANCODE_2]) {
     camera_.follow(local_player_.get(), glm::vec3(0, -5, 4), glm::vec3(0, 2, 2));  // Follow from behind
@@ -65,7 +61,7 @@ void Level::updateCameraSetup(const Uint8* keys) {
     camera_.follow(local_player_.get(), glm::vec3(0, 0.2, 1), glm::vec3(0, 2, 1));  // subjective view
   }
   if (keys[SDL_SCANCODE_4]) {
-    camera_.follow(local_player_.get(), glm::vec3(0, -1, 50), glm::vec3(0,10,0));  // follow from top
+    camera_.follow(local_player_.get(), glm::vec3(0, -1, 50), glm::vec3(0, 10, 0));  // follow from top
   }
 
 }
@@ -121,29 +117,36 @@ void Level::checkCollisions() {
 
   // Collisions of objects with map
   for (auto obj : objects_) {
-   // if (obj->getType() == GameObjectType::Fire) {
-      glm::vec2 collision_point;
-      glm::vec2 normal;
-      if (map_->isCollision(obj->getCollisionArea(), &collision_point, &normal)) {
-        obj->onCollision(nullptr, collision_point, &normal);
+    if (!obj->canCollide()) {
+      continue;
+    }
+    glm::vec2 collision_point;
+    glm::vec2 normal;
+    if (map_->isCollision(obj->getCollisionArea(), &collision_point, &normal)) {
+      obj->onCollision(nullptr, collision_point, &normal);
 
-        // Debug
-        VectorWithTimer vector;
-        vector.bound_vector.origin = collision_point;
-        vector.bound_vector.direction = normal;
+      // Debug
+      VectorWithTimer vector;
+      vector.bound_vector.origin = collision_point;
+      vector.bound_vector.direction = normal;
 
-        vector.expiration = Clock::now() + 2s;
-        collision_points_.push_back(vector);
-      }
-  //  }
+      vector.expiration = Clock::now() + 2s;
+      collision_points_.push_back(vector);
+    }
   }
 
   // Objects with objects
   size_t objects_size = objects_.size();
   for (int i = 0; i < (objects_size - 1); i++) {
     GameObject* obj1 = (&objects_[i])->get();
+    if (!obj1->canCollide()) {
+      continue;
+    }
     for (int j = i + 1; j < objects_size; j++) {
       GameObject* obj2 = (&objects_[j])->get();
+      if (!obj2->canCollide()) {
+        continue;
+      }
       glm::vec2 collision_point;
 
 
@@ -154,7 +157,7 @@ void Level::checkCollisions() {
         collision_info.bound_vector.direction = glm::vec2(obj1->getDisplacement());
         collision_info.expiration = Clock::now() + 2s;
         collision_points_.push_back(collision_info);
-        
+
         LOG_INFO("Collision!! " << rand());
         obj1->onCollision(obj2, collision_point, nullptr);
         obj2->onCollision(obj1, collision_point, nullptr);  // TODO: -
@@ -199,10 +202,8 @@ void Level::render() {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  setOpenGlLights();
- 
   glEnable(GL_NORMALIZE);
-  
+
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
 
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
@@ -216,9 +217,11 @@ void Level::render() {
 
   glLoadIdentity();
   camera_.apply();
-  
+
+  setOpenGlLights();
+
   OpenGlResources::drawAxis();
-  
+
   for (auto &point : collision_points_) {
     glPushMatrix();
     glTranslatef(point.bound_vector.origin.x, point.bound_vector.origin.y, 0);
@@ -229,7 +232,7 @@ void Level::render() {
   collision_points_.erase(std::remove_if(collision_points_.begin(), collision_points_.end(),
     [](const VectorWithTimer& o) {return o.expiration < Clock::now(); }), collision_points_.end());
 
-  
+
   if (render_objects_) map_->render();
   if (render_collision_area_) map_->renderCollisionArea();
 

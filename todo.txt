@@ -1,0 +1,11 @@
+- health display: format to be decided
+- cooldown?
+- more weapons?
+- menu
+- more levels
+- level transition
+- IA
+- sky
+- impact / explosions
+- power ups
+- shadows

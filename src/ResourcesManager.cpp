@@ -44,6 +44,28 @@ bool ResourcesManager::loadResources() {
     LOG_ERROR("Could not load maps");
     return false;
   }
+  if (!loadFonts()) {
+    LOG_ERROR("Could not load fonts");
+  }
+  return true;
+}
+
+bool ResourcesManager::loadFonts() {
+  std::map<FontType, std::string> fonts_location = {
+    {FontType::kRobotoCondensed, "RobotoCondensed-Regular.ttf"}
+  };
+
+  std::string fonts_dir = ResourcesManager::getResourceBaseDirectory() + std::string("fonts/");
+
+  for (auto& font_location : fonts_location) {
+    std::string path = fonts_dir + font_location.second;
+    TTF_Font* font = TTF_OpenFont(path.c_str(), 20);
+    if (!font) {
+      return false;
+    }
+    LOG_INFO("Font loaded correctly: " << font_location.second);
+    fonts_[font_location.first] = font;
+  }
   return true;
 }
 
@@ -68,10 +90,30 @@ bool ResourcesManager::loadModels() {
   return true;
 }
 
+TTF_Font* ResourcesManager::getFont(FontType type) {
+  if (fonts_.count(type) == 0) {
+    assert(false && "Font does not exist");
+    return nullptr;
+  } else {
+    return fonts_[type];
+  }
+}
+
 Model3d* ResourcesManager::getModel3d(ModelType type) {
   if (models_.count(type) == 0) {
+    assert(false && "Model does not exist");
     return nullptr;
   } else {
     return models_[type].get();
+  }
+}
+
+void ResourcesManager::releaseResources() {
+  for (auto& model : models_) {
+    model.second = nullptr;
+  }
+
+  for (auto& font : fonts_) {
+    TTF_CloseFont(font.second);
   }
 }

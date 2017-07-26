@@ -5,6 +5,7 @@
 #include "Logger.h"
 #include "EventManager.h"
 #include "Math.h"
+#include "Projectile.h"
 
 void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   float elapsed_secs = (float)elapsed_us / 1000000;
@@ -50,10 +51,10 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
     float cannon_height = 0.7f;
     float rot_z = getRotation();
     glm::vec3 pos = getPosition();
-    FireEvent event(
-      this, 
-      pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height),
-      rot_z);
+    AddObjectEvent event(
+      new Projectile(pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height), rot_z)
+    );
+   
     event.send();
   }
 }
@@ -121,13 +122,14 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm
     undoPose();
     return;
   }
-  if (with->getType() == GameObjectType::Fire) {
-    onHit(with, collision_point, normal);
+  if (with->getType() == GameObjectType::Projectile) {
+    Projectile* projectile = static_cast<Projectile*>(with);
+    onHit(projectile, collision_point, normal);
   }
 }
 
-void Slider::onHit(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
-  health_ -= 5;
+void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal) {
+  health_ -= with->getDamage();
   LOG_DEBUG("Slider: health: " << health_);
 
   time_hit_start_ = Clock::now();
@@ -177,4 +179,8 @@ void Slider::render() {
     GLfloat color[] = {0.0f, 0.0f, 0.0f, 1.f};
     glMaterialfv(GL_FRONT, GL_EMISSION, color);
   }
+
+  
+
+
 }

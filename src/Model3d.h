@@ -12,7 +12,7 @@ public:
   void setVertices(const std::vector<float>& vertices) { vertices_buffer_ = vertices; }
   void setNormals(const std::vector<float>& normals) { normals_buffer_ = normals; }
   void addColors(const std::vector<float>& colors);
-  int getNumberTriangles() const { return vertices_buffer_.size() / 3; }
+  int getNumberTriangles() const { return (int)vertices_buffer_.size() / 3; }
   std::string getName() const { return name_; }
 
   void render();

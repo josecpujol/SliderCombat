@@ -1,11 +1,12 @@
-#include "Fire.h"
+#include "Projectile.h"
 
 #include "OpenGlResources.h"
 
 #include "Logger.h"
 #include "EventManager.h"
+#include "Explosion.h"
 
-Fire::Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot, 1.f) {
+Projectile::Projectile(glm::vec3 pos, float rot) : GameObject(GameObjectType::Projectile, pos, rot, 1.f) {
   Circle c;
   c.radius = 0.15f;
   setCollisionArea(CollisionArea(c));
@@ -13,7 +14,7 @@ Fire::Fire(glm::vec3 pos, float rot) : GameObject(GameObjectType::Fire, pos, rot
   model_ = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2");
 };
 
-void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
+void Projectile::update(const Uint8* keys, uint32_t elapsed_us) {
  // model_->update(elapsed_us);
 
   // Positions wrt local system reference 
@@ -31,12 +32,15 @@ void Fire::update(const Uint8* keys, uint32_t elapsed_us) {
   setPose(pos);
 }
 
-void Fire::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
-  RemoveObjectEvent event(this);
-  event.send();
+void Projectile::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
+  AddObjectEvent event1(new Explosion(getPosition(), 2s, 1));
+  event1.send();
+
+  RemoveObjectEvent event2(this);
+  event2.send();
 }
 
-void Fire::render() {
+void Projectile::render() {
   glm::vec3 pos = getPosition();
   float rot_z = getRotation();
 
