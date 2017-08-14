@@ -54,7 +54,7 @@ public:
     Circle circle(pos, 1);
     setCollisionArea(CollisionArea(circle));
   };
-  void update(const Uint8* keys, uint32_t elapsed_us) override {};
+  void update(const Uint8* keys, uint32_t elapsed_us) override;
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
 
@@ -64,12 +64,15 @@ protected:
 
   glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
-  Duration shot_cadence_ = 200ms;
+  const Duration shot_cooldown_duration_ = 200ms;
+  Duration shot_current_cooldown_{0s};
+
+  Duration hit_duration_{0s};
+
   const int max_health = 100;
   int health_ = max_health;
-  TimePoint last_shot_;
   Model3d* model_ = nullptr;
-  TimePoint time_hit_start_;
+  Duration time_hit_duration_;
   bool is_hit_ = false;
 
   std::vector<Force> impacts_;  // local coordinates

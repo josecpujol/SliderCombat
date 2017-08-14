@@ -58,8 +58,8 @@ bool TheGame::init() {
     return false;
   }
   
-  int width = 640;
-  int height = 480;
+  int width = 800;
+  int height = 600;
 
   if (!window_->create(width, height)) {
     return false;
@@ -160,10 +160,10 @@ void TheGame::runLoop() {
       LOG_ERROR_SCREEN("Time for cycle exceeded max. Frame #" << counter
         << ", time taken: " << toMs(elapsed)
         << ", time per frame: " << toMs(time_per_cycle)
-        << ", poll_and_process_events_duration: " << toMs(poll_and_process_events_duration)
-        << ", update_duration: " << toMs(update_duration)
-        << ", render_duration: " << toMs(render_duration)
-        << ", display duration: " << toMs(display_duration));
+        << ", poll_and_process_events: " << toMs(poll_and_process_events_duration)
+        << ", update: " << toMs(update_duration)
+        << ", render: " << toMs(render_duration)
+        << ", display: " << toMs(display_duration));
     }
     int counter_max = 200;
     if (counter % counter_max == 0) {

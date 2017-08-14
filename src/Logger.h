@@ -7,7 +7,6 @@
 #include "ResourcesManager.h"
 #include "OpenGlResources.h"
 
-
 enum class LogLevel {
   kError,
   kInfo,
@@ -59,8 +58,11 @@ private:
     TextTexture(TTF_Font* font, GLint texture, const std::string& text) : texture_(texture), init_(true) {
       glBindTexture(GL_TEXTURE_2D, texture);
 
-      SDL_Color color = {255, 255, 0, 0};
+      SDL_Color color = {255, 150, 0, 0};
       SDL_Surface * surface = TTF_RenderText_Blended(font, text.c_str(), color);
+
+      std::string file = std::string("file") + std::to_string(texture) + std::string(".png");
+     // SDL_SavePNG(surface, file.c_str());
 
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -75,6 +77,7 @@ private:
       if (!init_) return;
       glBindTexture(GL_TEXTURE_2D, texture_);
       glBegin(GL_QUADS);
+      glColor3f(1.f, 1.f, 1.f);  // The color is affected by glColor, unless glTexEnv is set with magic params
       glTexCoord2f(0.f, 1.f); glVertex2f((float)x, (float)y);
       glTexCoord2f(1.f, 1.f); glVertex2f((float)(x + w_), (float)y);
       glTexCoord2f(1.f, 0.f); glVertex2f((float)(x + w_), (float)(y + h_));

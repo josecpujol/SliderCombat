@@ -8,6 +8,8 @@
 #include "Projectile.h"
 
 void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
+  Slider::update(keys, elapsed_us);
+
   float elapsed_secs = (float)elapsed_us / 1000000;
   // Positions wrt local system reference 
   glm::vec2 vel_rel(0, 0);
@@ -17,12 +19,16 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   for (int i = 0; i < 4; i++) {
     propellers_[i].update(keys);
   }
+
+  shot_current_cooldown_ -= std::chrono::microseconds(elapsed_us);
+  if (shot_current_cooldown_ < 0s) {
+    shot_current_cooldown_ = 0s;
+  }
   
   if (keys[SDL_SCANCODE_SPACE]) {
-    TimePoint current_time = Clock::now();
-    if (last_shot_ + shot_cadence_ < current_time) {
+    if (shot_current_cooldown_ == 0s) {
       // shot event
-      last_shot_ = current_time;
+      shot_current_cooldown_ = shot_cooldown_duration_;
       fire_event = true;
     }
   }
@@ -89,6 +95,7 @@ void Slider::applyForceAndTorque(float torque, glm::vec2 force, float elapsed_se
 }
 
 void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
+  Slider::update(keys, elapsed_us);
   TimePoint current_time = Clock::now();
   uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch()).count();
   // Positions wrt local system reference 
@@ -132,7 +139,7 @@ void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2
   health_ -= with->getDamage();
   LOG_DEBUG("Slider: health: " << health_);
 
-  time_hit_start_ = Clock::now();
+  time_hit_duration_ = 0s;
   is_hit_ = true;
 
   float rot_z = getRotation();
@@ -149,21 +156,26 @@ void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2
   impacts_.push_back(Force(collision_force));
 }
 
-void Slider::render() {
-  // hit animation
+void Slider::update(const Uint8* keys, uint32_t elapsed_us) {
   if (is_hit_) {
     std::chrono::milliseconds hit_max_duration = 200ms;
     int period_ms = 100;
-
-    TimePoint current_time = Clock::now();
-    std::chrono::milliseconds hit_duration = std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - time_hit_start_);
-    if (hit_duration > hit_max_duration) {
+    hit_duration_ += std::chrono::microseconds(elapsed_us);
+    if (hit_duration_ > hit_max_duration) {
       is_hit_ = false;
-    } else {
-      float factor = (cos(6.28f * hit_duration.count() / period_ms) + 1) / 2;
-      GLfloat color[] = {factor, factor, factor, 1.f};
-      glMaterialfv(GL_FRONT, GL_EMISSION, color);
+      hit_duration_ = 0s;
     }
+  }
+};
+
+void Slider::render() {
+  // hit animation
+  if (is_hit_) {
+    int period_ms = 100;
+
+    float factor = (cos(6.28f * hit_duration_.count() / period_ms) + 1) / 2;
+    GLfloat color[] = {factor, factor, factor, 1.f};
+    glMaterialfv(GL_FRONT, GL_EMISSION, color);
   }
 
   glm::vec3 pos = getPosition();
