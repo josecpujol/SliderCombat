@@ -4,6 +4,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/random.hpp>
 
 #include <math.h>
 

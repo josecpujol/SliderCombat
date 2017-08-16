@@ -9,10 +9,14 @@ void Object3dHolder::render() {
   glPushMatrix();
   glTranslated(translation_.x, translation_.y, translation_.z);
   glScalef(scale_.x, scale_.y, scale_.z);
-  glRotatef(rotation_z_, 0, 0, 1);
+  glRotatef(rotation_.x, 1, 0, 0);
+  glRotatef(rotation_.y, 0, 1, 0);
+  glRotatef(rotation_.z, 0, 0, 1);
   object_->render();
   glPopMatrix();
 }
+
+
 
 // Dont push the matrix!!
 void Object3d::render() {
@@ -29,7 +33,7 @@ void Object3d::render() {
 
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
   glEnable(GL_COLOR_MATERIAL);
-  glColorPointer(4, GL_FLOAT, 0, array_colors_buffer_[0].data());
+  glColorPointer(4, GL_FLOAT, 0, colors_buffer_.data());
 
   glVertexPointer(3, GL_FLOAT, 0, vertices_buffer_.data());
   glNormalPointer(GL_FLOAT, 0, normals_buffer_.data());
@@ -41,11 +45,6 @@ void Object3d::render() {
   glDisable(GL_COLOR_MATERIAL);
   // glPolygonMode(GL_FRONT, GL_FILL);
   // glPolygonMode(GL_BACK, GL_FILL);
-}
-
-
-void Object3d::addColors(const std::vector<float>& colors) {
-  array_colors_buffer_.push_back(colors);
 }
 
 bool Model3d::load(std::string file) {
@@ -98,14 +97,7 @@ void Model3d::createBuffers() {
     }
     obj3d.setVertices(vertices_buffer);
     obj3d.setNormals(normals_buffer);
-    obj3d.addColors(colors_buffer);
-
-    // Add extra colors, for effects
-    // TODO: add maybe per object name?
-    for (auto& color : colors_buffer) {
-      color = 1.0f;
-    }
-    obj3d.addColors(colors_buffer);
+    obj3d.setColors(colors_buffer);
 
     LOG_DEBUG("Object " << obj3d.getName() << " has " << obj3d.getNumberTriangles() << " triangles");
     objects_.push_back(obj3d);
@@ -131,6 +123,7 @@ Object3d* Model3d::getObject3d(const std::string& obj_prefix) {
       return &obj;
     }
   }
+  assert(false);
   return nullptr;
 }
 

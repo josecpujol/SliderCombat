@@ -7,7 +7,9 @@ Install the following dependencies:
 * libglm-dev 
 * libglew-dev
 
-## Libraries used
+## Libraries and resources used
 * tinyobjloader, by Syoyo Fujita. https://github.com/syoyo/tinyobjloader
 * tinyxml2, by Lee Thomason. https://github.com/leethomason/tinyxml2
 * tmxparser, by Adaleigh Martin. https://github.com/sainteos/tmxparser
+* Prototype font, by mouse@mickeyavenue.com
+

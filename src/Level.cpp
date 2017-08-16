@@ -158,7 +158,6 @@ void Level::checkCollisions() {
         collision_info.expiration = Clock::now() + 2s;
         collision_points_.push_back(collision_info);
 
-        LOG_INFO("Collision!! " << rand());
         obj1->onCollision(obj2, collision_point, nullptr);
         obj2->onCollision(obj1, collision_point, nullptr);  // TODO: -
       }

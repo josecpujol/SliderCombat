@@ -4,11 +4,32 @@
 #include "Time.h"
 #include "Logger.h"
 
+struct AnimatedPose {
+  glm::vec3 pos_init;
+  glm::vec3 pos_end;
+  glm::vec3 rotation_init;
+  glm::vec3 rotation_end;
+  float scale_init;
+  float scale_end;
+
+  // current params
+  glm::vec3 pos;
+  glm::vec3 rotation;
+  float scale;
+
+  // t: 0->1
+  // will update current params
+  void update(float t) {
+    pos = pos_init * (1 - t) + pos_end * t;
+    rotation = rotation_init * (1 - t) + rotation_end * t;
+    scale = scale_init * (1 - t) + scale_end * t;
+  }
+};
+
 class Explosion : public GameObject {
 public:
-  Explosion(const glm::vec3& pos, Duration duration, float speed);
+  Explosion(const glm::vec3& pos, Duration duration, float speed, Object3d* particle);
   ~Explosion() {
-    LOG_DEBUG("Explosion destructor");
   }
 
   void render() override;
@@ -18,5 +39,6 @@ public:
 private:
   std::chrono::microseconds total_duration_;
   std::chrono::microseconds duration_{0};
-  float speed_ = 0.0;  // units/sec
+  std::vector<AnimatedPose> particles_poses_;
+  Object3dHolder particle_;
 };

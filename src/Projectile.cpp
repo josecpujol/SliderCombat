@@ -11,7 +11,7 @@ Projectile::Projectile(glm::vec3 pos, float rot) : GameObject(GameObjectType::Pr
   c.radius = 0.15f;
   setCollisionArea(CollisionArea(c));
   //model_ = new FireModel3d();
-  model_ = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2");
+  model_ = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_projectile");
 };
 
 void Projectile::update(const Uint8* keys, uint32_t elapsed_us) {
@@ -33,9 +33,13 @@ void Projectile::update(const Uint8* keys, uint32_t elapsed_us) {
 }
 
 void Projectile::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
-  AddObjectEvent event1(new Explosion(getPosition(), 2s, 1));
-  event1.send();
-
+  if (with == nullptr) {  // map
+    Object3d* obj3d = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_particle");
+    assert(obj3d);
+    AddObjectEvent event1(new Explosion(getPosition(), 1s, 1, obj3d));
+    event1.send();
+  }
+  
   RemoveObjectEvent event2(this);
   event2.send();
 }
