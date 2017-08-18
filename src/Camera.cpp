@@ -12,6 +12,10 @@ void Camera::follow(GameObject* object, glm::vec3 eye_offset, glm::vec3 center_o
   object_to_follow_ = object;
 }
 
+void Camera::testMode() {
+  mode_ = CameraMode::Rotating;
+}
+
 void Camera::lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
   mode_ = CameraMode::Static;
   matrix_ = glm::lookAt(eye, center, up);
@@ -40,6 +44,15 @@ void Camera::getOpenglMatrix(glm::mat4* mat) {
     break;
   case CameraMode::Following:
     getMatrixFollowing(mat);
+    break;
+  case CameraMode::Rotating:
+    angle_ += 0.01;
+    {
+      glm::vec3 eye = glm::vec3(50.f, 50.f, 5.f);
+      glm::vec3 center = eye + glm::vec3(20 * sin(angle_), 20 * cos(angle_), -5.f);
+
+      *mat = glm::lookAt(eye, center, glm::vec3(0.f, 0.f, 1.f));
+    }
     break;
   case CameraMode::Flying:
     break;

@@ -154,9 +154,8 @@ void TheGame::runLoop() {
 
     Duration elapsed = (Clock::now() - start);
     Duration time_left = time_per_cycle - elapsed;
-    if (time_left > 0s) {
-      std::this_thread::sleep_for(time_left);
-    } else {
+    /*if (time_left > 0s) {
+    } else { 
       LOG_ERROR_SCREEN("Time for cycle exceeded max. Frame #" << counter
         << ", time taken: " << toMs(elapsed)
         << ", time per frame: " << toMs(time_per_cycle)
@@ -164,8 +163,8 @@ void TheGame::runLoop() {
         << ", update: " << toMs(update_duration)
         << ", render: " << toMs(render_duration)
         << ", display: " << toMs(display_duration));
-    }
-    int counter_max = 200;
+   // } */
+    int counter_max = 100;
     if (counter % counter_max == 0) {
       LOG_SCREEN_N(0, "Fps: " << (1000 * stats.frames_rendered) / toMs(Clock::now() - stats.reset_time));
       LOG_SCREEN_N(1, "Avg triangles rendered: " << stats.num_triangles / counter_max);

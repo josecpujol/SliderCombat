@@ -40,6 +40,11 @@ bool OpenGlWindow::create(int width, int height) {
   glGetIntegerv(GL_DEPTH_BITS, &depth_bits);
   LOG_DEBUG("Depth bits: " << depth_bits);
 
+  if (SDL_GL_SetSwapInterval(1) != 0) {
+    LOG_ERROR("Could not set swap interval: " << SDL_GetError());
+    return false;
+  }
+
   // Init glew and stuff
   if (!opengl_.init()) {
     LOG_ERROR("Unable to initialize opengl resources");

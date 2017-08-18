@@ -63,6 +63,9 @@ void Level::updateCameraSetup(const Uint8* keys) {
   if (keys[SDL_SCANCODE_4]) {
     camera_.follow(local_player_.get(), glm::vec3(0, -1, 50), glm::vec3(0, 10, 0));  // follow from top
   }
+  if (keys[SDL_SCANCODE_5]) {
+    camera_.testMode();  // follow from top
+  }
 
 }
 
