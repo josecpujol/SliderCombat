@@ -12,6 +12,12 @@
 
 class Projectile;
 
+struct Meter {
+  Meter(int value, int max_value) : value(value), max_value(max_value) {};
+  int value = 0;
+  int max_value = 100;
+};
+
 class Propeller {
 public:
   Propeller(glm::vec2 location, glm::vec2 direction, Uint8 direct_key, Uint8 reverse_key) : 
@@ -57,10 +63,14 @@ public:
   void update(const Uint8* keys, uint32_t elapsed_us) override;
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
+  bool canShoot() const;
+
+  Meter getHealth() const { return health_; }
 
 protected:
 
   void applyForceAndTorque(const float torque, glm::vec2 force, float elapsed_secs);
+  void shoot();
 
   glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
@@ -69,8 +79,7 @@ protected:
 
   Duration hit_duration_{0s};
 
-  const int max_health = 100;
-  int health_ = max_health;
+  Meter health_ = Meter(100, 100);
   Model3d* model_ = nullptr;
   Duration time_hit_duration_;
   bool is_hit_ = false;

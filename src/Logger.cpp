@@ -2,7 +2,7 @@
 
 
 LoggerOpenGl::LoggerOpenGl() {
-  font_ = ResourcesManager::getInstance().getFont(FontType::kRobotoCondensed);
+  font_ = ResourcesManager::getInstance().getFont(FontType::kRobotoCondensed, 20);
   textures_lines_.resize(max_lines_);
   glGenTextures(textures_lines_.size(), textures_lines_.data());
 

@@ -13,8 +13,8 @@ Explosion::Explosion(const glm::vec3& pos, Duration duration, float max_speed, O
     pose.pos_end = pos + glm::sphericalRand<float>(1);  // TODO: adjust pos end to have different destinations
     pose.rotation_init = glm::linearRand(glm::vec3(0.f), glm::vec3(100.f));
     pose.rotation_end = glm::linearRand(glm::vec3(-100.f), glm::vec3(300.f));
-    pose.scale_init = 0.2;
-    pose.scale_end = 0.05;
+    pose.scale_init = 0.2f;
+    pose.scale_end = 0.05f;
     particles_poses_.push_back(pose);
   }
 

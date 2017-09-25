@@ -19,20 +19,7 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   for (int i = 0; i < 4; i++) {
     propellers_[i].update(keys);
   }
-
-  shot_current_cooldown_ -= std::chrono::microseconds(elapsed_us);
-  if (shot_current_cooldown_ < 0s) {
-    shot_current_cooldown_ = 0s;
-  }
-  
-  if (keys[SDL_SCANCODE_SPACE]) {
-    if (shot_current_cooldown_ == 0s) {
-      // shot event
-      shot_current_cooldown_ = shot_cooldown_duration_;
-      fire_event = true;
-    }
-  }
-
+    
   float torque = 0;
   glm::vec2 force(0);
 
@@ -52,20 +39,24 @@ void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
   applyForceAndTorque(torque, force, elapsed_secs);
   
   // Fire after we have updated the position and rotation
-  if (fire_event) {
-    float cannon_offset = 1.35f;  // TODO: change: now hardcoded to avoid collision with oneself
-    float cannon_height = 0.7f;
-    float rot_z = getRotation();
-    glm::vec3 pos = getPosition();
-    AddObjectEvent event(
-      new Projectile(pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height), rot_z)
-    );
-   
-    event.send();
+  if (keys[SDL_SCANCODE_SPACE] && canShoot()) {
+    shoot();
   }
 }
 
+void Slider::shoot() {
+  float cannon_offset = 1.35f;  // TODO: change: now hardcoded to avoid collision with oneself
+  float cannon_height = 0.7f;
+  float rot_z = getRotation();
+  glm::vec3 pos = getPosition();
+  AddObjectEvent event(
+    new Projectile(pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height), rot_z)
+    );
 
+  event.send();
+
+  shot_current_cooldown_ = shot_cooldown_duration_;
+}
 
 void Slider::applyForceAndTorque(float torque, glm::vec2 force, float elapsed_secs) {
   float drag_coeff_rotation = 2.f;
@@ -118,6 +109,10 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
   impacts_.clear();
 
   applyForceAndTorque(torque, force_vector, elapsed_secs);
+
+  if (canShoot()) {
+    shoot();
+  }
 }
 
 void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
@@ -136,8 +131,8 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm
 }
 
 void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal) {
-  health_ -= with->getDamage();
-  LOG_DEBUG("Slider: health: " << health_);
+  health_.value -= with->getDamage();
+  LOG_DEBUG("Slider: health: " << health_.value);
 
   time_hit_duration_ = 0s;
   is_hit_ = true;
@@ -156,7 +151,16 @@ void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2
   impacts_.push_back(Force(collision_force));
 }
 
+bool Slider::canShoot() const { 
+  return shot_current_cooldown_ == 0s;
+}
+
 void Slider::update(const Uint8* keys, uint32_t elapsed_us) {
+  shot_current_cooldown_ -= std::chrono::microseconds(elapsed_us);
+  if (shot_current_cooldown_ < 0s) {
+    shot_current_cooldown_ = 0s;
+  }
+
   if (is_hit_) {
     std::chrono::milliseconds hit_max_duration = 200ms;
     int period_ms = 100;
@@ -191,8 +195,4 @@ void Slider::render() {
     GLfloat color[] = {0.0f, 0.0f, 0.0f, 1.f};
     glMaterialfv(GL_FRONT, GL_EMISSION, color);
   }
-
-  
-
-
 }

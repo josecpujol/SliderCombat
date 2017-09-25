@@ -61,9 +61,6 @@ private:
       SDL_Color color = {255, 150, 0, 0};
       SDL_Surface * surface = TTF_RenderText_Blended(font, text.c_str(), color);
 
-      std::string file = std::string("file") + std::to_string(texture) + std::string(".png");
-     // SDL_SavePNG(surface, file.c_str());
-
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);

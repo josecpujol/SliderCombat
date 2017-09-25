@@ -13,7 +13,8 @@ enum class ModelType {
 };
 
 enum class FontType {
-  kRobotoCondensed
+  kRobotoCondensed,
+  kPrototype
 };
 
 class ResourcesManager {
@@ -35,7 +36,7 @@ public:
   bool loadResources();
 
   Model3d* getModel3d(ModelType);
-  TTF_Font* getFont(FontType);
+  TTF_Font* getFont(FontType, int point_size);
   Map* getMap();
 private:
   ResourcesManager() {}
@@ -48,5 +49,5 @@ private:
   int window_height_ = 0;
   std::map<ModelType, std::unique_ptr<Model3d>> models_;
   std::unique_ptr<Map> map_;
-  std::map<FontType, TTF_Font*> fonts_;
+  std::vector <std::shared_ptr<TTF_Font>> fonts_;
 };

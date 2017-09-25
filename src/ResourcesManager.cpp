@@ -50,22 +50,8 @@ bool ResourcesManager::loadResources() {
   return true;
 }
 
+// See getfont
 bool ResourcesManager::loadFonts() {
-  std::map<FontType, std::string> fonts_location = {
-    {FontType::kRobotoCondensed, "RobotoCondensed-Regular.ttf"}
-  };
-
-  std::string fonts_dir = ResourcesManager::getResourceBaseDirectory() + std::string("fonts/");
-
-  for (auto& font_location : fonts_location) {
-    std::string path = fonts_dir + font_location.second;
-    TTF_Font* font = TTF_OpenFont(path.c_str(), 20);
-    if (!font) {
-      return false;
-    }
-    LOG_INFO("Font loaded correctly: " << font_location.second);
-    fonts_[font_location.first] = font;
-  }
   return true;
 }
 
@@ -90,13 +76,22 @@ bool ResourcesManager::loadModels() {
   return true;
 }
 
-TTF_Font* ResourcesManager::getFont(FontType type) {
-  if (fonts_.count(type) == 0) {
-    assert(false && "Font does not exist");
+// We load the fonts on the fly, as we need the point size
+TTF_Font* ResourcesManager::getFont(FontType type, int point_size) {
+  std::map<FontType, std::string> fonts_location = {
+    {FontType::kRobotoCondensed, "RobotoCondensed-Regular.ttf"},
+    {FontType::kPrototype, "Prototype.ttf"}
+  };
+
+  std::string fonts_dir = ResourcesManager::getResourceBaseDirectory() + std::string("fonts/");
+  std::string path = fonts_dir + fonts_location[type];
+  TTF_Font* font = TTF_OpenFont(path.c_str(), point_size);
+  if (!font) {
+    assert(false);
     return nullptr;
-  } else {
-    return fonts_[type];
   }
+  fonts_.push_back(std::shared_ptr<TTF_Font>(font, TTF_CloseFont));
+  return font;
 }
 
 Model3d* ResourcesManager::getModel3d(ModelType type) {
@@ -113,7 +108,5 @@ void ResourcesManager::releaseResources() {
     model.second = nullptr;
   }
 
-  for (auto& font : fonts_) {
-    TTF_CloseFont(font.second);
-  }
+  fonts_.clear();
 }
