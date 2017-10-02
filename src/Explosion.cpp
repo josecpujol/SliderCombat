@@ -10,7 +10,7 @@ Explosion::Explosion(const glm::vec3& pos, Duration duration, float max_speed, O
   for (int i = 0; i < num_particles; i++) {
     AnimatedPose pose;
     pose.pos_init = pos;
-    pose.pos_end = pos + glm::sphericalRand<float>(1);  // TODO: adjust pos end to have different destinations
+    pose.pos_end = pos + glm::sphericalRand<float>((total_duration_.count() * max_speed) / 1000000);  // TODO: adjust pos end to have different destinations
     pose.rotation_init = glm::linearRand(glm::vec3(0.f), glm::vec3(100.f));
     pose.rotation_end = glm::linearRand(glm::vec3(-100.f), glm::vec3(300.f));
     pose.scale_init = 0.2f;
@@ -37,7 +37,6 @@ void Explosion::update(const Uint8* keys, uint32_t elapsed_us) {
     pose.update(t);
   }
 
-  duration_ += std::chrono::microseconds(elapsed_us);
   if (duration_ > total_duration_) {
     RemoveObjectEvent event(this);
     event.send();

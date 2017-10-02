@@ -8,6 +8,7 @@
 #include "EventManager.h"
 #include "Camera.h"
 #include "Slider.h"
+#include "Hud.h"
 //#include "EventListener.h"
 
 class Map;
@@ -30,6 +31,7 @@ public:
     LOG_DEBUG("diffuse: " << diffuse_coeff_);
   }*/
 
+  std::shared_ptr<const SliderLocalPlayer> getLocalPlayer() { return local_player_; }
 private:
   void addObject(GameObject*);
   void removeObject(GameObject*);
@@ -44,6 +46,7 @@ private:
   std::vector < std::shared_ptr< GameObject> > objects_;
   std::vector < std::shared_ptr< GameObject> > objects_to_add_;  // need to add objects outside the update loop
   std::vector < GameObject* > objects_to_remove_;  // need to add objects outside the update loop
+  std::unique_ptr<Hud> hud_;
   Map* map_ = nullptr;
   Camera camera_;
   std::shared_ptr<SliderLocalPlayer> local_player_;

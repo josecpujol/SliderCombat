@@ -19,6 +19,7 @@ Level::Level(Map* map) : map_(map) {
   for (auto &enemy_position : enemy_positions) {
     objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_position, 180.0f));
   }
+  hud_ = std::make_unique<Hud>(this);
 
   camera_.lookAt(glm::vec3(0, 0, 10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
 
@@ -196,7 +197,7 @@ void Level::render() {
   int height = 0;
   ResourcesManager::getInstance().getWindowDimensions(&width, &height);
   glShadeModel(GL_FLAT);
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearColor(83.f/255.f, 134.f/255.f, 1.f, 0.0f);
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
 
@@ -223,14 +224,14 @@ void Level::render() {
   setOpenGlLights();
 
   OpenGlResources::drawAxis();
-
+  /*
   for (auto &point : collision_points_) {
     glPushMatrix();
     glTranslatef(point.bound_vector.origin.x, point.bound_vector.origin.y, 0);
     OpenGlResources::drawCircle(0.5, 10);
     glPopMatrix();
     OpenGlResources::drawVector(point.bound_vector.origin, point.bound_vector.origin + point.bound_vector.direction, glm::vec3(1, 1, 1));
-  }
+  }*/
   collision_points_.erase(std::remove_if(collision_points_.begin(), collision_points_.end(),
     [](const VectorWithTimer& o) {return o.expiration < Clock::now(); }), collision_points_.end());
 
@@ -238,11 +239,14 @@ void Level::render() {
   if (render_objects_) map_->render();
   if (render_collision_area_) map_->renderCollisionArea();
 
-  // Draw object
+  // Draw objects
   for (auto obj : objects_) {
     glPushMatrix();
     if (render_collision_area_) obj->renderCollisionArea();
     if (render_objects_) obj->render();
     glPopMatrix();
   }
+
+  // Draw overlay: health, status
+  hud_->display();
 }

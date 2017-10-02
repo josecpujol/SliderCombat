@@ -35,8 +35,11 @@ void Projectile::update(const Uint8* keys, uint32_t elapsed_us) {
 void Projectile::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
   if (with == nullptr) {  // map
     Object3d* obj3d = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_particle");
-    assert(obj3d);
-    AddObjectEvent event1(new Explosion(getPosition(), 1s, 1, obj3d));
+    AddObjectEvent event1(new Explosion(getPosition(), 700ms, 4, obj3d));
+    event1.send();
+  } else if (with->getType() == GameObjectType::Projectile) {
+    Object3d* obj3d = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_particle");
+    AddObjectEvent event1(new Explosion(getPosition(), 300ms, 4, obj3d));
     event1.send();
   }
   
@@ -49,12 +52,7 @@ void Projectile::render() {
   float rot_z = getRotation();
 
   glTranslatef(pos.x, pos.y, pos.z);
-
   glRotated((float)rot_z, 0, 0, 1);
-  //glColor3f(1, 1, 1);
-  //glRotatef(-(float)(update_counter_) * 10, 1, 0, 0);
-  //OpenGlResources::drawCircle(0.2f, 10);
- // model_->render();
   glScalef(0.15f, 0.15f, 0.15f);
   model_->render();
 }

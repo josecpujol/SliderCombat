@@ -13,6 +13,7 @@ public:
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
   int getDamage() { return damage_; }
+  float getVelocity() const { return vel_; }
 
 
 private:

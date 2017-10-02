@@ -164,6 +164,7 @@
     <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Geometry.cpp" />
+    <ClCompile Include="src\Hud.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="src\Explosion.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\Geometry.h" />
+    <ClInclude Include="src\Hud.h" />
     <ClInclude Include="src\Level.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Map.h" />
