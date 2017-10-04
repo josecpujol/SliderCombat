@@ -41,6 +41,7 @@ private:
   void updateCameraSetup(const Uint8*);
   void updateRenderFlags(const Uint8*);
   void setOpenGlLights();
+  void drawSkyDome();
   inline static void checkCollision(GameObject* obj1, GameObject* obj2);
   int loop_count_ = 0;
   std::vector < std::shared_ptr< GameObject> > objects_;

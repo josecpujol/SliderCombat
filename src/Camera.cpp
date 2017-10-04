@@ -27,6 +27,14 @@ void Camera::apply() {
   glMultMatrixf(glm::value_ptr(camera_matrix));
 }
 
+void Camera::applyRotationOnly() {
+  glm::mat4 camera_matrix;
+  getOpenglMatrix(&camera_matrix);
+  // Remove translation
+  camera_matrix[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  glMultMatrixf(glm::value_ptr(camera_matrix));
+}
+
 void Camera::getMatrixFollowing(glm::mat4* mat) {
   const glm::vec3 pos = object_to_follow_->getPosition();
   float rot_z = object_to_follow_->getRotation();
@@ -46,7 +54,7 @@ void Camera::getOpenglMatrix(glm::mat4* mat) {
     getMatrixFollowing(mat);
     break;
   case CameraMode::Rotating:
-    angle_ += 0.01;
+    angle_ += 0.01f;
     {
       glm::vec3 eye = glm::vec3(50.f, 50.f, 5.f);
       glm::vec3 center = eye + glm::vec3(20 * sin(angle_), 20 * cos(angle_), -5.f);

@@ -15,10 +15,17 @@ Level::Level(Map* map) : map_(map) {
   local_player_ = std::make_shared<SliderLocalPlayer>(map->getPlayerInitialPosition(), 0.0f);
   // Add objects to the level
   objects_.push_back(local_player_);
-  auto enemy_positions = map->getEnemiesInitialPositions();
+  auto enemy_positions = map->getInitialPositions("Enemy");
   for (auto &enemy_position : enemy_positions) {
     objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_position, 180.0f));
   }
+
+  auto health_positions = map->getInitialPositions("Health");
+  for (auto &enemy_position : enemy_positions) {
+ //   objects_.push_back(std::make_shared<Health>(enemy_position, 180.0f));
+  }
+
+
   hud_ = std::make_unique<Hud>(this);
 
   camera_.lookAt(glm::vec3(0, 0, 10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
@@ -192,6 +199,36 @@ void Level::setOpenGlLights() {
   glEnable(GL_LIGHT0);
 }
 
+void Level::drawSkyDome() {
+  glDepthMask(false);
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_COLOR_MATERIAL);
+  glDisable(GL_LIGHTING);
+  glShadeModel(GL_SMOOTH);
+
+  glm::vec3 color_top = glm::vec3(1.f, 1.f, 1.f);
+  glm::vec3 color_bottom = glm::vec3(137.f / 255.f, 165.f / 255.f, 237.f / 255.f);
+
+  // Draw cilinder
+  float radius = 1.f;
+  int segments = 30;
+  float top = 0.5f;
+  float bottom = -0.05f;
+  glBegin(GL_TRIANGLE_STRIP);
+  for (int i = 0; i <= segments; i++) {
+    float x = sin((6.28318f * i) / segments);
+    float y = cos((6.28318f * i) / segments);
+    OpenGlResources::setColor(color_bottom);
+    glVertex3f(x, y, bottom);
+    OpenGlResources::setColor(color_top);
+    glVertex3f(x, y, top);
+  }
+  glEnd();
+ 
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(true);
+}
+
 void Level::render() {
   int width = 0;
   int height = 0;
@@ -208,7 +245,6 @@ void Level::render() {
   glEnable(GL_NORMALIZE);
 
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
-
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
   glMatrixMode(GL_PROJECTION);
@@ -218,6 +254,11 @@ void Level::render() {
 
   glMatrixMode(GL_MODELVIEW);
 
+  glLoadIdentity();
+  camera_.applyRotationOnly();
+  drawSkyDome();
+
+  glShadeModel(GL_FLAT);
   glLoadIdentity();
   camera_.apply();
 

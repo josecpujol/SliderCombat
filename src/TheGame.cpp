@@ -37,16 +37,15 @@ bool TheGame::init() {
   int num_joysticks = SDL_NumJoysticks();
   LOG_INFO("#joysticks found: " << num_joysticks);
   for (int i = 0; i < num_joysticks; i++) {
-    if (SDL_IsGameController(i)) {
+    LOG_DEBUG("Joystick " << i << ": " << SDL_JoystickNameForIndex(i));
+   /* if (SDL_IsGameController(i)) {
       LOG_DEBUG("Joystick " << i << " is supported by the game controller interface");
     } else {
       LOG_DEBUG("Joystick " << i << " is NOT supported by the game controller interface");
-    }
-    LOG_DEBUG("Joystick " << i << ": " << SDL_JoystickNameForIndex(i));
+    }*/
     joystick_ = SDL_JoystickOpen(i);
     if (joystick_) {
       LOG_INFO("Joystick found: " << SDL_JoystickName(joystick_));
-      break;
     } else {
       LOG_ERROR("Could not open joystick. Error: "  << SDL_GetError());
     }

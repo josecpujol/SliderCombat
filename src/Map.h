@@ -31,13 +31,12 @@ public:
   bool load(const std::string& file);
   std::string serialize();
   glm::vec2 getPlayerInitialPosition();
-  std::vector<glm::vec2> getEnemiesInitialPositions();
+  std::vector<glm::vec2> getInitialPositions(const std::string&);
   void render();
   void renderCollisionArea();
   bool isCollision(const CollisionArea& collision_area, glm::vec2* collision_point, glm::vec2* normal);
 
 private:
-  bool getInitialPosition(std::string name, glm::vec2* position);  // return true if found
   Tmx::Map tmx_map_;
   float units_per_tile_ = 1.0;
   std::vector<std::vector<Tile>> tile_map_;

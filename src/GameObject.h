@@ -6,7 +6,7 @@
 #include "Math.h"
 #include "Collision.h"
 
-enum class GameObjectType {Undefined, Projectile, LocalPlayer, ComputerEnemy, Explosion};
+enum class GameObjectType {Undefined, Projectile, LocalPlayer, ComputerEnemy, Explosion, HealthPowerup};
 
 struct Pose {
   Pose(const glm::vec3& pos, float rot) : position(pos), rotation(rot) {}

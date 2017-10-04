@@ -24,6 +24,7 @@ public:
   void lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
   // Applies the matrix to the opengl stack
   void apply();
+  void applyRotationOnly();
 
 private:
   void getOpenglMatrix(glm::mat4*);
