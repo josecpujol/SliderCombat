@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\EventManager.cpp" />
+    <ClCompile Include="src\Level.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Math.cpp" />
+    <ClCompile Include="src\Model3d.cpp" />
+    <ClCompile Include="src\OpenGlResources.cpp" />
+    <ClCompile Include="src\OpenGlWindow.cpp" />
+    <ClCompile Include="src\ResourcesManager.cpp" />
+    <ClCompile Include="src\TheGame.cpp" />
+    <ClCompile Include="src\Time.cpp" />
+    <ClCompile Include="ext\tinyobjloader\tinyobjloader.cpp">
+      <Filter>ext\tinyobjloader</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tinyxml\tinyxml2.cpp">
+      <Filter>ext\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\miniz.c">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxEllipse.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxImage.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxImageLayer.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxLayer.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxMap.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxObject.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxObjectGroup.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxPolygon.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxPolyline.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxProperty.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxPropertySet.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxTerrain.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxTerrainArray.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxTile.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxTileLayer.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxTileOffset.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxTileset.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\TmxUtil.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\tmxparser\base64\base64.cpp">
+      <Filter>ext\tmxparser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Stats.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Collision.cpp" />
+    <ClCompile Include="src\Geometry.cpp" />
+    <ClCompile Include="src\Physics.cpp" />
+    <ClCompile Include="test\GeometryTest.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hud.cpp" />
+    <ClCompile Include="src\GameObjects\Explosion.cpp" />
+    <ClCompile Include="src\GameObjects\GameObject.cpp" />
+    <ClCompile Include="src\GameObjects\Projectile.cpp" />
+    <ClCompile Include="src\GameObjects\Slider.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\EventManager.h" />
+    <ClInclude Include="src\Level.h" />
+    <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\Math.h" />
+    <ClInclude Include="src\Model3d.h" />
+    <ClInclude Include="src\OpenGlResources.h" />
+    <ClInclude Include="src\OpenGlWindow.h" />
+    <ClInclude Include="src\ResourcesManager.h" />
+    <ClInclude Include="src\TheGame.h" />
+    <ClInclude Include="src\Time.h" />
+    <ClInclude Include="ext\tinyobjloader\tinyobjloader.h">
+      <Filter>ext\tinyobjloader</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tinyxml\tinyxml2.h">
+      <Filter>ext\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxEllipse.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxImage.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxImageLayer.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxLayer.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxMap.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxMapTile.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxObject.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxObjectGroup.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxPoint.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxPolygon.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxPolyline.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxProperty.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxPropertySet.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxTerrain.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxTerrainArray.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxTile.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxTileLayer.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxTileOffset.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxTileset.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tmxparser\TmxUtil.h">
+      <Filter>ext\tmxparser</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Map.h" />
+    <ClInclude Include="src\Stats.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Collision.h" />
+    <ClInclude Include="src\Geometry.h" />
+    <ClInclude Include="src\Physics.h" />
+    <ClInclude Include="test\GeometryTest.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Slider.h" />
+    <ClInclude Include="src\Explosion.h" />
+    <ClInclude Include="src\Projectile.h" />
+    <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\Hud.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="ext\tmxparser\Tmx.h.in">
+      <Filter>ext\tmxparser</Filter>
+    </None>
+    <None Include="ext\tmxparser\tmxparser.pc.in">
+      <Filter>ext\tmxparser</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ext">
+      <UniqueIdentifier>{746898aa-be9d-477e-a5b8-77fc09371bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\tinyobjloader">
+      <UniqueIdentifier>{57c32d89-32ca-433b-88cd-1cc7b8aea7fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\tinyxml">
+      <UniqueIdentifier>{902879b0-a6f6-4394-87b5-be90942d4dcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\tmxparser">
+      <UniqueIdentifier>{ccbc1c7c-57fd-402f-94b9-93cb5db36a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{add6c4ea-f503-446c-8865-c17775fb1f44}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
