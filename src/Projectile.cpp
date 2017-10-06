@@ -41,6 +41,8 @@ void Projectile::onCollision(GameObject* with, const glm::vec2& collision_point,
     Object3d* obj3d = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_particle");
     AddObjectEvent event1(new Explosion(getPosition(), 300ms, 4, obj3d));
     event1.send();
+  } else if (with->getType() == GameObjectType::HealthPowerup) {
+    return;
   }
   
   RemoveObjectEvent event2(this);

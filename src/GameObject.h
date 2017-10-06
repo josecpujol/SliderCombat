@@ -45,6 +45,7 @@ public:
   float getRotation() const { return rot_z_; }
   const CollisionArea& getCollisionArea() const;
   void setCollisionArea(const CollisionArea& ca);
+  void unsetCollisionArea();
 
   void undoPose();
 

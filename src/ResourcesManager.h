@@ -9,7 +9,8 @@
 enum class ModelType {
   kTiles,
   kTank,
-  kProjectiles
+  kProjectiles,
+  kPowerUps
 };
 
 enum class FontType {

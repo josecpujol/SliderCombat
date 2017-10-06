@@ -1,6 +1,6 @@
 #include "ResourcesManager.h"
 #include "SDL.h"
-#include "Logger.h"
+#include "./Logger.h"
 #include <experimental/filesystem>
 
 void ResourcesManager::setWindowDimensions(int w, int h) {
@@ -59,7 +59,8 @@ bool ResourcesManager::loadModels() {
   std::map<ModelType, std::string> models_location = {
     {ModelType::kTiles, "tiles.obj"},
     {ModelType::kTank, "tank.obj"},
-    {ModelType::kProjectiles, "projectiles.obj"}
+    {ModelType::kProjectiles, "projectiles.obj"},
+    {ModelType::kPowerUps, "powerups.obj"}
   };
 
   std::string model_dir = ResourcesManager::getResourceBaseDirectory();

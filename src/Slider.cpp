@@ -116,7 +116,6 @@ void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
 }
 
 void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
-  LOG_DEBUG("Slider: onCollision");
   if (with == nullptr) {  // Collision with map border
     assert(normal);
     // reflection vector: r = d - 2 dot(d.n)* n
@@ -128,11 +127,14 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm
     Projectile* projectile = static_cast<Projectile*>(with);
     onHit(projectile, collision_point, normal);
   }
+  if (with->getType() == GameObjectType::HealthPowerup) {
+    health_.addValue(10);
+  }
 }
 
 void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal) {
-  health_.value -= with->getDamage();
-  LOG_DEBUG("Slider: health: " << health_.value);
+  health_.addValue(-1 * with->getDamage());
+  LOG_DEBUG("Slider: health: " << health_.getValue());
 
   time_hit_duration_ = 0s;
   is_hit_ = true;

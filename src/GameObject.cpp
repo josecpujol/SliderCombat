@@ -10,6 +10,10 @@ void GameObject::setCollisionArea(const CollisionArea& ca) {
   setPose(pos_, rot_z_);  // Update the new collision area with current pose 
 }
 
+void GameObject::unsetCollisionArea() {
+  can_collide_ = false;
+}
+
 const CollisionArea& GameObject::getCollisionArea() const {
   assert(canCollide());
   return collision_area_;

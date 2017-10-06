@@ -12,10 +12,19 @@
 
 class Projectile;
 
-struct Meter {
-  Meter(int value, int max_value) : value(value), max_value(max_value) {};
-  int value = 0;
-  int max_value = 100;
+class Meter {
+public:
+  Meter(int value, int max_value) : value_(value), max_value_(max_value) {};
+  void addValue(int inc) {
+    value_ += inc;
+    if (value_ < 0) value_ = 0;
+    if (value_ > max_value_) value_ = max_value_;
+  }
+  int getValue() const { return value_; }
+  int getMaxValue() const { return max_value_; }
+private:
+  int value_ = 0;
+  int max_value_ = 100;
 };
 
 class Propeller {

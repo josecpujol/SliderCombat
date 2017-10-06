@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include "Projectile.h"
 #include "Explosion.h"
+#include "PowerUps.h"
 #include "Map.h"
 
 Level::Level(Map* map) : map_(map) {
@@ -21,8 +22,8 @@ Level::Level(Map* map) : map_(map) {
   }
 
   auto health_positions = map->getInitialPositions("Health");
-  for (auto &enemy_position : enemy_positions) {
- //   objects_.push_back(std::make_shared<Health>(enemy_position, 180.0f));
+  for (auto &health_position : health_positions) {
+    objects_.push_back(std::make_shared<HealthPowerUp>(health_position));
   }
 
 
