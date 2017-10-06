@@ -7,6 +7,7 @@ INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 SET(GLM_INCLUDE_DIRS "/usr/include/glm")
 
+PKG_SEARCH_MODULE(SDL2TTF REQUIRED SDL2_ttf)
 
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
@@ -15,11 +16,12 @@ if (GLEW_FOUND)
     message(${GLEW_INCLUDE_DIRS})
 endif()
 
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser")
+
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2TTF_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser")
 
 
-FILE(GLOB_RECURSE MyCppSources ext/*.cpp ext/*.c src/*.cpp)
+FILE(GLOB_RECURSE MyCppSources ext/*.cpp ext/*.c src/*.cpp test/*.cpp)
 
 ADD_EXECUTABLE(SliderCombat ${MyCppSources})
 MESSAGE(${SDL2_LIBRARIES})
-TARGET_LINK_LIBRARIES(SliderCombat "GL" "GLU" "stdc++fs" ${SDL2_LIBRARIES} ${GLEW_LIBRARIES})
+TARGET_LINK_LIBRARIES(SliderCombat "GL" "GLU" "stdc++fs" ${SDL2_LIBRARIES} ${GLEW_LIBRARIES} ${SDL2TTF_LIBRARIES})

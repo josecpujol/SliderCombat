@@ -6,6 +6,7 @@ Install the following dependencies:
 * libsdl2-dev
 * libglm-dev 
 * libglew-dev
+* libsdl2-ttf-dev
 
 ## Libraries and resources used
 * tinyobjloader, by Syoyo Fujita. https://github.com/syoyo/tinyobjloader
