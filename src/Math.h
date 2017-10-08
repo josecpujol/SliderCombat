@@ -1,10 +1,18 @@
 #pragma once
 
+#if defined (_WIN32) ||  defined(_WIN64)
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/random.hpp>
+#else
 #include <glm.hpp>
 #include <gtx/norm.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtx/rotate_vector.hpp>
 #include <gtc/random.hpp>
+#endif
 
 #include <cmath>
 
