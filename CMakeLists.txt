@@ -5,23 +5,16 @@ set (CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS} -DUSE_MINIZ")
 
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2TTF REQUIRED SDL2_ttf)
+PKG_SEARCH_MODULE(GLEW REQUIRED glew)
+if (EMSCRIPTEN)
+  message("Emscripten detected")
+endif(EMSCRIPTEN)
 SET(GLM_INCLUDE_DIRS "/usr/include/glm")
 
-PKG_SEARCH_MODULE(SDL2TTF REQUIRED SDL2_ttf)
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2TTF_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser" )
 
-find_package(GLEW REQUIRED)
-if (GLEW_FOUND)
-    message("GLEW FOUND")
-    include_directories(${GLEW_INCLUDE_DIRS})
-    message(${GLEW_INCLUDE_DIRS})
-endif()
+FILE(GLOB_RECURSE MySources ext/*.cpp ext/*.c src/*.cpp test/*.cpp)
 
-
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2TTF_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser")
-
-
-FILE(GLOB_RECURSE MyCppSources ext/*.cpp ext/*.c src/*.cpp test/*.cpp)
-
-ADD_EXECUTABLE(SliderCombat ${MyCppSources})
-MESSAGE(${SDL2_LIBRARIES})
+ADD_EXECUTABLE(SliderCombat ${MySources})
 TARGET_LINK_LIBRARIES(SliderCombat "GL" "GLU" "stdc++fs" ${SDL2_LIBRARIES} ${GLEW_LIBRARIES} ${SDL2TTF_LIBRARIES})

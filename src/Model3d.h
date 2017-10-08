@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyobjloader.h"
-#include <glm/glm.hpp>
+#include "Math.h"
 
 #include <map>
 

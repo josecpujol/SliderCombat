@@ -42,7 +42,7 @@ bool OpenGlWindow::create(int width, int height) {
 
   if (SDL_GL_SetSwapInterval(1) != 0) {
     LOG_ERROR("Could not set swap interval: " << SDL_GetError());
-    return false;
+  //  return false;
   }
 
   // Init glew and stuff
