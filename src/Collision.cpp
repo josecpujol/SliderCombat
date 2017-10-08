@@ -47,7 +47,7 @@ void DrawRectangle(const Rectangle& r) {
   r.getVertices(&vertices);
   glBegin(GL_LINE_LOOP);
   for (auto& v : vertices) {
-    glVertex2d(v.x, v.y);
+    glVertex3f(v.x, v.y, 0.0f);
   }
   glEnd();
 }

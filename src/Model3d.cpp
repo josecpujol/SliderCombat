@@ -17,8 +17,6 @@ void Object3dHolder::render() {
   glPopMatrix();
 }
 
-
-
 // Dont push the matrix!!
 void Object3d::render() {
   int num_triangles = (int)vertices_buffer_.size() / 3;
@@ -32,7 +30,7 @@ void Object3d::render() {
 
 
 
-  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  // glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);  // removed for emscripten... seems to work fine without this
   glEnable(GL_COLOR_MATERIAL);
   glColorPointer(4, GL_FLOAT, 0, colors_buffer_.data());
 

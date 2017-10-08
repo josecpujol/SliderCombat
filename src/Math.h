@@ -6,12 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/random.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #else
 #include <glm.hpp>
 #include <gtx/norm.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtx/rotate_vector.hpp>
 #include <gtc/random.hpp>
+#include <gtc/matrix_transform.hpp>
 #endif
 
 #include <cmath>
