@@ -1,7 +1,6 @@
 #include "ResourcesManager.h"
 #include "SDL.h"
 #include "./Logger.h"
-#include <experimental/filesystem>
 
 void ResourcesManager::setWindowDimensions(int w, int h) {
   window_width_ = w;
@@ -14,10 +13,7 @@ void ResourcesManager::getWindowDimensions(int* w, int* h) {
 }
 
 std::string ResourcesManager::getResourceBaseDirectory() {
-  std::string dir = std::experimental::filesystem::current_path().string();
-  LOG_DEBUG("Base path: " << dir);
-  dir += std::string("/data/");
-  return dir;
+  return "./data/";
 }
 
 bool ResourcesManager::loadMaps() {

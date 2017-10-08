@@ -1,17 +1,18 @@
 #include "Model3d.h"
 #include "Logger.h"
 #include "Stats.h"
-#include <experimental/filesystem>
 
 #include "OpenGlResources.h"
 
 void Object3dHolder::render() {
   glPushMatrix();
   glTranslated(translation_.x, translation_.y, translation_.z);
+
   glScalef(scale_.x, scale_.y, scale_.z);
   glRotatef(rotation_.x, 1, 0, 0);
   glRotatef(rotation_.y, 0, 1, 0);
   glRotatef(rotation_.z, 0, 0, 1);
+
   object_->render();
   glPopMatrix();
 }
@@ -50,8 +51,8 @@ void Object3d::render() {
 bool Model3d::load(std::string file) {
   std::string err;
   
-  std::experimental::filesystem::path mypath(file);
-  std::string parent_path = mypath.parent_path().string() + "/";
+  std::size_t found = file.find_last_of("/");
+  std::string parent_path = file.substr(0, found) + "/";
   bool result = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, file.c_str(), parent_path.c_str());
   if (!result || !err.empty()) {
     return false;
