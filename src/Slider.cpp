@@ -1,7 +1,5 @@
 #include "Slider.h"
 
-#include <GL/glew.h>
-
 #include "Logger.h"
 #include "EventManager.h"
 #include "Math.h"

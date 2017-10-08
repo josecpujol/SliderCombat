@@ -1,7 +1,5 @@
 #include "OpenGlWindow.h"
 
-#include <GL/glew.h>
-
 #include "Logger.h"
 #include "ResourcesManager.h"
 
