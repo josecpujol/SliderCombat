@@ -262,8 +262,9 @@ void Level::render() {
   glShadeModel(GL_FLAT);
   glLoadIdentity();
   camera_.apply();
-
+#ifndef __EMSCRIPTEN__
   setOpenGlLights();
+#endif
 
   OpenGlResources::drawAxis();
   /*

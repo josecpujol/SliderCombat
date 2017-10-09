@@ -20,7 +20,9 @@ bool OpenGlWindow::create(int width, int height) {
   //Use OpenGL 2.1 core
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#ifndef __EMSCRIPTEN__
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   window_ = SDL_CreateWindow("Slider Combat", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -33,10 +35,11 @@ bool OpenGlWindow::create(int width, int height) {
   ResourcesManager::getInstance().setWindowDimensions(width, height);
 
   gl_context_ = SDL_GL_CreateContext(window_);
+  if (gl_context_ == nullptr) {
+    LOG_ERROR("Unable to create gl context. Message: " << SDL_GetError());
+    return false;
+  }
   LOG_DEBUG("Window and opengl context created successfully");
-  GLint depth_bits;
-  glGetIntegerv(GL_DEPTH_BITS, &depth_bits);
-  LOG_DEBUG("Depth bits: " << depth_bits);
 
   if (SDL_GL_SetSwapInterval(1) != 0) {
     LOG_ERROR("Could not set swap interval: " << SDL_GetError());

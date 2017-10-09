@@ -33,8 +33,8 @@ void OpenGlResources::drawAxis() {
 void OpenGlResources::drawVector(const glm::vec3& origin, const glm::vec3& end, const glm::vec3& color) {
   GLboolean is_lighting_enabled = glIsEnabled(GL_LIGHTING);
   if (is_lighting_enabled) glDisable(GL_LIGHTING);
-  glBegin(GL_LINES);
   glColor3f(color.r, color.g, color.b);
+  glBegin(GL_LINES);
   glVertex3f(origin.x, origin.y, origin.z); 
   glVertex3f(end.x, end.y, end.z);
   glEnd();

@@ -73,8 +73,8 @@ private:
     void draw(int x, int y) {
       if (!init_) return;
       glBindTexture(GL_TEXTURE_2D, texture_);
-      glBegin(GL_QUADS);
       glColor3f(1.f, 1.f, 1.f);  // The color is affected by glColor, unless glTexEnv is set with magic params
+      glBegin(GL_QUADS);
       glTexCoord2f(0.f, 1.f); glVertex2f((float)x, (float)y);
       glTexCoord2f(1.f, 1.f); glVertex2f((float)(x + w_), (float)y);
       glTexCoord2f(1.f, 0.f); glVertex2f((float)(x + w_), (float)(y + h_));
