@@ -10,6 +10,9 @@
 #include "Time.h"
 #include "Stats.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 TheGame::TheGame() {
   window_ = std::make_unique<OpenGlWindow>();
@@ -165,6 +168,11 @@ void TheGame::oneIteration() {
   }
 }
 
+void TheGame::oneIterationStatic(void *arg) {
+  TheGame* mythis = (TheGame*)arg;
+  mythis->oneIteration();
+}
+
 void TheGame::runLoop() {
   if (!stage_) {
     LOG_ERROR("No stage loaded");
@@ -176,7 +184,7 @@ void TheGame::runLoop() {
   stats.reset();
 
 #ifdef __EMSCRIPTEN__
-  emscripten_set_main_loop(main_loop, 0, 1);
+  emscripten_set_main_loop_arg(oneIterationStatic, this, 0, 1);
 #else
   while (!done_) {
     oneIteration();

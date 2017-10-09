@@ -13,7 +13,7 @@ public:
   ~TheGame();
   bool init();
   void runLoop();
-  
+  static void oneIterationStatic(void *arg);  
 private:
   void oneIteration();
   void processEvents(const std::vector<SDL_Event>& events);
