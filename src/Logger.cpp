@@ -68,5 +68,21 @@ void LoggerOpenGl::render() {
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
+}
 
+LoggerOpenGl::TextTexture::TextTexture(TTF_Font* font, GLint texture, const std::string& text) : texture_(texture), init_(true) {
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  SDL_Color color = {255, 255, 0, 255};
+ // SDL_Color color_bg = {0, 255, 255, 255};
+  SDL_Surface * surface1 = TTF_RenderText_Solid(font, text.c_str(), color);
+  SDL_Surface * surface2 = SDL_ConvertSurfaceFormat(surface1, SDL_PIXELFORMAT_RGBA8888, 0);
+  SDL_FreeSurface(surface1);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface2->w, surface2->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surface2->pixels);
+
+  w_ = surface2->w;
+  h_ = surface2->h;
+  SDL_FreeSurface(surface2);
 }

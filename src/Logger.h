@@ -55,21 +55,7 @@ private:
   class TextTexture {
   public:
     TextTexture() {};
-    TextTexture(TTF_Font* font, GLint texture, const std::string& text) : texture_(texture), init_(true) {
-      glBindTexture(GL_TEXTURE_2D, texture);
-
-      SDL_Color color = {255, 150, 0, 0};
-      SDL_Surface * surface = TTF_RenderText_Blended(font, text.c_str(), color);
-
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
-
-      w_ = surface->w;
-      h_ = surface->h;
-      SDL_FreeSurface(surface);
-    }
-
+    TextTexture(TTF_Font* font, GLint texture, const std::string& text);
     void draw(int x, int y) {
       if (!init_) return;
       glBindTexture(GL_TEXTURE_2D, texture_);
