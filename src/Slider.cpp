@@ -174,6 +174,7 @@ void Slider::update(const Uint8* keys, uint32_t elapsed_us) {
 
 void Slider::render() {
   // hit animation
+#ifndef __EMSCRIPTEN__
   if (is_hit_) {
     int period_ms = 100;
 
@@ -181,6 +182,7 @@ void Slider::render() {
     GLfloat color[] = {factor, factor, factor, 1.f};
     glMaterialfv(GL_FRONT, GL_EMISSION, color);
   }
+#endif
 
   glm::vec3 pos = getPosition();
   glTranslatef(pos.x, pos.y, pos.z);
@@ -191,8 +193,10 @@ void Slider::render() {
   }
   model_->render();
 
+#ifndef __EMSCRIPTEN__
   if (is_hit_) {
     GLfloat color[] = {0.0f, 0.0f, 0.0f, 1.f};
     glMaterialfv(GL_FRONT, GL_EMISSION, color);
   }
+#endif
 }
