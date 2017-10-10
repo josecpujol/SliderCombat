@@ -2,16 +2,18 @@
 
 #include "tinyobjloader.h"
 #include "Math.h"
+#include "OpenGlResources.h"
 
 #include <map>
+#include <memory>
 
 // It should be instantiated with a Object3dHolder
 class Object3d {
 public:
-  Object3d(const std::string& name) : name_(name) {}
-  void setVertices(const std::vector<float>& vertices) { vertices_buffer_ = vertices; }
-  void setNormals(const std::vector<float>& normals) { normals_buffer_ = normals; }
-  void setColors(const std::vector<float>& colors) { colors_buffer_ = colors; }
+  Object3d(const std::string& name);
+  ~Object3d();
+  // color: 3 components
+  void setData(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<float>& colors);
   int getNumberTriangles() const { return (int)vertices_buffer_.size() / 3; }
   std::string getName() const { return name_; }
 
@@ -21,6 +23,7 @@ private:
   std::vector<float> normals_buffer_;
   std::vector<float> colors_buffer_;
   std::string name_;
+  GLuint ogl_buffer_vertex_attribs_ = 0;
 };
 
 class Object3dHolder {
@@ -52,7 +55,7 @@ public:
 
 private:
   void createBuffers();
-  std::vector<Object3d> objects_;
+  std::vector<std::shared_ptr<Object3d>> objects_;
 
   glm::vec3 getVertex(tinyobj::index_t);
   glm::vec3 getNormal(tinyobj::index_t);

@@ -2,7 +2,15 @@
 #include "Logger.h"
 #include "Stats.h"
 
-#include "OpenGlResources.h"
+Object3d::Object3d(const std::string& name) : name_(name) {
+  glGenBuffers(1, &ogl_buffer_vertex_attribs_);
+
+}
+
+Object3d::~Object3d() {
+  glDeleteBuffers(1, &ogl_buffer_vertex_attribs_);
+}
+
 
 void Object3dHolder::render() {
   glPushMatrix();
@@ -22,28 +30,57 @@ void Object3d::render() {
   int num_triangles = (int)vertices_buffer_.size() / 3;
   Stats::getInstance().num_triangles += num_triangles;
 
-  // glPolygonMode(GL_FRONT, GL_LINE);
-  // glPolygonMode(GL_BACK, GL_LINE);
+  glEnable(GL_COLOR_MATERIAL);
+
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_buffer_vertex_attribs_);
+  GLsizei stride = 9 * sizeof(float);
+  glVertexPointer(3, GL_FLOAT, stride, (void*)0);
+  glNormalPointer(GL_FLOAT, stride, (void*)(3 * sizeof(float)));
+  glColorPointer(3, GL_FLOAT, stride, (void*)(6 * sizeof(float)));
+
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
-
-
-
-  // glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);  // removed for emscripten... seems to work fine without this
-  glEnable(GL_COLOR_MATERIAL);
-  glColorPointer(4, GL_FLOAT, 0, colors_buffer_.data());
-
-  glVertexPointer(3, GL_FLOAT, 0, vertices_buffer_.data());
-  glNormalPointer(GL_FLOAT, 0, normals_buffer_.data());
+    
   glDrawArrays(GL_TRIANGLES, 0, num_triangles);
 
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisable(GL_COLOR_MATERIAL);
-  // glPolygonMode(GL_FRONT, GL_FILL);
-  // glPolygonMode(GL_BACK, GL_FILL);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+}
+
+void Object3d::setData(const std::vector<float>& vertices,
+                       const std::vector<float>& normals, 
+                       const std::vector<float>& colors) {
+  assert(vertices.size() == normals.size());
+  assert(vertices.size() == colors.size());
+  assert(vertices.size() % 3 == 0);
+  
+  std::vector<float> vertex_attributes;  // coordinates0, normals0, colors0, coordinates1, ...
+
+  for (int i = 0; i < vertices.size() / 3; i++) {
+    vertex_attributes.push_back(vertices[i * 3 + 0]);
+    vertex_attributes.push_back(vertices[i * 3 + 1]);
+    vertex_attributes.push_back(vertices[i * 3 + 2]);
+
+    vertex_attributes.push_back(normals[i * 3 + 0]);
+    vertex_attributes.push_back(normals[i * 3 + 1]);
+    vertex_attributes.push_back(normals[i * 3 + 2]);
+
+    vertex_attributes.push_back(colors[i * 3 + 0]);
+    vertex_attributes.push_back(colors[i * 3 + 1]);
+    vertex_attributes.push_back(colors[i * 3 + 2]);
+  }
+  
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_buffer_vertex_attribs_);
+  glBufferData(GL_ARRAY_BUFFER, vertex_attributes.size() * sizeof(float), vertex_attributes.data(), GL_STATIC_DRAW);
+
+  vertices_buffer_ = vertices; 
+  normals_buffer_ = normals;
+  colors_buffer_ = colors;
 }
 
 bool Model3d::load(std::string file) {
@@ -61,14 +98,13 @@ bool Model3d::load(std::string file) {
 
 void Model3d::createBuffers() {
   for (auto& shape : shapes) {
-    Object3d obj3d(shape.name);
+    std::shared_ptr<Object3d> obj3d = std::make_shared<Object3d>(shape.name);
     
     std::vector<float> vertices_buffer;
     std::vector<float> normals_buffer;
     std::vector<float> colors_buffer;
 
     for (size_t f = 0; f < shape.mesh.indices.size() / 3; f++) {
-
       tinyobj::index_t idx;
       glm::vec3 vertex;
       glm::vec3 normal;
@@ -91,14 +127,11 @@ void Model3d::createBuffers() {
         for (int i = 0; i < 3; i++) {
           colors_buffer.push_back(materials[material_id].diffuse[i]);
         }
-        colors_buffer.push_back(1.f);  // alpha. Have 4 components
       }
     }
-    obj3d.setVertices(vertices_buffer);
-    obj3d.setNormals(normals_buffer);
-    obj3d.setColors(colors_buffer);
+    obj3d->setData(vertices_buffer, normals_buffer, colors_buffer);
 
-    LOG_DEBUG("Object " << obj3d.getName() << " has " << obj3d.getNumberTriangles() << " triangles");
+    LOG_DEBUG("Object " << obj3d->getName() << " has " << obj3d->getNumberTriangles() << " triangles");
     objects_.push_back(obj3d);
   }
 }
@@ -118,8 +151,8 @@ glm::vec3 Model3d::getNormal(tinyobj::index_t idx) {
 Object3d* Model3d::getObject3d(const std::string& obj_prefix) {
   assert(!obj_prefix.empty());
   for (auto& obj : objects_) {
-    if (obj.getName().find(obj_prefix) == 0) {
-      return &obj;
+    if (obj->getName().find(obj_prefix) == 0) {
+      return obj.get();
     }
   }
   assert(false);
@@ -130,6 +163,6 @@ Object3d* Model3d::getObject3d(const std::string& obj_prefix) {
 // make this opengl 2.0 with buffers
 void Model3d::render() {
   for (auto& obj : objects_) {
-    obj.render();
+    obj->render();
   }
 }
