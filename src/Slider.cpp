@@ -126,13 +126,12 @@ void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm
     onHit(projectile, collision_point, normal);
   }
   if (with->getType() == GameObjectType::HealthPowerup) {
-    health_.addValue(10);
+    health_.addValue(25);
   }
 }
 
 void Slider::onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal) {
   health_.addValue(-1 * with->getDamage());
-  LOG_DEBUG("Slider: health: " << health_.getValue());
 
   time_hit_duration_ = 0s;
   is_hit_ = true;

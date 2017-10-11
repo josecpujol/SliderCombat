@@ -52,7 +52,6 @@ bool OpenGlWindow::create(int width, int height) {
     return false;
   }
 
-
   return true;
 }
 

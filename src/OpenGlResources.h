@@ -1,9 +1,22 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include <GL/glew.h>
 #include <GL/glu.h>
 #include "Math.h"
 
+class OpenGlProgram {
+public:
+  OpenGlProgram(const char* vertex_shader_source, const char* fragment_shader_source);
+  ~OpenGlProgram();
+  bool isCreated() const { return is_program_created_; }
+  void use();
+private:
+  GLint program_id_;
+  bool is_program_created_ = false;
+};
 
 class OpenGlResources {
 public:
@@ -21,10 +34,7 @@ public:
     glColor3f(color.r, color.g, color.b);
   }
 
-
 private:
-  GLuint gProgramID_;
-  GLint gVertexPos2DLocation = -1;
-  GLuint gVBO = 0;
-  GLuint gIBO = 0;
+  std::vector < std::shared_ptr<OpenGlProgram>> programs_;
+
 };

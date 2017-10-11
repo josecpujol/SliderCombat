@@ -27,6 +27,30 @@ bool ResourcesManager::loadMaps() {
   return true;
 }
 
+bool ResourcesManager::loadOpenGlPrograms() {
+
+  std::string vertex_shader = "\
+    varying vec4 vColor;\
+    void main() {\
+    vColor = gl_Color;\
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
+  }";
+
+  std::string fragment_shader = "\
+    varying vec4 vColor;\
+    void main() {\
+    gl_FragColor = vColor;\
+  }";
+  std::shared_ptr<OpenGlProgram> program = std::make_shared<OpenGlProgram>(vertex_shader.c_str(), fragment_shader.c_str());
+  if (!program->isCreated()) {
+    LOG_ERROR("Error creating shader");
+    return false;
+  }
+  program->use();
+  opengl_programs_.push_back(program);
+  return true;
+}
+
 Map* ResourcesManager::getMap() {
   return map_.get();
 }
@@ -42,6 +66,11 @@ bool ResourcesManager::loadResources() {
   }
   if (!loadFonts()) {
     LOG_ERROR("Could not load fonts");
+    return false;
+  }
+  if (!loadOpenGlPrograms()) {
+    LOG_ERROR("Could not load shaders");
+    return false;
   }
   return true;
 }

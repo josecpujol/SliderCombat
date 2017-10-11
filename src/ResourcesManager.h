@@ -4,6 +4,7 @@
 #include "Model3d.h"
 #include "Map.h"
 #include "SDL_ttf.h"
+#include "OpenGlResources.h"
 
 
 enum class ModelType {
@@ -16,6 +17,10 @@ enum class ModelType {
 enum class FontType {
   kRobotoCondensed,
   kPrototype
+};
+
+enum class OpenGlPrograms {
+  kBasic
 };
 
 class ResourcesManager {
@@ -45,10 +50,12 @@ private:
   bool loadModels();
   bool loadMaps();
   bool loadFonts();
+  bool loadOpenGlPrograms();
 
   int window_width_ = 0;
   int window_height_ = 0;
   std::map<ModelType, std::unique_ptr<Model3d>> models_;
   std::unique_ptr<Map> map_;
   std::vector <std::shared_ptr<TTF_Font>> fonts_;
+  std::vector <std::shared_ptr<OpenGlProgram>> opengl_programs_;
 };
