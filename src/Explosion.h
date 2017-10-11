@@ -33,7 +33,7 @@ public:
   }
 
   void render() override;
-  void update(const Uint8* keys, uint32_t elapsed_us) override;
+  void update(uint32_t elapsed_us) override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override { assert(false); };
 
 private:

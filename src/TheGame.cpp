@@ -128,7 +128,6 @@ void TheGame::oneIteration() {
 
   Duration update_duration = measureFunction([this, &time_per_cycle] {
     stage_->update(
-      SDL_GetKeyboardState(nullptr),
       (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(time_per_cycle).count());
   });
   stats.time_to_update_ms += toMs(update_duration);

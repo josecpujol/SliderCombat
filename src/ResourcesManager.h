@@ -44,6 +44,7 @@ public:
   Model3d* getModel3d(ModelType);
   TTF_Font* getFont(FontType, int point_size);
   Map* getMap();
+  
 private:
   ResourcesManager() {}
 

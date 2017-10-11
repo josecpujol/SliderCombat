@@ -35,7 +35,7 @@ void PowerUp::disableFor(Duration duration) {
   enable_cooldown_ = duration;
 }
 
-void PowerUp::update(const Uint8* keys, uint32_t elapsed_us) {
+void PowerUp::update(uint32_t elapsed_us) {
   // Check to reenable again
   enable_cooldown_ -= std::chrono::microseconds(elapsed_us);
   if (!is_visible_ && enable_cooldown_ < 0s) {

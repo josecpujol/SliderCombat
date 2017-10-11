@@ -14,7 +14,7 @@ Projectile::Projectile(glm::vec3 pos, float rot) : GameObject(GameObjectType::Pr
   model_ = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_projectile");
 };
 
-void Projectile::update(const Uint8* keys, uint32_t elapsed_us) {
+void Projectile::update(uint32_t elapsed_us) {
  // model_->update(elapsed_us);
 
   // Positions wrt local system reference 

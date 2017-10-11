@@ -9,7 +9,7 @@ class PowerUp : public GameObject {
 public:
   PowerUp() = delete;
   PowerUp(GameObjectType type, const glm::vec2& pos);
-  void update(const Uint8* keys, uint32_t elapsed_us) override;
+  void update(uint32_t elapsed_us) override;
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
 

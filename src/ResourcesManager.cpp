@@ -46,7 +46,7 @@ bool ResourcesManager::loadOpenGlPrograms() {
     LOG_ERROR("Error creating shader");
     return false;
   }
-  program->use();
+ // program->use();
   opengl_programs_.push_back(program);
   return true;
 }

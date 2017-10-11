@@ -178,6 +178,7 @@
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\ResourcesManager.cpp" />
     <ClCompile Include="src\Slider.cpp" />
+    <ClCompile Include="src\SliderControl.cpp" />
     <ClCompile Include="src\Stats.cpp" />
     <ClCompile Include="src\TheGame.cpp" />
     <ClCompile Include="src\Time.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\ResourcesManager.h" />
     <ClInclude Include="src\Slider.h" />
+    <ClInclude Include="src\SliderControl.h" />
     <ClInclude Include="src\Stats.h" />
     <ClInclude Include="src\TheGame.h" />
     <ClInclude Include="src\Time.h" />

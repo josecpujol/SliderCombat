@@ -5,42 +5,6 @@
 #include "Math.h"
 #include "Projectile.h"
 
-void SliderLocalPlayer::update(const Uint8* keys, uint32_t elapsed_us) {
-  Slider::update(keys, elapsed_us);
-
-  float elapsed_secs = (float)elapsed_us / 1000000;
-  // Positions wrt local system reference 
-  glm::vec2 vel_rel(0, 0);
-
-  bool fire_event = false;
-
-  for (int i = 0; i < 4; i++) {
-    propellers_[i].update(keys);
-  }
-    
-  float torque = 0;
-  glm::vec2 force(0);
-
-  // Get force from propellers
-  for (int i = 0; i < 4; i++) {
-    torque += propellers_[i].getTorque();
-    force += propellers_[i].getForceVector();
-  }
-  
-  // Get force from impacts
-  for (auto& impact : impacts_) {
-    torque += impact.getTorque();
-    force += impact.getForceFreeVector();
-  }
-  impacts_.clear();
-
-  applyForceAndTorque(torque, force, elapsed_secs);
-  
-  // Fire after we have updated the position and rotation
-  if (keys[SDL_SCANCODE_SPACE] && canShoot()) {
-    shoot();
-  }
-}
 
 void Slider::shoot() {
   float cannon_offset = 1.35f;  // TODO: change: now hardcoded to avoid collision with oneself
@@ -81,36 +45,6 @@ void Slider::applyForceAndTorque(float torque, glm::vec2 force, float elapsed_se
   pos += glm::vec3(global_speed_, 0) * elapsed_secs;
 
   setPose(pos, new_rot_z);
-}
-
-void SliderComputerEnemy::update(const Uint8* keys, uint32_t elapsed_us) {
-  Slider::update(keys, elapsed_us);
-  TimePoint current_time = Clock::now();
-  uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch()).count();
-  // Positions wrt local system reference 
-  glm::vec2 vel_rel(0, 0);
-  int i;
-  for (i = 0; i < 7; i++) {
-    if (ms % (100 + i) == 0) {
-      //   keys_state_[i] = !keys_state_[i];
-    }
-  }
-
-  float elapsed_secs = (float)elapsed_us / 1000000;
-
-  float torque = 0;
-  glm::vec2 force_vector(0);
-  for (auto& force : impacts_) {
-    torque += force.getTorque();
-    force_vector += force.getForceFreeVector();
-  }
-  impacts_.clear();
-
-  applyForceAndTorque(torque, force_vector, elapsed_secs);
-
-  if (canShoot()) {
-    shoot();
-  }
 }
 
 void Slider::onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) {
@@ -154,12 +88,7 @@ bool Slider::canShoot() const {
   return shot_current_cooldown_ == 0s;
 }
 
-void Slider::update(const Uint8* keys, uint32_t elapsed_us) {
-  shot_current_cooldown_ -= std::chrono::microseconds(elapsed_us);
-  if (shot_current_cooldown_ < 0s) {
-    shot_current_cooldown_ = 0s;
-  }
-
+void Slider::updateHitState(uint32_t elapsed_us) {
   if (is_hit_) {
     std::chrono::milliseconds hit_max_duration = 200ms;
     int period_ms = 100;
@@ -169,6 +98,57 @@ void Slider::update(const Uint8* keys, uint32_t elapsed_us) {
       hit_duration_ = 0s;
     }
   }
+}
+
+void Slider::updateShotCooldown(uint32_t elapsed_us) {
+  shot_current_cooldown_ -= std::chrono::microseconds(elapsed_us);
+  if (shot_current_cooldown_ < 0s) {
+    shot_current_cooldown_ = 0s;
+  }
+}
+
+void Slider::update(uint32_t elapsed_us) {
+  control_->update(elapsed_us);
+  current_command_ = control_->getCommands();
+
+
+  updateShotCooldown(elapsed_us);
+  updateHitState(elapsed_us);
+    
+  float elapsed_secs = (float)elapsed_us / 1000000;
+  // Positions wrt local system reference 
+  glm::vec2 vel_rel(0, 0);
+
+  bool fire_event = false;
+
+  propellers_[0].update(current_command_.left_thruster_foward, current_command_.left_thruster_backwards);
+  propellers_[1].update(current_command_.left_thruster_left, current_command_.left_thruster_right);
+  propellers_[2].update(current_command_.right_thruster_foward, current_command_.right_thruster_backwards);
+  propellers_[3].update(current_command_.right_thruster_right, current_command_.right_thruster_left);
+
+  float torque = 0;
+  glm::vec2 force(0);
+
+  // Get force from propellers
+  for (int i = 0; i < 4; i++) {
+    torque += propellers_[i].getTorque();
+    force += propellers_[i].getForceVector();
+  }
+
+  // Get force from impacts
+  for (auto& impact : impacts_) {
+    torque += impact.getTorque();
+    force += impact.getForceFreeVector();
+  }
+  impacts_.clear();
+
+  applyForceAndTorque(torque, force, elapsed_secs);
+
+  // Fire after we have updated the position and rotation
+  if (current_command_.fire && canShoot()) {
+    shoot();
+  }
+
 };
 
 void Slider::render() {

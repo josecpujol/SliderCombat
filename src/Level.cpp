@@ -78,12 +78,12 @@ void Level::updateCameraSetup(const Uint8* keys) {
 
 }
 
-void Level::update(const Uint8* keys, uint32_t elapsed_us) {
+void Level::update(uint32_t elapsed_us) {
+  const Uint8* keys = SDL_GetKeyboardState(nullptr);
   // Pause!!!
   if (keys[SDL_SCANCODE_P]) {
     return;
   }
-  loop_count_++;
 
   updateCameraSetup(keys);
   updateRenderFlags(keys);
@@ -91,7 +91,7 @@ void Level::update(const Uint8* keys, uint32_t elapsed_us) {
   addPendingObjects();
 
   for (auto obj : objects_) {
-    obj->update(keys, elapsed_us);
+    obj->update(elapsed_us);
   }
 
   checkCollisions();
@@ -117,9 +117,6 @@ void Level::removePendingObjects() {
       } else {
         ++i;
       }
-    }
-    if (objects_.size() == size_objects_before) {
-      LOG_ERROR("An object was not deleted");
     }
   }
   objects_to_remove_.clear();

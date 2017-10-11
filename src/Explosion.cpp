@@ -29,7 +29,7 @@ void Explosion::render() {
   }
 }
 
-void Explosion::update(const Uint8* keys, uint32_t elapsed_us) {
+void Explosion::update(uint32_t elapsed_us) {
   duration_ += std::chrono::microseconds(elapsed_us);
 
   float t = (float)(duration_.count()) / total_duration_.count();

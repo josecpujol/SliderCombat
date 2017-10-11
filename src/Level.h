@@ -17,7 +17,7 @@ class Level {
 public:
   Level(Map*);
   void render();
-  void update(const Uint8*, uint32_t elapsed_us);
+  void update(uint32_t elapsed_us);
  /* void incAmbient(float inc) {
     ambient_coeff_ += inc;
     ambient_coeff_ = std::max(0.0f, ambient_coeff_);
@@ -43,7 +43,6 @@ private:
   void setOpenGlLights();
   void drawSkyDome();
   inline static void checkCollision(GameObject* obj1, GameObject* obj2);
-  int loop_count_ = 0;
   std::vector < std::shared_ptr< GameObject> > objects_;
   std::vector < std::shared_ptr< GameObject> > objects_to_add_;  // need to add objects outside the update loop
   std::vector < GameObject* > objects_to_remove_;  // need to add objects outside the update loop

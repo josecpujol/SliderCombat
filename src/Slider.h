@@ -9,6 +9,7 @@
 #include "Math.h"
 #include "ResourcesManager.h"
 #include "Physics.h"
+#include "SliderControl.h"
 
 class Projectile;
 
@@ -29,13 +30,13 @@ private:
 
 class Propeller {
 public:
-  Propeller(glm::vec2 location, glm::vec2 direction, Uint8 direct_key, Uint8 reverse_key) : 
-    force_(BoundVector2(location, glm::normalize(direction))), direct_key_(direct_key), reverse_key_(reverse_key) {
+  Propeller(glm::vec2 location, glm::vec2 direction) : 
+    force_(BoundVector2(location, glm::normalize(direction))) {
   }
 
-  void update(const Uint8* keys) {
-    if (keys[direct_key_]) direct();
-    else if (keys[reverse_key_]) reverse();
+  void update(bool direct_command, bool reverse_command) {
+    if (direct_command) direct();
+    else if (reverse_command) reverse();
     else neutral();
   }
 
@@ -55,8 +56,6 @@ private:
   float force_magnitude_ = 0.0f;
   float force_max_ = 100.f;
   Force force_;
-  Uint8 direct_key_;
-  Uint8 reverse_key_;
 };
 
 class Slider : public GameObject {
@@ -69,7 +68,7 @@ public:
     Circle circle(pos, 1);
     setCollisionArea(CollisionArea(circle));
   };
-  void update(const Uint8* keys, uint32_t elapsed_us) override;
+  void update(uint32_t elapsed_us) override;
   void render() override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
   bool canShoot() const;
@@ -77,7 +76,8 @@ public:
   Meter getHealth() const { return health_; }
 
 protected:
-
+  std::unique_ptr<SliderControl> control_;
+  SliderCommands current_command_;  // updated every frame from control
   void applyForceAndTorque(const float torque, glm::vec2 force, float elapsed_secs);
   void shoot();
 
@@ -96,33 +96,30 @@ protected:
   std::vector<Force> impacts_;  // local coordinates
 
   Propeller propellers_[4] = {
-    {glm::vec2(-0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_W, SDL_SCANCODE_S},
-    {glm::vec2(-1, 0), glm::vec2(-1, 0), SDL_SCANCODE_A, SDL_SCANCODE_D},
-    {glm::vec2(0.5, 0), glm::vec2(0, 1), SDL_SCANCODE_I, SDL_SCANCODE_K},
-    {glm::vec2(1, 0), glm::vec2(1, 0), SDL_SCANCODE_L, SDL_SCANCODE_J}
+    {glm::vec2(-0.5, 0), glm::vec2(0, 1)},
+    {glm::vec2(-1, 0), glm::vec2(-1, 0)},
+    {glm::vec2(0.5, 0), glm::vec2(0, 1)},
+    {glm::vec2(1, 0), glm::vec2(1, 0)}
   };
 
 private:
   void onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal);
+  void updateHitState(uint32_t elapsed_us);
+  void updateShotCooldown(uint32_t elapsed_us);
 };
 
 class SliderLocalPlayer : public Slider {
 public:
   SliderLocalPlayer() = delete;
   SliderLocalPlayer(const glm::vec2& pos, float rot) : Slider(GameObjectType::LocalPlayer, pos, rot) {
+    control_ = std::make_unique<ManualSliderControl>();
   };
-
-  void update(const Uint8* keys, uint32_t elapsed_us) override;
 };
 
 class SliderComputerEnemy : public Slider {
 public:
   SliderComputerEnemy() = delete;
   SliderComputerEnemy(const glm::vec2& pos, float rot) : Slider(GameObjectType::ComputerEnemy, pos, rot) {
-    keys_state_.resize(7);
+    control_ = std::make_unique<AiSliderControl>();
   };
-  void update(const Uint8* keys, uint32_t elapsed_us) override;
-
-private:
-  std::vector<bool> keys_state_;
 };
