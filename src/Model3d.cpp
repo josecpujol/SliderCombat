@@ -41,7 +41,6 @@ void Object3d::render() {
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
-    
   glDrawArrays(GL_TRIANGLES, 0, num_triangles);
 
   glDisableClientState(GL_VERTEX_ARRAY);

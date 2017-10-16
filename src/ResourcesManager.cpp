@@ -61,6 +61,7 @@ bool ResourcesManager::loadResources() {
   initJoystick();
   if (IMG_INIT_PNG != IMG_Init(IMG_INIT_PNG)) {
     LOG_ERROR("Could not initialize img library");
+    return false;
   }
 
   if (!loadModels()) {
@@ -86,14 +87,14 @@ bool ResourcesManager::loadResources() {
 // See getfont
 bool ResourcesManager::loadFonts() {
   std::map<FontType, std::string> fonts_location = {
-    {FontType::kPrototype, "Prototype_32.fnt"}
+    {FontType::kPrototype, "prototype_32.fnt"}
   };
 
   std::string fonts_dir = ResourcesManager::getResourceBaseDirectory() + std::string("fonts/");
 
   for (auto font_location : fonts_location) {
     std::string path = fonts_dir + font_location.second;
-
+    LOG_DEBUG("Loading font: " << path);
     std::shared_ptr<BitmapFont> bm_font = std::make_shared<BitmapFont>();
     if (!bm_font->load(path)) {
       return false;
@@ -117,7 +118,9 @@ bool ResourcesManager::loadModels() {
   model_dir += std::string("3dmodels/");
   for (auto& model_location : models_location) {
     std::unique_ptr<Model3d> model = std::make_unique<Model3d>();
-    if (!model->load(model_dir + model_location.second)) {
+    std::string path = model_dir + model_location.second;
+    LOG_DEBUG("Loading model: " << path);
+    if (!model->load(path)) {
       return false;
     }
     LOG_INFO("Model loaded correctly: " << model_location.second);

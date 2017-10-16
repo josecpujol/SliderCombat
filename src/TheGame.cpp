@@ -25,17 +25,10 @@ TheGame::~TheGame() {
   LoggerOpenGl::getInstance().releaseResources();
 
   window_.reset(nullptr);
-  TTF_Quit();
   SDL_Quit();
 }
 
 bool TheGame::init() {
-  // Text
-  if (TTF_Init() < 0) {
-    LOG_ERROR("Could not initialize text");
-    return false;
-  }
-
   // Sound
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
     LOG_ERROR("Could not initialize audio");
