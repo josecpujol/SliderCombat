@@ -93,6 +93,8 @@
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\Slider.cpp" />
     <ClCompile Include="src\PowerUps.cpp" />
+    <ClCompile Include="src\SliderControl.cpp" />
+    <ClCompile Include="src\BitmapFont.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EventManager.h" />
@@ -186,6 +188,8 @@
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\Hud.h" />
     <ClInclude Include="src\PowerUps.h" />
+    <ClInclude Include="src\SliderControl.h" />
+    <ClInclude Include="src\BitmapFont.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

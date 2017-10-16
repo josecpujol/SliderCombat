@@ -1,6 +1,8 @@
 #include "ResourcesManager.h"
 #include "SDL.h"
+#include "SDL_image.h"
 #include "./Logger.h"
+
 
 void ResourcesManager::setWindowDimensions(int w, int h) {
   window_width_ = w;
@@ -56,6 +58,11 @@ Map* ResourcesManager::getMap() {
 }
 
 bool ResourcesManager::loadResources() {
+  initJoystick();
+  if (IMG_INIT_PNG != IMG_Init(IMG_INIT_PNG)) {
+    LOG_ERROR("Could not initialize img library");
+  }
+
   if (!loadModels()) {
     LOG_ERROR("Could not load models");
     return false;
@@ -72,11 +79,29 @@ bool ResourcesManager::loadResources() {
     LOG_ERROR("Could not load shaders");
     return false;
   }
+
   return true;
 }
 
 // See getfont
 bool ResourcesManager::loadFonts() {
+  std::map<FontType, std::string> fonts_location = {
+    {FontType::kPrototype, "Prototype_32.fnt"}
+  };
+
+  std::string fonts_dir = ResourcesManager::getResourceBaseDirectory() + std::string("fonts/");
+
+  for (auto font_location : fonts_location) {
+    std::string path = fonts_dir + font_location.second;
+
+    std::shared_ptr<BitmapFont> bm_font = std::make_shared<BitmapFont>();
+    if (!bm_font->load(path)) {
+      return false;
+    }
+
+    bm_fonts_[font_location.first] = bm_font;
+  }
+
   return true;
 }
 
@@ -102,24 +127,6 @@ bool ResourcesManager::loadModels() {
   return true;
 }
 
-// We load the fonts on the fly, as we need the point size
-TTF_Font* ResourcesManager::getFont(FontType type, int point_size) {
-  std::map<FontType, std::string> fonts_location = {
-    {FontType::kRobotoCondensed, "RobotoCondensed-Regular.ttf"},
-    {FontType::kPrototype, "Prototype.ttf"}
-  };
-
-  std::string fonts_dir = ResourcesManager::getResourceBaseDirectory() + std::string("fonts/");
-  std::string path = fonts_dir + fonts_location[type];
-  TTF_Font* font = TTF_OpenFont(path.c_str(), point_size);
-  if (!font) {
-    assert(false);
-    return nullptr;
-  }
-  fonts_.push_back(std::shared_ptr<TTF_Font>(font, TTF_CloseFont));
-  return font;
-}
-
 Model3d* ResourcesManager::getModel3d(ModelType type) {
   if (models_.count(type) == 0) {
     assert(false && "Model does not exist");
@@ -134,5 +141,51 @@ void ResourcesManager::releaseResources() {
     model.second = nullptr;
   }
 
-  fonts_.clear();
+  bm_fonts_.clear();
+
+  SDL_JoystickClose(joystick_);
+  IMG_Quit();
+}
+
+void ResourcesManager::initJoystick() {
+  if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0) {
+    LOG_ERROR("Could not initialize gamecontroller");
+    return;
+  }
+  int num_joysticks = SDL_NumJoysticks();
+  LOG_INFO("#joysticks found: " << num_joysticks);
+  for (int i = 0; i < num_joysticks; i++) {
+    LOG_INFO("Joystick " << i << ": " << SDL_JoystickNameForIndex(i));
+    joystick_ = SDL_JoystickOpen(i);
+    if (joystick_) {
+      int joystick_num_buttons = SDL_JoystickNumButtons(joystick_);
+      LOG_INFO("Joystick number of buttons: " << joystick_num_buttons);
+      joystick_state_.buttons.resize(joystick_num_buttons);
+      break;
+    } else {
+      LOG_ERROR("Could not open joystick. Error: " << SDL_GetError());
+    }
+  }
+}
+
+const JoystickState* ResourcesManager::getJoystickState() {
+  if (!joystick_) {
+    return nullptr;
+  }
+  for (int i = 0; i < joystick_state_.buttons.size(); i++) {
+    joystick_state_.buttons[i] = SDL_JoystickGetButton(joystick_, i);
+  }
+
+  joystick_state_.up = false;
+  joystick_state_.down = false;
+  joystick_state_.right = false;
+  joystick_state_.left = false;
+  Sint16 axis0 = SDL_JoystickGetAxis(joystick_, 0);
+  Sint16 axis1 = SDL_JoystickGetAxis(joystick_, 1);
+  if (axis0 > 100) joystick_state_.right = true;
+  if (axis0 < -100) joystick_state_.left = true;
+  if (axis1 > 100) joystick_state_.down = true;
+  if (axis1 < -100) joystick_state_.up = true;
+
+  return &joystick_state_;
 }

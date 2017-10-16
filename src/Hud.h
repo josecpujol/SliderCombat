@@ -14,7 +14,6 @@ private:
   void drawHealthBar();
 
   Level* level_ = nullptr;
-  TTF_Font* font_health_ = nullptr;
   GLuint texture_health_;
   int screen_width_ = 0;
   int screen_height_ = 0;

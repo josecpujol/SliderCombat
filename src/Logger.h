@@ -40,6 +40,8 @@ public:
   LoggerOpenGl(LoggerOpenGl const&) = delete;
   void operator=(LoggerOpenGl const&) = delete;
 
+  LoggerOpenGl();
+
   static LoggerOpenGl& getInstance() {
     static LoggerOpenGl instance;
     return instance;
@@ -50,36 +52,10 @@ public:
   void log(const std::string&);
   void log(int line, const std::string&);
   void render();
-
-private:
-  class TextTexture {
-  public:
-    TextTexture() {};
-    TextTexture(TTF_Font* font, GLint texture, const std::string& text);
-    void draw(int x, int y) {
-      if (!init_) return;
-      glBindTexture(GL_TEXTURE_2D, texture_);
-      glColor3f(1.f, 1.f, 1.f);  // The color is affected by glColor, unless glTexEnv is set with magic params
-      glBegin(GL_QUADS);
-      glTexCoord2f(0.f, 1.f); glVertex2f((float)x, (float)y);
-      glTexCoord2f(1.f, 1.f); glVertex2f((float)(x + w_), (float)y);
-      glTexCoord2f(1.f, 0.f); glVertex2f((float)(x + w_), (float)(y + h_));
-      glTexCoord2f(0.f, 0.f); glVertex2f((float)x, (float)(y + h_));
-      glEnd();
-    }
-  private:
-    GLuint texture_;
-    int w_;
-    int h_;
-    bool init_ = false;
-  };
-  LoggerOpenGl();
+  
   int max_lines_ = 10;
   int num_fixed_lines = 5;
-  std::list<TextTexture> lines_;
-  std::vector<TextTexture> fixed_lines_;
-  TTF_Font* font_ = nullptr;
-  std::vector<GLuint> textures_lines_;
-  std::vector<GLuint> textures_fixed_lines_;
-  int next_available_texture_line_index_ = 0;
+  std::list<std::string> lines_;
+  std::vector<std::string> fixed_lines_;
+  BitmapFont* bm_font_ = nullptr;
 };

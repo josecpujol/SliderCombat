@@ -3,7 +3,6 @@
 #include "Level.h"
 
 Hud::Hud(Level* level) : level_(level) {
-  font_health_ = ResourcesManager::getInstance().getFont(FontType::kPrototype, 40);
   glGenTextures(1, &texture_health_);
 }
 

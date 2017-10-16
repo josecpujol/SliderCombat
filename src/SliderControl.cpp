@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "SDL.h"
+#include "ResourcesManager.h"
 
 SliderCommands ManualSliderControl::getCommands() {
   SliderCommands commands;
@@ -36,6 +37,25 @@ SliderCommands ManualSliderControl::getCommands() {
   if (keys[SDL_SCANCODE_SPACE]) {
     commands.fire = true;
   }
+
+  // Joystick
+  const JoystickState* joystick_state = ResourcesManager::getInstance().getJoystickState();
+  if (joystick_state && joystick_state->buttons.size() > 6) {
+    if (joystick_state->buttons[0]) commands.right_thruster_right = true;
+    if (joystick_state->buttons[1]) commands.right_thruster_backwards = true;
+    if (joystick_state->buttons[2]) commands.right_thruster_foward = true;
+    if (joystick_state->buttons[3]) commands.right_thruster_left = true;
+
+    if (joystick_state->buttons[4] || joystick_state->buttons[5]) commands.fire = true;
+    
+    if (joystick_state->up) commands.left_thruster_foward = true;
+    if (joystick_state->down) commands.left_thruster_backwards = true;
+    if (joystick_state->right) commands.left_thruster_right = true;
+    if (joystick_state->left) commands.left_thruster_left = true;
+
+  }
+
+
   return std::move(commands);
 }
 

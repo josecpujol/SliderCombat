@@ -26,29 +26,10 @@ TheGame::~TheGame() {
 
   window_.reset(nullptr);
   TTF_Quit();
-  SDL_JoystickClose(joystick_);
   SDL_Quit();
 }
 
 bool TheGame::init() {
-  
-  if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0) {
-    LOG_ERROR("Could not initialize gamecontroller");
-    return false;
-  }
-  int num_joysticks = SDL_NumJoysticks();
-  LOG_INFO("#joysticks found: " << num_joysticks);
-  for (int i = 0; i < num_joysticks; i++) {
-    LOG_DEBUG("Joystick " << i << ": " << SDL_JoystickNameForIndex(i));
-    joystick_ = SDL_JoystickOpen(i);
-    if (joystick_) {
-      LOG_INFO("Joystick found: " << SDL_JoystickName(joystick_));
-      break;
-    } else {
-      LOG_ERROR("Could not open joystick. Error: "  << SDL_GetError());
-    }
-  }
-
   // Text
   if (TTF_Init() < 0) {
     LOG_ERROR("Could not initialize text");
@@ -102,9 +83,6 @@ void TheGame::processEvents(const std::vector<SDL_Event>& events) {
     }
     if (e.type == SDL_JOYAXISMOTION) {
       LOG_DEBUG("Joy axis");
-    }
-    if (e.type == SDL_CONTROLLERBUTTONUP) {
-      LOG_DEBUG("Controller up axis");
     }
   }
 }
