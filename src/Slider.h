@@ -120,6 +120,6 @@ class SliderComputerEnemy : public Slider {
 public:
   SliderComputerEnemy() = delete;
   SliderComputerEnemy(const glm::vec2& pos, float rot) : Slider(GameObjectType::ComputerEnemy, pos, rot) {
-    control_ = std::make_unique<AiSliderControl>();
+    control_ = std::make_unique<AiSliderControl>(this);
   };
 };

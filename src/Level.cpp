@@ -61,7 +61,7 @@ void Level::updateRenderFlags(const Uint8* keys) {
 
 void Level::updateCameraSetup(const Uint8* keys) {
   if (keys[SDL_SCANCODE_1]) {
-    camera_.lookAt(glm::vec3(0, 0, 10), glm::vec3(30, 30, 0), glm::vec3(1, 1, 0));
+    camera_.lookAt(glm::vec3(44, 30, 120), glm::vec3(44, 44, 0), glm::vec3(0, 0, 1));
   }
   if (keys[SDL_SCANCODE_2]) {
     camera_.follow(local_player_.get(), glm::vec3(0, -5, 4), glm::vec3(0, 2, 2));  // Follow from behind
@@ -75,7 +75,6 @@ void Level::updateCameraSetup(const Uint8* keys) {
   if (keys[SDL_SCANCODE_5]) {
     camera_.testMode();  // follow from top
   }
-
 }
 
 void Level::update(uint32_t elapsed_us) {
@@ -248,7 +247,7 @@ void Level::render() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  gluPerspective(45.0f, ratio, 0.5f, 100.0f);
+  gluPerspective(45.0f, ratio, 0.5f, 130.0f);
 
   glMatrixMode(GL_MODELVIEW);
 
@@ -288,5 +287,5 @@ void Level::render() {
   }
 
   // Draw overlay: health, status
-  hud_->display();
+ // hud_->display();
 }

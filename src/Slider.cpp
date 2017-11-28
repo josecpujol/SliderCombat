@@ -108,8 +108,7 @@ void Slider::updateShotCooldown(uint32_t elapsed_us) {
 }
 
 void Slider::update(uint32_t elapsed_us) {
-  control_->update(elapsed_us);
-  current_command_ = control_->getCommands();
+  current_command_ = control_->update(elapsed_us);
   
   updateShotCooldown(elapsed_us);
   updateHitState(elapsed_us);

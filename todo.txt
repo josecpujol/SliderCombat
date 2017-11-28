@@ -1,11 +1,15 @@
-- health display: format to be decided
 - cooldown?
+- Gas?
 - more weapons?
 - menu
 - more levels
 - level transition
 - IA
-- sky
-- impact / explosions
-- power ups
+- power ups (double damage)
 - shadows
+- music / sound effects
+- joystick
+- network play
+- javascript compilation (done. pending: shaders, glMaterial, fonts)
+- bitmap fonts (emscripten)
+- android?

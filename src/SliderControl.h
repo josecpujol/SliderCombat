@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+#include "Time.h"
+class Slider;
+
 struct SliderCommands {
   bool left_thruster_foward = false;
   bool left_thruster_backwards = false;
@@ -18,16 +21,18 @@ struct SliderCommands {
 
 class SliderControl {
 public: 
-  virtual void update(uint32_t elapsed_us) = 0;
-  virtual SliderCommands getCommands() = 0;
+  virtual SliderCommands update(uint32_t elapsed_us) = 0;
 };
 
 class ManualSliderControl : public SliderControl {
-  void update(uint32_t elapsed_us) override {};
-  SliderCommands getCommands() override;
+  SliderCommands update(uint32_t elapsed_us) override;
 };
 
 class AiSliderControl : public SliderControl {
-  void update(uint32_t elapsed_us) override {};
-  SliderCommands getCommands() override;
+public:
+  AiSliderControl(Slider* slider) : slider_(slider) {};
+  SliderCommands update(uint32_t elapsed_us) override;
+private:
+  Duration elapsed_time_ = 0s;
+  Slider* slider_;
 };
