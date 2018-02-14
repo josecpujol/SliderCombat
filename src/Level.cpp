@@ -13,17 +13,17 @@
 #include "Map.h"
 
 Level::Level(Map* map) : map_(map) {
-  local_player_ = std::make_shared<SliderLocalPlayer>(map->getPlayerInitialPosition(), 0.0f);
+  local_player_ = std::make_shared<SliderLocalPlayer>(map->getPlayerInitialPose());
   // Add objects to the level
   objects_.push_back(local_player_);
-  auto enemy_positions = map->getInitialPositions("Enemy");
-  for (auto &enemy_position : enemy_positions) {
-    objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_position, 180.0f));
+  auto enemy_poses = map->getInitialPoses("Enemy");
+  for (auto &enemy_pose : enemy_poses) {
+    objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_pose));
   }
 
-  auto health_positions = map->getInitialPositions("Health");
-  for (auto &health_position : health_positions) {
-    objects_.push_back(std::make_shared<HealthPowerUp>(health_position));
+  auto health_poses = map->getInitialPoses("Health");
+  for (auto &health_pose : health_poses) {
+    objects_.push_back(std::make_shared<HealthPowerUp>(health_pose.position));
   }
 
 

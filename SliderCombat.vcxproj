@@ -224,6 +224,7 @@
     <ClInclude Include="src\OpenGlResources.h" />
     <ClInclude Include="src\OpenGlWindow.h" />
     <ClInclude Include="src\Physics.h" />
+    <ClInclude Include="src\Pose.h" />
     <ClInclude Include="src\PowerUps.h" />
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\ResourcesManager.h" />

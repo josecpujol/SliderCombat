@@ -5,15 +5,9 @@
 #include "SDL.h"
 #include "Math.h"
 #include "Collision.h"
+#include "Pose.h"
 
 enum class GameObjectType {Undefined, Projectile, LocalPlayer, ComputerEnemy, Explosion, HealthPowerup};
-
-struct Pose {
-  Pose(const glm::vec3& pos, float rot) : position(pos), rotation(rot) {}
-  Pose() = delete;
-  glm::vec3 position;
-  float rotation;
-};
 
 class GameObject {
 public:

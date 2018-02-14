@@ -17,7 +17,6 @@ Explosion::Explosion(const glm::vec3& pos, Duration duration, float max_speed, O
     pose.scale_end = 0.05f;
     particles_poses_.push_back(pose);
   }
-
 }
 
 void Explosion::render() {

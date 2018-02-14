@@ -190,6 +190,7 @@
     <ClInclude Include="src\PowerUps.h" />
     <ClInclude Include="src\SliderControl.h" />
     <ClInclude Include="src\BitmapFont.h" />
+    <ClInclude Include="src\Pose.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -4,6 +4,7 @@
 #include "Math.h"
 #include "Model3d.h"
 #include "Collision.h"
+#include "Pose.h"
 
 class GameObject;
 class Object3d;
@@ -30,8 +31,8 @@ public:
   Map() = default;
   bool load(const std::string& file);
   std::string serialize();
-  glm::vec2 getPlayerInitialPosition();
-  std::vector<glm::vec2> getInitialPositions(const std::string&);
+  Pose getPlayerInitialPose();
+  std::vector<Pose> getInitialPoses(const std::string&);
   void render();
   void renderCollisionArea();
   bool isCollision(const CollisionArea& collision_area, glm::vec2* collision_point, glm::vec2* normal);

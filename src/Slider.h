@@ -61,11 +61,11 @@ private:
 class Slider : public GameObject {
 public:
   Slider() = delete;
-  Slider(GameObjectType type, const glm::vec2& pos, float rot) : 
-    GameObject(type, glm::vec3(pos, 0.1), rot, 10.f) {
+  Slider(GameObjectType type, const Pose& pose) : 
+    GameObject(type, glm::vec3(glm::vec2(pose.position), 0.1), pose.rotation, 10.f) {
  //   Rectangle rect(pos, glm::vec2(2, 2), rot);
  //   setCollisionArea(CollisionArea(rect)); 
-    Circle circle(pos, 1);
+    Circle circle(glm::vec2(pose.position), 1);
     setCollisionArea(CollisionArea(circle));
   };
   void update(uint32_t elapsed_us) override;
@@ -111,7 +111,7 @@ private:
 class SliderLocalPlayer : public Slider {
 public:
   SliderLocalPlayer() = delete;
-  SliderLocalPlayer(const glm::vec2& pos, float rot) : Slider(GameObjectType::LocalPlayer, pos, rot) {
+  SliderLocalPlayer(const Pose& pose) : Slider(GameObjectType::LocalPlayer, pose) {
     control_ = std::make_unique<ManualSliderControl>();
   };
 };
@@ -119,7 +119,7 @@ public:
 class SliderComputerEnemy : public Slider {
 public:
   SliderComputerEnemy() = delete;
-  SliderComputerEnemy(const glm::vec2& pos, float rot) : Slider(GameObjectType::ComputerEnemy, pos, rot) {
+  SliderComputerEnemy(const Pose& pose) : Slider(GameObjectType::ComputerEnemy, pose) {
     control_ = std::make_unique<AiSliderControl>(this);
   };
 };

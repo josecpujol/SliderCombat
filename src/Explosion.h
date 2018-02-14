@@ -29,8 +29,7 @@ struct AnimatedPose {
 class Explosion : public GameObject {
 public:
   Explosion(const glm::vec3& pos, Duration duration, float speed, Object3d* particle);
-  ~Explosion() {
-  }
+  ~Explosion() = default;
 
   void render() override;
   void update(uint32_t elapsed_us) override;
