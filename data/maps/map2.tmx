@@ -32,11 +32,11 @@
 </data>
  </layer>
  <objectgroup name="StartPositions">
-  <object id="1" name="Enemy" x="180" y="243" width="4" height="6" rotation="180"/>
-  <object id="2" name="Player" x="173" y="106" width="5" height="4"/>
-  <object id="4" name="Health" x="46" y="175" width="3" height="4"/>
-  <object id="8" name="Health" x="304.5" y="175" width="3" height="4"/>
-  <object id="9" name="Health" x="175.5" y="47" width="3" height="4"/>
-  <object id="10" name="Health" x="175.5" y="303" width="3" height="4"/>
+  <object id="1" name="Enemy" x="176" y="253" width="1" height="1" rotation="-90"/>
+  <object id="2" name="Player" x="176" y="98" width="1" height="1" rotation="90"/>
+  <object id="4" name="Health" x="46" y="175" width="1" height="1"/>
+  <object id="8" name="Health" x="303.5" y="176" width="1" height="1"/>
+  <object id="9" name="Health" x="175.5" y="48" width="1" height="1"/>
+  <object id="10" name="Health" x="175.5" y="303" width="1" height="1"/>
  </objectgroup>
 </map>

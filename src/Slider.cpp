@@ -12,7 +12,7 @@ void Slider::shoot() {
   float rot_z = getRotation();
   glm::vec3 pos = getPosition();
   AddObjectEvent event(
-    new Projectile(pos + glm::vec3(applyRotation(glm::vec2(0.0, cannon_offset), rot_z), cannon_height), rot_z)
+    new Projectile(pos + glm::vec3(applyRotation(glm::vec2(cannon_offset, 0.f), rot_z), cannon_height), rot_z)
     );
 
   event.send();
@@ -128,9 +128,9 @@ void Slider::update(uint32_t elapsed_us) {
   glm::vec2 force(0);
 
   // Get force from propellers
-  for (int i = 0; i < 4; i++) {
-    torque += propellers_[i].getTorque();
-    force += propellers_[i].getForceVector();
+  for (auto& propeller : propellers_) {
+    torque += propeller.getTorque();
+    force += propeller.getForceVector();
   }
 
   // Get force from impacts

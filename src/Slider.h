@@ -83,24 +83,25 @@ protected:
 
   glm::vec2 global_speed_;  // global coordinates
   float angular_speed_ = 0.f;
-  const Duration shot_cooldown_duration_ = 200ms;
+  const Duration shot_cooldown_duration_{200ms};
   Duration shot_current_cooldown_{0s};
 
   Duration hit_duration_{0s};
 
-  Meter health_ = Meter(100, 100);
+  Meter health_{100, 100};
   Model3d* model_ = nullptr;
   Duration time_hit_duration_;
-  bool is_hit_ = false;
+  bool is_hit_{false};
 
   std::vector<Force> impacts_;  // local coordinates
 
-  Propeller propellers_[4] = {
-    {glm::vec2(-0.5, 0), glm::vec2(0, 1)},
-    {glm::vec2(-1, 0), glm::vec2(-1, 0)},
-    {glm::vec2(0.5, 0), glm::vec2(0, 1)},
-    {glm::vec2(1, 0), glm::vec2(1, 0)}
+  std::vector<Propeller> propellers_ = {
+    {glm::vec2(0, 0.5), glm::vec2(1, 0)},
+    {glm::vec2(0, 1), glm::vec2(0, 1)},
+    {glm::vec2(0, -0.5), glm::vec2(1, 0)},
+    {glm::vec2(0, -1), glm::vec2(0, -1)}
   };
+
 
 private:
   void onHit(Projectile* with, const glm::vec2& collision_point, glm::vec2* normal);

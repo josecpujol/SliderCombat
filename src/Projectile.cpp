@@ -18,7 +18,7 @@ void Projectile::update(uint32_t elapsed_us) {
  // model_->update(elapsed_us);
 
   // Positions wrt local system reference 
-  glm::vec2 vel_rel(0, vel_);
+  glm::vec2 vel_rel(vel_, 0.f);
   
   // update relative position
   glm::vec2 pos_rel = vel_rel * ((float)elapsed_us / 1000000);

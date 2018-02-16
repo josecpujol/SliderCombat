@@ -20,7 +20,7 @@ Level::Level(Map* map) : map_(map) {
   for (auto &enemy_pose : enemy_poses) {
     objects_.push_back(std::make_shared<SliderComputerEnemy>(enemy_pose));
   }
-
+  
   auto health_poses = map->getInitialPoses("Health");
   for (auto &health_pose : health_poses) {
     objects_.push_back(std::make_shared<HealthPowerUp>(health_pose.position));
@@ -64,13 +64,13 @@ void Level::updateCameraSetup(const Uint8* keys) {
     camera_.lookAt(glm::vec3(44, 30, 120), glm::vec3(44, 44, 0), glm::vec3(0, 0, 1));
   }
   if (keys[SDL_SCANCODE_2]) {
-    camera_.follow(local_player_.get(), glm::vec3(0, -5, 4), glm::vec3(0, 2, 2));  // Follow from behind
+    camera_.follow(local_player_.get(), glm::vec3(-5, 0, 4), glm::vec3(2, 0, 2));  // Follow from behind
   }
   if (keys[SDL_SCANCODE_3]) {
-    camera_.follow(local_player_.get(), glm::vec3(0, 0.2, 1), glm::vec3(0, 2, 1));  // subjective view
+    camera_.follow(local_player_.get(), glm::vec3(0.2, 0, 1), glm::vec3(2, 0, 1));  // subjective view
   }
   if (keys[SDL_SCANCODE_4]) {
-    camera_.follow(local_player_.get(), glm::vec3(0, -1, 50), glm::vec3(0, 10, 0));  // follow from top
+    camera_.follow(local_player_.get(), glm::vec3(-1, 0, 50), glm::vec3(10, 0, 0));  // follow from top
   }
   if (keys[SDL_SCANCODE_5]) {
     camera_.testMode();  // follow from top
