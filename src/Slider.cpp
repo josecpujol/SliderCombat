@@ -108,7 +108,7 @@ void Slider::updateShotCooldown(uint32_t elapsed_us) {
 }
 
 void Slider::update(uint32_t elapsed_us) {
-  current_command_ = control_->update(elapsed_us);
+  SliderCommands current_command = control_->update(elapsed_us);
   
   updateShotCooldown(elapsed_us);
   updateHitState(elapsed_us);
@@ -119,10 +119,10 @@ void Slider::update(uint32_t elapsed_us) {
 
   bool fire_event = false;
 
-  propellers_[0].update(current_command_.left_thruster_foward, current_command_.left_thruster_backwards);
-  propellers_[1].update(current_command_.left_thruster_left, current_command_.left_thruster_right);
-  propellers_[2].update(current_command_.right_thruster_foward, current_command_.right_thruster_backwards);
-  propellers_[3].update(current_command_.right_thruster_right, current_command_.right_thruster_left);
+  propellers_[0].update(current_command.left_thruster_foward, current_command.left_thruster_backwards);
+  propellers_[1].update(current_command.left_thruster_left, current_command.left_thruster_right);
+  propellers_[2].update(current_command.right_thruster_foward, current_command.right_thruster_backwards);
+  propellers_[3].update(current_command.right_thruster_right, current_command.right_thruster_left);
 
   float torque = 0;
   glm::vec2 force(0);
@@ -143,10 +143,9 @@ void Slider::update(uint32_t elapsed_us) {
   applyForceAndTorque(torque, force, elapsed_secs);
 
   // Fire after we have updated the position and rotation
-  if (current_command_.fire && canShoot()) {
+  if (current_command.fire && canShoot()) {
     shoot();
   }
-
 };
 
 void Slider::render() {

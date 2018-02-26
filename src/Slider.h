@@ -35,7 +35,8 @@ public:
   }
 
   void update(bool direct_command, bool reverse_command) {
-    if (direct_command) direct();
+    if (direct_command && reverse_command) neutral();
+    else if (direct_command) direct();
     else if (reverse_command) reverse();
     else neutral();
   }
@@ -77,7 +78,6 @@ public:
 
 protected:
   std::unique_ptr<SliderControl> control_;
-  SliderCommands current_command_;  // updated every frame from control
   void applyForceAndTorque(const float torque, glm::vec2 force, float elapsed_secs);
   void shoot();
 

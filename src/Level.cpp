@@ -287,5 +287,5 @@ void Level::render() {
   }
 
   // Draw overlay: health, status
- // hud_->display();
+  hud_->display();
 }

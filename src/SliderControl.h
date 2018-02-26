@@ -1,8 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <sstream>
 
 #include "Time.h"
+#include "Math.h"
+
 class Slider;
 
 struct SliderCommands {
@@ -17,6 +20,8 @@ struct SliderCommands {
   bool right_thruster_right = false;
 
   bool fire = false;
+
+  SliderCommands& operator+=(const SliderCommands& rhs);
 };
 
 class SliderControl {
@@ -33,6 +38,8 @@ public:
   AiSliderControl(Slider* slider) : slider_(slider) {};
   SliderCommands update(uint32_t elapsed_us) override;
 private:
+  SliderCommands rotateTo(const glm::vec2& to);
+  SliderCommands moveTo(const glm::vec2& to);
   Duration elapsed_time_ = 0s;
   Slider* slider_;
 };
