@@ -18,6 +18,8 @@ public:
   std::string getName() const { return name_; }
 
   void render();
+  void renderVolumeShadow(const glm::mat4& model, const glm::vec4& light_pos);
+
 private:
   std::vector<float> vertices_buffer_;
   std::vector<float> normals_buffer_;
@@ -28,17 +30,33 @@ private:
 
 class Object3dHolder {
 public:
-  void setRotationZ(float degrees) { rotation_.z = degrees; }
-  void setRotation(glm::vec3 degrees) { rotation_ = degrees; }
-  void setTranslation(glm::vec3 translation) { translation_ = translation; }
+  void setRotationZ(float degrees) { 
+    rotation_.z = degrees;
+    invalidate_model_mat_ = true;
+  }
+  void setRotation(glm::vec3 degrees) { 
+    rotation_ = degrees;
+    invalidate_model_mat_ = true;
+  }
+  void setTranslation(glm::vec3 translation) { 
+    translation_ = translation; 
+    invalidate_model_mat_ = true;
+  }
   void setObject3d(Object3d* obj) { object_ = obj;  }
-  void setScale(glm::vec3 scale) { scale_ = scale; }
-  void render();
+  void setScale(glm::vec3 scale) { 
+    scale_ = scale;
+    invalidate_model_mat_ = true;
+  }
+  void render(bool render_shadow);
 private:
+  void calculateModelMatrix();
+
   Object3d* object_ = nullptr;
   glm::vec3 rotation_ = glm::vec3(0.f);
   glm::vec3 translation_ = glm::vec3(0.f);
   glm::vec3 scale_ = glm::vec3(1.0);
+  glm::mat4 model_mat_;
+  bool invalidate_model_mat_ = true;
 };
 
 /* 

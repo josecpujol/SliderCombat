@@ -106,7 +106,6 @@ void TheGame::oneIteration() {
   Duration render_duration = measureFunction([this] {
     stage_->render();
     LoggerOpenGl::getInstance().render();
-    glFinish();
   });
 
   Duration display_duration = measureFunction([this] {
@@ -132,8 +131,10 @@ void TheGame::oneIteration() {
   if (counter_ % counter_max == 0) {
     LOG_SCREEN_N(0, "Fps: " << (1000 * stats.frames_rendered) / toMs(Clock::now() - stats.reset_time));
     LOG_SCREEN_N(1, "Avg triangles rendered: " << stats.num_triangles / counter_max);
-    LOG_SCREEN_N(2, "Avg render time ms: " << stats.time_to_render_ms / counter_max);
-    LOG_SCREEN_N(3, "Avg update time ms: " << stats.time_to_update_ms / counter_max);
+    LOG_SCREEN_N(2, "Avg objects rendered: " << stats.num_objects / counter_max);
+    LOG_SCREEN_N(3, "Avg render time ms: " << stats.time_to_render_ms / counter_max);
+    LOG_SCREEN_N(4, "Avg update time ms: " << stats.time_to_update_ms / counter_max);
+
     stats.reset();
   }
 }

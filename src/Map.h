@@ -19,7 +19,7 @@ struct Tile {
   }
   CollisionArea collision_area;
   Object3dHolder object3d;
-  void render() { object3d.render(); }
+  void render() { object3d.render(false); }
 };
 
 /**

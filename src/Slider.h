@@ -68,6 +68,7 @@ public:
  //   setCollisionArea(CollisionArea(rect)); 
     Circle circle(glm::vec2(pose.position), 1);
     setCollisionArea(CollisionArea(circle));
+    model_.setObject3d(ResourcesManager::getInstance().getModel3d(ModelType::kTank)->getObject3d("tank"));
   };
   void update(uint32_t elapsed_us) override;
   void render() override;
@@ -89,7 +90,7 @@ protected:
   Duration hit_duration_{0s};
 
   Meter health_{100, 100};
-  Model3d* model_ = nullptr;
+  Object3dHolder model_;
   Duration time_hit_duration_;
   bool is_hit_{false};
 

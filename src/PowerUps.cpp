@@ -57,7 +57,7 @@ void PowerUp::update(uint32_t elapsed_us) {
 
 void PowerUp::render() {
   if (is_visible_) {
-    base_model_.render();
-    powerup_model_.render();
+    base_model_.render(false);
+    powerup_model_.render(false);
   }
 }

@@ -11,23 +11,48 @@ Object3d::~Object3d() {
   glDeleteBuffers(1, &ogl_buffer_vertex_attribs_);
 }
 
+void Object3dHolder::calculateModelMatrix() {
+  if (!invalidate_model_mat_) return;
 
-void Object3dHolder::render() {
+  model_mat_ = glm::translate(translation_);
+  model_mat_ = glm::scale(model_mat_, scale_);
+  model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.x), glm::vec3(1.f, 0.f, 0.f));
+  model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.y), glm::vec3(0.f, 1.f, 0.f));
+  model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.z), glm::vec3(0.f, 0.f, 1.f));
+  invalidate_model_mat_ = false;
+}
+
+void Object3dHolder::render(bool render_shadow) {
   glPushMatrix();
-  glTranslated(translation_.x, translation_.y, translation_.z);
-
-  glScalef(scale_.x, scale_.y, scale_.z);
-  glRotatef(rotation_.x, 1, 0, 0);
-  glRotatef(rotation_.y, 0, 1, 0);
-  glRotatef(rotation_.z, 0, 0, 1);
-
+  calculateModelMatrix();
+  glMultMatrixf(glm::value_ptr(model_mat_));
   object_->render();
+  if (render_shadow) {
+  //  object_->renderVolumeShadow(model_mat_, glm::vec4(0, 0, 20, 1));
+  }
   glPopMatrix();
+}
+
+void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& ligth_pos) {
+  // By now, model_mat_ has the correct value
+  glm::vec4 new_light_pos =  glm::inverse(model_mat) * ligth_pos;
+
+  glm::vec3 direction_vector;
+  glBegin(GL_LINES);
+  for (int i = 0; i < vertices_buffer_.size(); i+=3) {
+    glm::vec3 vertex(vertices_buffer_[i], vertices_buffer_[i + 1], vertices_buffer_[i + 2]);
+    direction_vector = new_light_pos.w == 0 ? new_light_pos : glm::normalize(vertex - glm::vec3(new_light_pos));
+    glVertex3f(vertex.x, vertex.y, vertex.z);
+    glm::vec3 dest = vertex + direction_vector * 5.f;
+    glVertex3f(dest.x, dest.y, dest.z);
+  }
+  glEnd();
 }
 
 // Dont push the matrix!!
 void Object3d::render() {
   int num_triangles = (int)vertices_buffer_.size() / 3;
+  Stats::getInstance().num_objects++;
   Stats::getInstance().num_triangles += num_triangles;
 
   glEnable(GL_COLOR_MATERIAL);

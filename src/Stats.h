@@ -9,6 +9,7 @@ public:
 
   void reset() {
     num_triangles = 0;
+    num_objects = 0;
     time_to_render_ms = 0;
     time_to_update_ms = 0;
     frames_rendered = 0;
@@ -21,6 +22,7 @@ public:
   }
 
   int num_triangles = 0;
+  int num_objects = 0;
   int time_to_render_ms = 0;
   int time_to_update_ms = 0;
   int frames_rendered = 0;

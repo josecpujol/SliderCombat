@@ -24,7 +24,7 @@ void Explosion::render() {
     particle_.setTranslation(pose.pos);
     particle_.setRotation(pose.rotation);
     particle_.setScale(glm::vec3(pose.scale));
-    particle_.render();  // will save and restore the modelview matrices
+    particle_.render(true);  // will save and restore the modelview matrices
   }
 }
 

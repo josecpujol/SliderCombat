@@ -160,14 +160,9 @@ void Slider::render() {
   }
 #endif
 
-  glm::vec3 pos = getPosition();
-  glTranslatef(pos.x, pos.y, pos.z);
-
-  glRotatef(getRotation(), 0, 0, 1);
-  if (!model_) {  // lazy instantiation
-    model_ = ResourcesManager::getInstance().getModel3d(ModelType::kTank);
-  }
-  model_->render();
+  model_.setTranslation(getPosition());
+  model_.setRotationZ(getRotation());
+  model_.render(true);
 
 #ifndef __EMSCRIPTEN__
   if (is_hit_) {
