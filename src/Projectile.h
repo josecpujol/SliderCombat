@@ -20,5 +20,5 @@ private:
   // m/s
   float vel_ = 20.0;
   int damage_ = 5;
-  Object3d* model_ = nullptr;
+  Object3dHolder model_;
 };
