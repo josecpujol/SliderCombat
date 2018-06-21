@@ -258,6 +258,7 @@ void Level::render() {
   glShadeModel(GL_FLAT);
   glLoadIdentity();
   camera_.apply();
+
 #ifndef __EMSCRIPTEN__
   setOpenGlLights();
 #endif
@@ -274,16 +275,13 @@ void Level::render() {
   collision_points_.erase(std::remove_if(collision_points_.begin(), collision_points_.end(),
     [](const VectorWithTimer& o) {return o.expiration < Clock::now(); }), collision_points_.end());
 
-
   if (render_objects_) map_->render();
   if (render_collision_area_) map_->renderCollisionArea();
 
   // Draw objects
   for (auto obj : objects_) {
-    glPushMatrix();
     if (render_collision_area_) obj->renderCollisionArea();
     if (render_objects_) obj->render();
-    glPopMatrix();
   }
 
   // Draw overlay: health, status

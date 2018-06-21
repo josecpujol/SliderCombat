@@ -11,7 +11,7 @@ Projectile::Projectile(glm::vec3 pos, float rot) : GameObject(GameObjectType::Pr
   c.radius = 0.15f;
   setCollisionArea(CollisionArea(c));
   //model_ = new FireModel3d();
-  model_ = ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_projectile");
+  model_.setObject3d(ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_projectile"));
 };
 
 void Projectile::update(uint32_t elapsed_us) {
@@ -50,11 +50,8 @@ void Projectile::onCollision(GameObject* with, const glm::vec2& collision_point,
 }
 
 void Projectile::render() {
-  glm::vec3 pos = getPosition();
-  float rot_z = getRotation();
-
-  glTranslatef(pos.x, pos.y, pos.z);
-  glRotated((float)rot_z, 0, 0, 1);
-  glScalef(0.15f, 0.15f, 0.15f);
-  model_->render();
+  model_.setTranslation(getPosition());
+  model_.setRotationZ(getRotation());
+  model_.setScale(glm::vec3(0.15f));
+  model_.render();
 }
