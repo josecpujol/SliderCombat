@@ -13,7 +13,7 @@ public:
   Object3d(const std::string& name);
   ~Object3d();
   // color: 3 components
-  void setData(const std::vector<float>& vertices, const std::vector<float>& normals, const std::vector<float>& colors);
+  void setData(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors);
   int getNumberTriangles() const { return (int)vertices_buffer_.size() / 3; }
   std::string getName() const { return name_; }
 
@@ -21,9 +21,9 @@ public:
   void renderVolumeShadow(const glm::mat4& model, const glm::vec4& light_pos);
 
 private:
-  std::vector<float> vertices_buffer_;
-  std::vector<float> normals_buffer_;
-  std::vector<float> colors_buffer_;
+  std::vector<glm::vec3> vertices_buffer_;
+  std::vector<glm::vec3> normals_buffer_;
+  std::vector<glm::vec3> colors_buffer_;
   std::string name_;
   GLuint ogl_buffer_vertex_attribs_ = 0;
 };
@@ -32,20 +32,20 @@ class Object3dHolder {
 public:
   void setRotationZ(float degrees) { 
     rotation_.z = degrees;
-    invalidate_model_mat_ = true;
+    valid_model_mat_ = false;
   }
   void setRotation(glm::vec3 degrees) { 
     rotation_ = degrees;
-    invalidate_model_mat_ = true;
+    valid_model_mat_ = false;
   }
   void setTranslation(glm::vec3 translation) { 
     translation_ = translation; 
-    invalidate_model_mat_ = true;
+    valid_model_mat_ = false;
   }
   void setObject3d(Object3d* obj) { object_ = obj;  }
   void setScale(glm::vec3 scale) { 
     scale_ = scale;
-    invalidate_model_mat_ = true;
+    valid_model_mat_ = false;
   }
   void render(bool render_shadow);
 private:
@@ -56,7 +56,7 @@ private:
   glm::vec3 translation_ = glm::vec3(0.f);
   glm::vec3 scale_ = glm::vec3(1.0);
   glm::mat4 model_mat_;
-  bool invalidate_model_mat_ = true;
+  bool valid_model_mat_ = false;
 };
 
 /* 

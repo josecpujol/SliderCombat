@@ -110,7 +110,6 @@ void TheGame::oneIteration() {
 
   Duration display_duration = measureFunction([this] {
     window_->display();
-
   });
   stats.time_to_render_ms += toMs(render_duration);
   stats.frames_rendered++;
@@ -127,7 +126,7 @@ void TheGame::oneIteration() {
   << ", render: " << toMs(render_duration)
   << ", display: " << toMs(display_duration));
   // } */
-  int counter_max = 100;
+  int counter_max = 30;
   if (counter_ % counter_max == 0) {
     LOG_SCREEN_N(0, "Fps: " << (1000 * stats.frames_rendered) / toMs(Clock::now() - stats.reset_time));
     LOG_SCREEN_N(1, "Avg triangles rendered: " << stats.num_triangles / counter_max);
