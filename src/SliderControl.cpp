@@ -88,7 +88,6 @@ SliderCommands AiSliderControl::rotateTo(const glm::vec2& point_to) {
   float error_orientation = angle_deg - current_rot;
   if (error_orientation > 180) error_orientation -= 360;
   if (error_orientation < -180) error_orientation += 360;
-  LOG_DEBUG(error_orientation);
   float epsilon = 1;
   if (error_orientation > epsilon) {
     commands.right_thruster_foward = true;

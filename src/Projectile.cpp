@@ -53,5 +53,5 @@ void Projectile::render() {
   model_.setTranslation(getPosition());
   model_.setRotationZ(getRotation());
   model_.setScale(glm::vec3(0.15f));
-  model_.render();
+  model_.render(true);
 }
