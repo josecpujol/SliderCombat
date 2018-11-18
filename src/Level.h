@@ -4,10 +4,10 @@
 #include <memory>
 
 #include "SDL.h"
-#include "GameObject.h"
+#include "gameobjects/GameObject.h"
 #include "EventManager.h"
 #include "Camera.h"
-#include "Slider.h"
+#include "gameobjects/Slider.h"
 #include "Hud.h"
 //#include "EventListener.h"
 

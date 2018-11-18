@@ -5,8 +5,8 @@
 
 #include "SDL.h"
 #include "ResourcesManager.h"
-#include "Slider.h"
-#include "Logger.h"
+#include "gameobjects/Slider.h"
+#include "utils/Logger.h"
 
 SliderCommands& SliderCommands::operator+=(const SliderCommands& rhs) {
   this->fire = this->fire || rhs.fire;

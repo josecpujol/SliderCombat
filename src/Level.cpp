@@ -6,10 +6,10 @@
 #include "OpenGlResources.h"
 
 #include "ResourcesManager.h"
-#include "Logger.h"
-#include "Projectile.h"
-#include "Explosion.h"
-#include "PowerUps.h"
+#include "utils/Logger.h"
+#include "gameobjects/Projectile.h"
+#include "gameobjects/Explosion.h"
+#include "gameobjects/PowerUps.h"
 #include "Map.h"
 
 Level::Level(Map* map) : map_(map) {

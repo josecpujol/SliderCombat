@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "Model3d.h"
 #include "ResourcesManager.h"
-#include "Time.h"
+#include "utils/Time.h"
 
 class PowerUp : public GameObject {
 public:

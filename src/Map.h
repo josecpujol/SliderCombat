@@ -3,7 +3,7 @@
 #include "Tmx.h"
 #include "Math.h"
 #include "Model3d.h"
-#include "Collision.h"
+#include "mathnphysics/Collision.h"
 #include "Pose.h"
 
 class GameObject;

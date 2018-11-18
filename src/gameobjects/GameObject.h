@@ -3,8 +3,8 @@
 #include <deque>
 
 #include "SDL.h"
-#include "Math.h"
-#include "Collision.h"
+#include "mathnphysics/Math.h"
+#include "mathnphysics/Collision.h"
 #include "Pose.h"
 
 enum class GameObjectType {Undefined, Projectile, LocalPlayer, ComputerEnemy, Explosion, HealthPowerup};

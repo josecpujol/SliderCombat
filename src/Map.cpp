@@ -2,8 +2,8 @@
 
 #include <sstream>
 
-#include "Logger.h"
-#include "GameObject.h"
+#include "utils/Logger.h"
+#include "gameobjects/GameObject.h"
 #include "Model3d.h"
 #include "ResourcesManager.h"
 #include "OpenGlResources.h"

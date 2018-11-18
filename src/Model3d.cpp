@@ -1,6 +1,6 @@
 #include "Model3d.h"
-#include "Logger.h"
-#include "Stats.h"
+#include "utils/Logger.h"
+#include "utils/Stats.h"
 
 Object3d::Object3d(const std::string& name) : name_(name) {
   glGenBuffers(1, &ogl_buffer_vertex_attribs_);

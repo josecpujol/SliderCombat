@@ -6,9 +6,9 @@
 
 #include "OpenGlResources.h"
 #include "ResourcesManager.h"
-#include "Logger.h"
-#include "Time.h"
-#include "Stats.h"
+#include "utils/Logger.h"
+#include "utils/Time.h"
+#include "utils/Stats.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

@@ -1,6 +1,6 @@
 
 #include "GeometryTest.h"
-#include "../src/Geometry.h"
+#include "mathnphysics/Geometry.h"
 
 bool AreSame(float a, float b) {
   return fabs(a - b) < 0.01f;

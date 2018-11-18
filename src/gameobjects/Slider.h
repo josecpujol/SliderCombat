@@ -4,12 +4,12 @@
 
 #include <vector>
 
-#include "GameObject.h"
-#include "Time.h"
-#include "Math.h"
+#include "gameobjects/GameObject.h"
+#include "gameobjects/SliderControl.h"
+#include "utils/Time.h"
+#include "mathnphysics/Math.h"
+#include "mathnphysics/Physics.h"
 #include "ResourcesManager.h"
-#include "Physics.h"
-#include "SliderControl.h"
 
 class Projectile;
 

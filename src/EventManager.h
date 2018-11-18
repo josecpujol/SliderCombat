@@ -4,8 +4,8 @@
 #include <map>
 #include <vector>
 
-#include "GameObject.h"
-#include "Logger.h"
+#include "gameobjects/GameObject.h"
+#include "utils/Logger.h"
 
 
 class Event;

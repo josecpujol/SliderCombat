@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math.h"
+#include "mathnphysics/Math.h"
 
 class GameObject;
 

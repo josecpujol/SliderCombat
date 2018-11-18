@@ -5,7 +5,7 @@
 
 #include <GL/glew.h>
 #include <GL/glu.h>
-#include "Math.h"
+#include "mathnphysics/Math.h"
 
 class OpenGlProgram {
 public:

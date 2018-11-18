@@ -2,9 +2,9 @@
 
 #include "OpenGlResources.h"
 
-#include "Logger.h"
+#include "utils/Logger.h"
 #include "EventManager.h"
-#include "Explosion.h"
+#include "gameobjects/Explosion.h"
 
 Projectile::Projectile(glm::vec3 pos, float rot) : GameObject(GameObjectType::Projectile, pos, rot, 1.f) {
   Circle c;

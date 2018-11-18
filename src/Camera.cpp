@@ -1,7 +1,7 @@
 #include "Camera.h"
-#include "GameObject.h"
+#include "gameobjects/GameObject.h"
 #include "OpenGlResources.h"
-#include "Math.h"
+#include "mathnphysics/Math.h"
 
 
 void Camera::follow(GameObject* object, glm::vec3 eye_offset, glm::vec3 center_offset) {

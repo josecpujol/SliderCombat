@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;USE_MINIZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
@@ -123,7 +123,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/ext/tinyxml;$(ProjectDir)/ext/tmxparser;$(ProjectDir)/ext/tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;USE_MINIZ;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
@@ -158,31 +158,31 @@
     <ClCompile Include="ext\tmxparser\TmxTileOffset.cpp" />
     <ClCompile Include="ext\tmxparser\TmxTileset.cpp" />
     <ClCompile Include="ext\tmxparser\TmxUtil.cpp" />
+    <ClCompile Include="src\mathnphysics\Collision.cpp" />
+    <ClCompile Include="src\mathnphysics\Physics.cpp" />
+    <ClCompile Include="src\mathnphysics\Math.cpp" />
+    <ClCompile Include="src\mathnphysics\Geometry.cpp" />
+    <ClCompile Include="src\gameobjects\Explosion.cpp" />
+    <ClCompile Include="src\gameobjects\GameObject.cpp" />
+    <ClCompile Include="src\gameobjects\PowerUps.cpp" />
+    <ClCompile Include="src\gameobjects\Projectile.cpp" />
+    <ClCompile Include="src\gameobjects\Slider.cpp" />
+    <ClCompile Include="src\gameobjects\SliderControl.cpp" />
+    <ClCompile Include="src\utils\Logger.cpp" />
+    <ClCompile Include="src\utils\Stats.cpp" />
+    <ClCompile Include="src\utils\Time.cpp" />
     <ClCompile Include="src\BitmapFont.cpp" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Collision.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
-    <ClCompile Include="src\Explosion.cpp" />
-    <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\Hud.cpp" />
     <ClCompile Include="src\Level.cpp" />
-    <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Map.cpp" />
-    <ClCompile Include="src\Math.cpp" />
     <ClCompile Include="src\Model3d.cpp" />
     <ClCompile Include="src\OpenGlResources.cpp" />
     <ClCompile Include="src\OpenGlWindow.cpp" />
-    <ClCompile Include="src\Physics.cpp" />
-    <ClCompile Include="src\PowerUps.cpp" />
-    <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\ResourcesManager.cpp" />
-    <ClCompile Include="src\Slider.cpp" />
-    <ClCompile Include="src\SliderControl.cpp" />
-    <ClCompile Include="src\Stats.cpp" />
     <ClCompile Include="src\TheGame.cpp" />
-    <ClCompile Include="src\Time.cpp" />
     <ClCompile Include="test\GeometryTest.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,9 @@
 #include "Slider.h"
 
-#include "Logger.h"
+#include "utils/Logger.h"
 #include "EventManager.h"
-#include "Math.h"
-#include "Projectile.h"
+#include "mathnphysics/Math.h"
+#include "gameobjects/Projectile.h"
 
 
 void Slider::shoot() {

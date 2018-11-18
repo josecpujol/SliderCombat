@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <sstream>
 
-#include "Time.h"
-#include "Math.h"
+#include "utils/Time.h"
+#include "mathnphysics/Math.h"
 
 class Slider;
 

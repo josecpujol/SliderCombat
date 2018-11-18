@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GameObject.h"
-#include "Time.h"
-#include "Logger.h"
+#include "gameobjects/GameObject.h"
+#include "utils/Time.h"
+#include "utils/Logger.h"
 
 struct AnimatedPose {
   glm::vec3 pos_init;
