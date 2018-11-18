@@ -1,7 +1,7 @@
 #include "ResourcesManager.h"
 #include "SDL.h"
 #include "SDL_image.h"
-#include "./Logger.h"
+#include "utils/Logger.h"
 
 
 void ResourcesManager::setWindowDimensions(int w, int h) {

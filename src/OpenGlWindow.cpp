@@ -1,6 +1,6 @@
 #include "OpenGlWindow.h"
 
-#include "Logger.h"
+#include "utils/Logger.h"
 #include "ResourcesManager.h"
 
 OpenGlWindow::~OpenGlWindow() {

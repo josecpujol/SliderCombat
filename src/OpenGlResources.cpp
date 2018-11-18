@@ -1,6 +1,6 @@
 #include "OpenGlResources.h"
 
-#include "Logger.h"
+#include "utils/Logger.h"
 
 
 OpenGlProgram::OpenGlProgram(const char* vertex_shader_source, const char* fragment_shader_source) {
