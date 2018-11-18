@@ -52,7 +52,7 @@ void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& l
     std::array<glm::vec3, 3> projection_triangle;
     for (int i = 0; i < 3; i++) {
       glm::vec3 vertex = original_triangle[i];
-      direction_vector = new_light_pos.w == 0 ? new_light_pos : glm::normalize(vertex - glm::vec3(new_light_pos));
+      direction_vector = new_light_pos.w == 0 ? glm::vec3(new_light_pos) : glm::normalize(vertex - glm::vec3(new_light_pos));
       projection_triangle[i] = vertex + direction_vector * 50.f;
     }
 

@@ -23,7 +23,7 @@ Level::Level(Map* map) : map_(map) {
   
   auto health_poses = map->getInitialPoses("Health");
   for (auto &health_pose : health_poses) {
-    objects_.push_back(std::make_shared<HealthPowerUp>(health_pose.position));
+    objects_.push_back(std::make_shared<HealthPowerUp>(glm::vec2(health_pose.position)));
   }
 
 

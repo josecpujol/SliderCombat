@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Tmx.h"
-#include "Math.h"
+#include "mathnphysics/Math.h"
 #include "Model3d.h"
 #include "mathnphysics/Collision.h"
 #include "Pose.h"

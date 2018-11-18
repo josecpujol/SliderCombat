@@ -14,7 +14,7 @@ endif(EMSCRIPTEN)
 
 SET(GLM_INCLUDE_DIRS "/usr/include/glm")
 
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser" )
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} "src" "ext/tinyobjloader" "ext/tinyxml" "ext/tmxparser" )
 
 FILE(GLOB_RECURSE MySources ext/*.cpp ext/*.c src/*.cpp test/*.cpp)
 
