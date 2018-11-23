@@ -3,7 +3,7 @@
 #include <thread>
 #include <algorithm>
 
-#include "OpenGlResources.h"
+#include "graphics/OpenGlResources.h"
 
 #include "ResourcesManager.h"
 #include "utils/Logger.h"

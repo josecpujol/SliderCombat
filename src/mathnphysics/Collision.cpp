@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "OpenGlResources.h"
+#include "graphics/OpenGlResources.h"
 
 void CollisionArea::setPosition(const glm::vec2& pos) {
   switch (type_) {

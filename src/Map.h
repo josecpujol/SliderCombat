@@ -2,7 +2,7 @@
 
 #include "Tmx.h"
 #include "mathnphysics/Math.h"
-#include "Model3d.h"
+#include "graphics/Model3d.h"
 #include "mathnphysics/Collision.h"
 #include "Pose.h"
 

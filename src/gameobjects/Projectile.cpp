@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-#include "OpenGlResources.h"
+#include "graphics/OpenGlResources.h"
 
 #include "utils/Logger.h"
 #include "EventManager.h"

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "SDL.h"
-#include "OpenGlWindow.h"
+#include "graphics/OpenGlWindow.h"
 #include "Level.h"
 
 class TheGame {

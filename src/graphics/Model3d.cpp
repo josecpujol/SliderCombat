@@ -4,7 +4,6 @@
 
 Object3d::Object3d(const std::string& name) : name_(name) {
   glGenBuffers(1, &ogl_buffer_vertex_attribs_);
-
 }
 
 Object3d::~Object3d() {

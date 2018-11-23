@@ -4,9 +4,9 @@
 
 #include "utils/Logger.h"
 #include "gameobjects/GameObject.h"
-#include "Model3d.h"
+#include "graphics/Model3d.h"
 #include "ResourcesManager.h"
-#include "OpenGlResources.h"
+#include "graphics/OpenGlResources.h"
 
 constexpr char kUnitsPerTile[] = "unitspertile";
 constexpr char kCollidableProperty[] = "collidable";

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Model3d.h"
+#include "graphics/Model3d.h"
 #include "ResourcesManager.h"
 #include "utils/Time.h"
 

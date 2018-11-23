@@ -1,12 +1,11 @@
 #pragma once
 
 #include <memory>
-#include "Model3d.h"
 #include "Map.h"
 #include "SDL_ttf.h"
-#include "BitmapFont.h"
-#include "OpenGlResources.h"
-
+#include "graphics/BitmapFont.h"
+#include "graphics/OpenGlResources.h"
+#include "graphics/Model3d.h"
 
 enum class ModelType {
   kTiles,

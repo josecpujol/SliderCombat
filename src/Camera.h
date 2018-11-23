@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mathnphysics/Math.h"
+#include "graphics/OpenGlResources.h"
 
 class GameObject;
 

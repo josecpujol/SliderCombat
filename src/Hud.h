@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ResourcesManager.h"
-#include "OpenGlResources.h"
+#include "graphics/OpenGlResources.h"
 
 class Level;
 

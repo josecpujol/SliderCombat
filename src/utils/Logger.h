@@ -5,7 +5,7 @@
 #include <list>
 
 #include "ResourcesManager.h"
-#include "OpenGlResources.h"
+#include "graphics/OpenGlResources.h"
 
 enum class LogLevel {
   kError,
