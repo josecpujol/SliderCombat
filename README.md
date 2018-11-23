@@ -23,9 +23,16 @@ In order for the program to load, it has to be in the root directory of the proj
 ### Windows
 Open `SliderCombat.sln` in Visual Studio 2017
 
-### Compile to Javascript
+### Compile to HTML/Javascript
+Install emscripten (tested with 1.38.20)
+Compilation:
+```
+./build_html
+```
 
-
+Execution:
+* Serve the content inside `build_html` with a HTTP server (like `python -m SimpleHTTPServer`) 
+* Open the page `http://127.0.0.1:8000/SliderCombat.html`
 
 ## Libraries and resources used
 * tinyobjloader, by Syoyo Fujita. https://github.com/syoyo/tinyobjloader

@@ -1,2 +1,4 @@
 packages/*
 x64/*
+build_native/
+build_html/
