@@ -27,6 +27,7 @@ struct SliderCommands {
 class SliderControl {
 public: 
   virtual SliderCommands update(uint32_t elapsed_us) = 0;
+  virtual ~SliderControl() = 0;
 };
 
 class ManualSliderControl : public SliderControl {

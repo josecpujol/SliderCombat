@@ -8,6 +8,8 @@
 #include "gameobjects/Slider.h"
 #include "utils/Logger.h"
 
+SliderControl::~SliderControl() {}
+
 SliderCommands& SliderCommands::operator+=(const SliderCommands& rhs) {
   this->fire = this->fire || rhs.fire;
 
