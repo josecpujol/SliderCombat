@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "Map.h"
-#include "SDL_ttf.h"
+#include "SDL_joystick.h"
 #include "graphics/BitmapFont.h"
 #include "graphics/OpenGlResources.h"
 #include "graphics/Model3d.h"

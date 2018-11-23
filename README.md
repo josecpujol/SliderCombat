@@ -1,12 +1,30 @@
 # SliderCombat
 
-## Compilation instructions
+## Compilation instructions and execution
 ### Ubuntu
-Install the following dependencies:
-* libsdl2-dev
-* libglm-dev 
-* libglew-dev
-* libsdl2-image-dev
+
+Install the dependencies:
+```
+sudo apt-get cmake install libsdl2-dev libglm-dev libglew-dev libsdl2-image-dev
+```
+
+Compile: 
+```
+./build_native.sh
+```
+
+Execution
+```
+./SliderCombat
+```
+
+In order for the program to load, it has to be in the root directory of the project to find the resources
+
+### Windows
+Open `SliderCombat.sln` in Visual Studio 2017
+
+### Compile to Javascript
+
 
 
 ## Libraries and resources used
