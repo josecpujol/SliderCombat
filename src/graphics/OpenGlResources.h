@@ -9,11 +9,13 @@
 
 class OpenGlProgram {
 public:
-  OpenGlProgram(const char* vertex_shader_source, const char* fragment_shader_source);
+  OpenGlProgram() = default;
   ~OpenGlProgram();
-  bool isCreated() const { return is_program_created_; }
+  bool load(const std::string& vertex_shader_source, const std::string& fragment_shader_source);
   void use();
+
 private:
+  GLuint loadShader(const std::string& source, GLenum type);
   GLint program_id_;
   bool is_program_created_ = false;
 };

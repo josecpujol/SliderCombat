@@ -30,26 +30,34 @@ bool ResourcesManager::loadMaps() {
 }
 
 bool ResourcesManager::loadOpenGlPrograms() {
+  std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
+    {OpenGlProgramType::kModel3d, std::make_pair("\
+      varying vec4 v_color;\
+      attribute vec3 a_position; \
+      attribute vec3 a_color; \
+      uniform mat4 u_modelview;\
+      uniform mat4 u_perspective;\
+      void main() {\
+        v_color = vec4(a_color, 1.0);\
+        gl_Position = u_perspective * u_modelview * vec4(a_position, 1.0);\
+      }", "\
+        varying vec4 v_color;\
+        void main() {\
+          gl_FragColor = v_color;\
+        }")}
+  };
 
-  std::string vertex_shader = "\
-    varying vec4 vColor;\
-    void main() {\
-    vColor = gl_Color;\
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\
-  }";
-
-  std::string fragment_shader = "\
-    varying vec4 vColor;\
-    void main() {\
-    gl_FragColor = vColor;\
-  }";
-  std::shared_ptr<OpenGlProgram> program = std::make_shared<OpenGlProgram>(vertex_shader.c_str(), fragment_shader.c_str());
-  if (!program->isCreated()) {
-    LOG_ERROR("Error creating shader");
-    return false;
+  int i_shader = 0; 
+  for (auto& program_src : programs) {
+    LOG_DEBUG("Compiling shader " << i_shader++);
+    std::shared_ptr<OpenGlProgram> ogl_program = std::make_shared<OpenGlProgram>();
+    if (!ogl_program->load(program_src.second.first, program_src.second.second)) {
+      LOG_ERROR("Error creating shader");
+      return false;
+    }
+    opengl_programs_[program_src.first] = ogl_program;
   }
- // program->use();
-  opengl_programs_.push_back(program);
+
   return true;
 }
 

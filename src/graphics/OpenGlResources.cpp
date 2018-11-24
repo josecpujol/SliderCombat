@@ -2,41 +2,17 @@
 
 #include "utils/Logger.h"
 
-
-OpenGlProgram::OpenGlProgram(const char* vertex_shader_source, const char* fragment_shader_source) {
-  GLint shader_compiled;
-  GLuint vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertex_shader_id, 1, &vertex_shader_source, nullptr);
-  glCompileShader(vertex_shader_id);
-  shader_compiled = GL_FALSE;
-  glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &shader_compiled);
-  if (!shader_compiled) {
-    LOG_ERROR("Unable to compile vertex shader: " << vertex_shader_id);
-    GLint max_length = 0;
-    glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &max_length);
-
-    // The maxLength includes the NULL character
-    std::vector<GLchar> error_log(max_length);
-    glGetShaderInfoLog(vertex_shader_id, max_length, &max_length, &error_log[0]);
-    return;
+OpenGlProgram::~OpenGlProgram() {
+  if (is_program_created_) {
+    glDeleteProgram(program_id_);
   }
+}
 
-  GLuint fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragment_shader_id, 1, &fragment_shader_source, nullptr);
-  glCompileShader(fragment_shader_id);
-  shader_compiled = GL_FALSE;
-  glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &shader_compiled);
-  if (!shader_compiled) {
-    LOG_ERROR("Unable to compile shader: " << fragment_shader_id);
-    GLint max_length = 0;
-    glGetShaderiv(vertex_shader_id, GL_INFO_LOG_LENGTH, &max_length);
-
-    // The maxLength includes the NULL character
-    std::vector<GLchar> error_log(max_length);
-    glGetShaderInfoLog(vertex_shader_id, max_length, &max_length, &error_log[0]);
-    return;
-  }
-
+bool OpenGlProgram::load(const std::string& vertex_shader_source, const std::string& fragment_shader_source) {
+  assert(!is_program_created_);
+  GLuint vertex_shader_id = loadShader(vertex_shader_source, GL_VERTEX_SHADER);
+  GLuint fragment_shader_id = loadShader(fragment_shader_source, GL_FRAGMENT_SHADER);
+     
   program_id_ = glCreateProgram();
   glAttachShader(program_id_, vertex_shader_id);
   glAttachShader(program_id_, fragment_shader_id);
@@ -48,28 +24,47 @@ OpenGlProgram::OpenGlProgram(const char* vertex_shader_source, const char* fragm
   if (!is_linked) {
     LOG_ERROR("Could not link program: " << program_id_);
 
-    //We don't need the program anymore.
     glDeleteProgram(program_id_);
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
 
-    return;
+    return false;
   }
 
   glDetachShader(program_id_, vertex_shader_id);
   glDetachShader(program_id_, fragment_shader_id);
 
+  glDeleteShader(vertex_shader_id);
+  glDeleteShader(fragment_shader_id);
+
   is_program_created_ = true;
+  return true;
 }
 
-OpenGlProgram::~OpenGlProgram() {
-  if (isCreated()) {
-    glDeleteProgram(program_id_);
-  }
+GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
+  GLint shader_compiled;
+	GLuint shader_id = glCreateShader(type);
+  const char* c_str = source.c_str();
+	glShaderSource(shader_id, 1, &c_str, nullptr);
+	glCompileShader(shader_id);
+	shader_compiled = GL_FALSE;
+	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader_compiled);
+	if (!shader_compiled) {
+		LOG_ERROR("Unable to compile shader type: " << type << ", id: " << shader_id);
+		GLint max_length = 0;
+		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
+
+		// The maxLength includes the NULL character
+		std::vector<GLchar> error_log(max_length);
+		glGetShaderInfoLog(shader_id, max_length, &max_length, &error_log[0]);
+    LOG_ERROR(error_log.data());
+		return shader_id;
+	}
+  return shader_id;
 }
 
 void OpenGlProgram::use() {
-  assert(isCreated());
+  assert(is_program_created_);
   glUseProgram(program_id_);
 }
 

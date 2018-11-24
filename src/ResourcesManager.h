@@ -18,8 +18,8 @@ enum class FontType {
   kPrototype
 };
 
-enum class OpenGlPrograms {
-  kBasic
+enum class OpenGlProgramType {
+  kModel3d
 };
 
 struct JoystickState {
@@ -69,7 +69,7 @@ private:
   std::unique_ptr<Map> map_;
   std::map<FontType, std::shared_ptr<BitmapFont>> bm_fonts_;
 
-  std::vector <std::shared_ptr<OpenGlProgram>> opengl_programs_;
+  std::map <OpenGlProgramType, std::shared_ptr<OpenGlProgram>> opengl_programs_;
   SDL_Joystick* joystick_ = nullptr;
   int joystick_num_buttons_ = 0;
   JoystickState joystick_state_;

@@ -246,11 +246,10 @@ void Level::render() {
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-
-  gluPerspective(45.0f, ratio, 0.5f, 130.0f);
+  glm::mat4 perspective = glm::perspective(45.0f, ratio, 0.5f, 130.0f);
+  glMultMatrixf(glm::value_ptr(perspective));
 
   glMatrixMode(GL_MODELVIEW);
-
   glLoadIdentity();
   camera_.applyRotationOnly();
   drawSkyDome();
