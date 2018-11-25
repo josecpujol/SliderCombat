@@ -1,4 +1,5 @@
 #include "OpenGlResources.h"
+#include "OpenGlState.h"
 
 #include "utils/Logger.h"
 
@@ -65,7 +66,7 @@ GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
 
 void OpenGlProgram::use() {
   assert(is_program_created_);
-  glUseProgram(program_id_);
+  OpenGlState::getInstance().useProgram(program_id_);
 }
 
 void OpenGlResources::drawCircle(float radius, int num_segments) {
