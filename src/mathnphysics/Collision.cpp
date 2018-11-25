@@ -39,7 +39,8 @@ void CollisionArea::setRotation(float rot_z) {
 
 
 void DrawCircle(const Circle& c, int num_segments) {
-  glTranslatef(c.center.x, c.center.y, 0);
+  glm::mat4 translation_m = glm::translate(glm::vec3(c.center.x, c.center.y, 0));
+  OpenGlState::getInstance().multMatrix(translation_m);
   OpenGlResources::drawCircle(c.radius, 10);
 }
 

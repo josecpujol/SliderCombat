@@ -40,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -158,6 +158,8 @@
     <ClCompile Include="ext\tmxparser\TmxTileOffset.cpp" />
     <ClCompile Include="ext\tmxparser\TmxTileset.cpp" />
     <ClCompile Include="ext\tmxparser\TmxUtil.cpp" />
+    <ClCompile Include="src\graphics\MatrixStack.cpp" />
+    <ClCompile Include="src\graphics\OpenGlState.cpp" />
     <ClCompile Include="src\mathnphysics\Collision.cpp" />
     <ClCompile Include="src\mathnphysics\Physics.cpp" />
     <ClCompile Include="src\mathnphysics\Math.cpp" />
