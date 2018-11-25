@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+#include "graphics/OpenGlState.h"
+
 
 LoggerOpenGl::LoggerOpenGl() {
   bm_font_ = ResourcesManager::getInstance().getBitmapFont(FontType::kPrototype);
@@ -25,12 +27,14 @@ void LoggerOpenGl::releaseResources() {
 void LoggerOpenGl::render() {
   int width, height;
   ResourcesManager::getInstance().getWindowDimensions(&width, &height);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  gluOrtho2D(0, width, 0, height);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glScalef(1.f, -1.f, 1.f);
+
+  OpenGlState::getInstance().matrixMode(MatrixMode::kModelView);
+  glm::mat4 perspective = glm::ortho(0.f, (float)width, 0.f, (float)height);
+  OpenGlState::getInstance().loadMatrix(perspective);
+ 
+  OpenGlState::getInstance().matrixMode(MatrixMode::kProjection);
+  glm::mat4 scale_mat = glm::scale(glm::vec3(1.f, -1.f, 1.f));
+  OpenGlState::getInstance().loadMatrix(scale_mat);
 
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_LIGHTING);

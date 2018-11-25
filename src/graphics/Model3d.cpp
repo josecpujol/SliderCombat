@@ -1,6 +1,7 @@
 #include "Model3d.h"
 #include "utils/Logger.h"
 #include "utils/Stats.h"
+#include "graphics/OpenGlState.h"
 
 Object3d::Object3d(const std::string& name) : name_(name) {
   glGenBuffers(1, &ogl_buffer_vertex_attribs_);
@@ -22,14 +23,14 @@ void Object3dHolder::calculateModelMatrix() {
 }
 
 void Object3dHolder::render(bool render_shadow) {
-  glPushMatrix();
+  OpenGlState::getInstance().pushMatrix();
   calculateModelMatrix();
-  glMultMatrixf(glm::value_ptr(model_mat_));
+  OpenGlState::getInstance().multMatrix(model_mat_);
   object_->render();
   if (render_shadow) {
     object_->renderVolumeShadow(model_mat_, glm::vec4(20, 20, 20, 1));
   }
-  glPopMatrix();
+  OpenGlState::getInstance().popMatrix();
 }
 
 void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& ligth_pos) {

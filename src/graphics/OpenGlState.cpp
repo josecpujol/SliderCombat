@@ -17,15 +17,15 @@ void OpenGlState::popMatrix() {
 
 void OpenGlState::loadIdentity() {
   glm::mat4 m(1.0);
-  load(m);
+  loadMatrix(m);
 }
 
-void OpenGlState::load(const glm::mat4& m) {
+void OpenGlState::loadMatrix(const glm::mat4& m) {
   active_stack_->load(m);
   glLoadMatrixf(glm::value_ptr(m));
 }
 
-void OpenGlState::mult(const glm::mat4& m) {
+void OpenGlState::multMatrix(const glm::mat4& m) {
   active_stack_->mult(m);
   auto res = active_stack_->get();
   glLoadMatrixf(glm::value_ptr(res));

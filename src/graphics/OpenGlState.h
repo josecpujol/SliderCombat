@@ -23,8 +23,8 @@ public:
   void popMatrix();
   void matrixMode(MatrixMode);
   void loadIdentity();
-  void load(const glm::mat4& m);
-  void mult(const glm::mat4& m);
+  void loadMatrix(const glm::mat4& m);
+  void multMatrix(const glm::mat4& m);
 
 private:
   OpenGlState() = default;

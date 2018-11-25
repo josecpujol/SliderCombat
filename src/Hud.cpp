@@ -1,6 +1,7 @@
 #include "Hud.h"
 
 #include "Level.h"
+#include "graphics/OpenGlState.h"
 
 Hud::Hud(Level* level) : level_(level) {
   glGenTextures(1, &texture_health_);
@@ -51,12 +52,12 @@ void Hud::display() {
   glDisable(GL_COLOR_MATERIAL);
   glDisable(GL_LIGHTING);
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0.0, screen_width_, screen_height_, 0.0, -1.0, 1.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  OpenGlState::getInstance().matrixMode(MatrixMode::kProjection);
+  glm::mat4 perspective = glm::ortho(0.0f, float(screen_width_), float(screen_height_), 0.f, -1.f, 1.f);
+  OpenGlState::getInstance().loadMatrix(perspective);
 
+  OpenGlState::getInstance().matrixMode(MatrixMode::kModelView);
+  OpenGlState::getInstance().loadIdentity();
   drawHealthBar();
   
   glEnable(GL_DEPTH_TEST);

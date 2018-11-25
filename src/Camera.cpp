@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "gameobjects/GameObject.h"
 #include "mathnphysics/Math.h"
+#include "graphics/OpenGlState.h"
 
 
 void Camera::follow(GameObject* object, glm::vec3 eye_offset, glm::vec3 center_offset) {
@@ -22,7 +23,7 @@ void Camera::lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
 void Camera::apply() {
   glm::mat4 camera_matrix;
   getOpenglMatrix(&camera_matrix);
-  glMultMatrixf(glm::value_ptr(camera_matrix));
+  OpenGlState::getInstance().multMatrix(camera_matrix);
 }
 
 void Camera::applyRotationOnly() {
@@ -30,7 +31,7 @@ void Camera::applyRotationOnly() {
   getOpenglMatrix(&camera_matrix);
   // Remove translation
   camera_matrix[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-  glMultMatrixf(glm::value_ptr(camera_matrix));
+  OpenGlState::getInstance().multMatrix(camera_matrix);
 }
 
 void Camera::getMatrixFollowing(glm::mat4* mat) {

@@ -3,6 +3,7 @@
 #include <map>
 
 #include "graphics/OpenGlResources.h"
+#include "graphics/OpenGlState.h"
 
 void CollisionArea::setPosition(const glm::vec2& pos) {
   switch (type_) {
@@ -64,7 +65,7 @@ void CollisionArea::setCollisionPrimivite(const Circle& c) {
 
 
 void CollisionArea::render() const {
-  glPushMatrix();
+  OpenGlState::getInstance().pushMatrix();
   switch (type_) {
   case CollisionAreaType::Circle:
     DrawCircle(circle, 10);
@@ -73,7 +74,7 @@ void CollisionArea::render() const {
     DrawRectangle(rectangle);
     break;
   }
-  glPopMatrix();
+  OpenGlState::getInstance().popMatrix();
 }
 
 bool Collision::isCollision(const CollisionArea& area1, const CollisionArea& area2, glm::vec2* collision_point) {

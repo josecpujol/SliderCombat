@@ -7,7 +7,7 @@ void MatrixStack::push() {
 }
 
 void MatrixStack::pop() {
-  assert(active_index_ > 1);
+  assert(active_index_ > 0);
   active_index_--;
 }
 

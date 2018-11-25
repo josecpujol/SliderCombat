@@ -10,6 +10,7 @@
 #include "gameobjects/Projectile.h"
 #include "gameobjects/Explosion.h"
 #include "gameobjects/PowerUps.h"
+#include "graphics/OpenGlState.h"
 #include "Map.h"
 
 Level::Level(Map* map) : map_(map) {
@@ -244,18 +245,17 @@ void Level::render() {
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+  OpenGlState::getInstance().matrixMode(MatrixMode::kProjection);
   glm::mat4 perspective = glm::perspective(45.0f, ratio, 0.5f, 130.0f);
-  glMultMatrixf(glm::value_ptr(perspective));
+  OpenGlState::getInstance().loadMatrix(perspective);
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  OpenGlState::getInstance().matrixMode(MatrixMode::kModelView);
+  OpenGlState::getInstance().loadIdentity();
   camera_.applyRotationOnly();
   drawSkyDome();
 
   glShadeModel(GL_FLAT);
-  glLoadIdentity();
+  OpenGlState::getInstance().loadIdentity();
   camera_.apply();
 
 #ifndef __EMSCRIPTEN__
