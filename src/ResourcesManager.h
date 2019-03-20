@@ -19,7 +19,8 @@ enum class FontType {
 };
 
 enum class OpenGlProgramType {
-  kModel3d
+  kModel3d,
+  kLogger,
 };
 
 struct JoystickState {
@@ -52,6 +53,7 @@ public:
   BitmapFont* getBitmapFont(FontType type) { return bm_fonts_[type].get(); }
   Map* getMap();
   const JoystickState* getJoystickState();
+  OpenGlProgram* getOpenGlProgram(OpenGlProgramType type);
 
     
 private:

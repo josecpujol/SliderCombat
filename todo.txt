@@ -10,6 +10,9 @@
 - music / sound effects
 - joystick
 - network play
-- javascript compilation (done. pending: shaders, glMaterial, fonts)
-- bitmap fonts (emscripten)
+- javascript: shaders, glMaterial
 - android?
+
+Done:
+- bitmap fonts (emscripten)
+- javascript compilation

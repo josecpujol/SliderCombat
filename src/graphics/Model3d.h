@@ -43,6 +43,7 @@ public:
     valid_model_mat_ = false;
   }
   void setObject3d(Object3d* obj) { object_ = obj;  }
+  void setOpenGlProgram(OpenGlProgram* ogl_program) { ogl_program_ = ogl_program; }
   void setScale(glm::vec3 scale) { 
     scale_ = scale;
     valid_model_mat_ = false;
@@ -57,18 +58,17 @@ private:
   glm::vec3 scale_ = glm::vec3(1.0);
   glm::mat4 model_mat_;
   bool valid_model_mat_ = false;
+  OpenGlProgram* ogl_program_ = nullptr;
 };
 
 /* 
- * A set of Object3d objects
+ * A set of Object3d objects: the blender model can contain a subset of "Object3d"
  */
 class Model3d {
 public:
   Model3d() = default;
   bool load(std::string file);
   
-  // Renders all the object3d
-  void render();
   Object3d* getObject3d(const std::string& obj_prefix);
 
 private:

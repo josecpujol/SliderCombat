@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 #include <GL/glew.h>
 #include <GL/glu.h>
@@ -13,11 +14,13 @@ public:
   ~OpenGlProgram();
   bool load(const std::string& vertex_shader_source, const std::string& fragment_shader_source);
   void use();
+  void setUniform1i(const std::string& name, int value);
 
 private:
   GLuint loadShader(const std::string& source, GLenum type);
   GLint program_id_;
   bool is_program_created_ = false;
+  std::map<std::string, GLint> uniform_locations_;
 };
 
 class OpenGlResources {
@@ -35,8 +38,4 @@ public:
   static inline void setColor(const glm::vec3& color) {
     glColor3f(color.r, color.g, color.b);
   }
-
-private:
-  std::vector < std::shared_ptr<OpenGlProgram>> programs_;
-
 };

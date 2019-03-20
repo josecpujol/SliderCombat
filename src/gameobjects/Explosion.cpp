@@ -6,6 +6,7 @@ Explosion::Explosion(const glm::vec3& pos, Duration duration, float max_speed, O
   GameObject(GameObjectType::Explosion, pos, 0.f, 1.f) {
   total_duration_ = std::chrono::duration_cast<std::chrono::microseconds>(duration);
   particle_.setObject3d(particle);
+  particle_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d));
   int num_particles = 20;
   for (int i = 0; i < num_particles; i++) {
     AnimatedPose pose;

@@ -12,6 +12,7 @@ Projectile::Projectile(glm::vec3 pos, float rot) : GameObject(GameObjectType::Pr
   setCollisionArea(CollisionArea(c));
   //model_ = new FireModel3d();
   model_.setObject3d(ResourcesManager::getInstance().getModel3d(ModelType::kProjectiles)->getObject3d("2_projectile"));
+  model_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d));
 };
 
 void Projectile::update(uint32_t elapsed_us) {

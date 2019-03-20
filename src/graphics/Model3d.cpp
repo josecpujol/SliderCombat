@@ -26,9 +26,11 @@ void Object3dHolder::render(bool render_shadow) {
   OpenGlState::getInstance().pushMatrix();
   calculateModelMatrix();
   OpenGlState::getInstance().multMatrix(model_mat_);
+  assert(ogl_program_);
+  ogl_program_->use();
   object_->render();
   if (render_shadow) {
-    object_->renderVolumeShadow(model_mat_, glm::vec4(20, 20, 20, 1));
+  //  object_->renderVolumeShadow(model_mat_, glm::vec4(20, 20, 20, 1));
   }
   OpenGlState::getInstance().popMatrix();
 }
@@ -74,6 +76,7 @@ void Object3d::render() {
   Stats::getInstance().num_objects++;
   Stats::getInstance().num_triangles += num_triangles;
 
+  
   glEnable(GL_COLOR_MATERIAL);
 
   glBindBuffer(GL_ARRAY_BUFFER, ogl_buffer_vertex_attribs_);
@@ -86,12 +89,14 @@ void Object3d::render() {
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glDrawArrays(GL_TRIANGLES, 0, num_triangles * 3);
+  //glDrawArrays(GL_POINTS, 0, num_triangles * 3);
 
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisable(GL_COLOR_MATERIAL);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  
 }
 
 void Object3d::setData(const std::vector<glm::vec3>& vertices,
@@ -200,10 +205,3 @@ Object3d* Model3d::getObject3d(const std::string& obj_prefix) {
   return nullptr;
 }
 
-// A suitable opengl context is assumed to be initialized
-// make this opengl 2.0 with buffers
-void Model3d::render() {
-  for (auto& obj : objects_) {
-    obj->render();
-  }
-}

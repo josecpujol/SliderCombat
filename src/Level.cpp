@@ -198,6 +198,7 @@ void Level::setOpenGlLights() {
 }
 
 void Level::drawSkyDome() {
+  ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d)->use();
   glDepthMask(false);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_COLOR_MATERIAL);
@@ -259,7 +260,7 @@ void Level::render() {
   camera_.apply();
 
 #ifndef __EMSCRIPTEN__
-  setOpenGlLights();
+//  setOpenGlLights();
 #endif
 
   OpenGlResources::drawAxis();

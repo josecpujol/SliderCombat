@@ -1,5 +1,9 @@
 #include "BitmapFont.h"
 
+#include "ResourcesManager.h"
+
+#include "graphics/OpenGlState.h"
+
 #include "SDL_image.h"
 #include "tinyxml2.h"
 
@@ -18,12 +22,16 @@ void BitmapFont::render(const std::string& text, int x, int y, int size) {
   float x_cursor = x;
   float y_cursor = y;
 
-
+  OpenGlProgram * ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kLogger);
+  ogl_program->use();
+  glActiveTexture(GL_TEXTURE0);
+  ogl_program->setUniform1i("texture_unit", 0);
   glColor3f(1.f, 1.f, 1.f);  // The color is affected by glColor, unless glTexEnv is set with magic params
   glBegin(GL_QUADS);
 
   for (auto character : text) {
     CharInfo* char_info = &(chars_[character]);
+    
     glBindTexture(GL_TEXTURE_2D, char_info->texture);
     x_texture = ((float)char_info->x) / textures_width_;
     y_texture = ((float)char_info->y) / textures_height_;
@@ -64,7 +72,7 @@ bool BitmapFont::load(const std::string& xml_description) {
     return false;
   }
 
-  // Load pngs
+  // Load pngs: there could be multiple png
   std::size_t found = xml_description.find_last_of("/");
   std::string parent_path = xml_description.substr(0, found) + "/";
   for (auto page : pages) {
@@ -74,6 +82,7 @@ bool BitmapFont::load(const std::string& xml_description) {
 
     GLuint texture_id;
     glGenTextures(1, &texture_id);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
     int mode = surface->format->BytesPerPixel == 4 ? GL_RGBA : GL_RGB;

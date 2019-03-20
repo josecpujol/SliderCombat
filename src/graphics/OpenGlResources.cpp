@@ -42,6 +42,15 @@ bool OpenGlProgram::load(const std::string& vertex_shader_source, const std::str
   return true;
 }
 
+void OpenGlProgram::setUniform1i(const std::string& name, int value) {
+  if (uniform_locations_.count(name) == 0) {
+    GLint location = glGetUniformLocation(program_id_, name.c_str());
+    assert(location != -1);
+    uniform_locations_[name] = location;
+  }
+  glUniform1i(uniform_locations_[name], value);
+}
+
 GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
   GLint shader_compiled;
 	GLuint shader_id = glCreateShader(type);

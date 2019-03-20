@@ -30,21 +30,33 @@ bool ResourcesManager::loadMaps() {
 }
 
 bool ResourcesManager::loadOpenGlPrograms() {
+  // pair: vertex and fragment shader
   std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
-    {OpenGlProgramType::kModel3d, std::make_pair("\
-      varying vec4 v_color;\
-      attribute vec3 a_position; \
-      attribute vec3 a_color; \
-      uniform mat4 u_modelview;\
-      uniform mat4 u_perspective;\
-      void main() {\
-        v_color = vec4(a_color, 1.0);\
-        gl_Position = u_perspective * u_modelview * vec4(a_position, 1.0);\
-      }", "\
-        varying vec4 v_color;\
-        void main() {\
-          gl_FragColor = v_color;\
-        }")}
+    {OpenGlProgramType::kModel3d, std::make_pair(R"(
+    varying vec4 vertex_color;
+    void main() {
+      gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+      vertex_color = gl_Color;
+    }
+  )", R"(
+    varying vec4 vertex_color;
+    void main() {
+      gl_FragColor = vertex_color;
+    }
+  )")},
+  {OpenGlProgramType::kLogger, std::make_pair(R"(
+    varying vec2 vTexCoord;
+    void main() {
+      gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+      vTexCoord = gl_MultiTexCoord0.xy;;
+    }
+  )", R"(
+    uniform sampler2D texture_unit;
+    varying vec2 vTexCoord;
+    void main() {
+      gl_FragColor = texture2D(texture_unit, vTexCoord);
+    }
+  )")}
   };
 
   int i_shader = 0; 
@@ -72,6 +84,12 @@ bool ResourcesManager::loadResources() {
     return false;
   }
 
+
+  if (!loadOpenGlPrograms()) {
+    LOG_ERROR("Could not load shaders");
+    return false;
+  }
+
   if (!loadModels()) {
     LOG_ERROR("Could not load models");
     return false;
@@ -84,10 +102,7 @@ bool ResourcesManager::loadResources() {
     LOG_ERROR("Could not load fonts");
     return false;
   }
-  if (!loadOpenGlPrograms()) {
-    LOG_ERROR("Could not load shaders");
-    return false;
-  }
+
 
   return true;
 }
@@ -147,12 +162,25 @@ Model3d* ResourcesManager::getModel3d(ModelType type) {
   }
 }
 
+OpenGlProgram* ResourcesManager::getOpenGlProgram(OpenGlProgramType type) {
+  if (opengl_programs_.count(type) == 0) {
+    assert(false && "Program does not exist");
+    return nullptr;
+  }
+  else {
+    return opengl_programs_[type].get();
+  }
+}
+
 void ResourcesManager::releaseResources() {
   for (auto& model : models_) {
     model.second = nullptr;
   }
 
   bm_fonts_.clear();
+  opengl_programs_.clear();
+
+  
 
   SDL_JoystickClose(joystick_);
   IMG_Quit();

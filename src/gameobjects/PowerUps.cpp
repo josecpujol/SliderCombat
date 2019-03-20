@@ -3,13 +3,14 @@
 PowerUp::PowerUp(GameObjectType type, const glm::vec2& pos) : GameObject(type, glm::vec3(pos, 0.0f), 0.0f, 0.0f) {
   // Set the models based on type
   base_model_.setObject3d(ResourcesManager::getInstance().getModel3d(ModelType::kPowerUps)->getObject3d("base"));
+  base_model_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d));
   std::string powerup_model;
   if (type == GameObjectType::HealthPowerup) {
     powerup_model = "health";
   }
   assert(!powerup_model.empty());
   powerup_model_.setObject3d(ResourcesManager::getInstance().getModel3d(ModelType::kPowerUps)->getObject3d(powerup_model));
-
+  powerup_model_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d));
   base_model_.setTranslation(glm::vec3(pos, 0.1f));
   powerup_model_.setTranslation(glm::vec3(pos, initial_height_));
   powerup_model_.setScale(glm::vec3(0.7f));
