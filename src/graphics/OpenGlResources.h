@@ -23,6 +23,18 @@ private:
   std::map<std::string, GLint> uniform_locations_;
 };
 
+class OpenGlBuffer {
+public:
+  OpenGlBuffer() {
+    glGenBuffers(1, &name);
+  }
+  ~OpenGlBuffer() {
+    glDeleteBuffers(1, &name);
+  }
+
+  GLuint name = 0;
+};
+
 class OpenGlResources {
 public:
   OpenGlResources() {}

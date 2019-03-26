@@ -13,8 +13,9 @@ public:
 private:
   void drawHealthBar();
 
+  OpenGlBuffer vertex_buffer_;
+  OpenGlBuffer color_buffer_;
   Level* level_ = nullptr;
-  GLuint texture_health_;
   int screen_width_ = 0;
   int screen_height_ = 0;
 };
