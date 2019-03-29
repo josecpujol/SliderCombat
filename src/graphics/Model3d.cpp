@@ -4,11 +4,6 @@
 #include "graphics/OpenGlState.h"
 
 Object3d::Object3d(const std::string& name) : name_(name) {
-  glGenBuffers(1, &ogl_buffer_vertex_attribs_);
-}
-
-Object3d::~Object3d() {
-  glDeleteBuffers(1, &ogl_buffer_vertex_attribs_);
 }
 
 void Object3dHolder::calculateModelMatrix() {
@@ -36,7 +31,7 @@ void Object3dHolder::render(bool render_shadow) {
 }
 
 void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& ligth_pos) {
-  // By now, model_mat_ has the correct value
+ /* // By now, model_mat_ has the correct value
   // We are under the "model matrix" (M) influence, so we need to apply the inverse to the light, 
   // so it gets to "light_pos" after we apply M * (M^-1 * light_pos) 
   glm::vec4 new_light_pos =  glm::inverse(model_mat) * ligth_pos;
@@ -68,6 +63,7 @@ void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& l
     }   
   }
   glEnd();
+  */
 }
 
 // Dont push the matrix!!
@@ -79,7 +75,7 @@ void Object3d::render() {
   
   glEnable(GL_COLOR_MATERIAL);
 
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_buffer_vertex_attribs_);
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertex_attribs_buffer_.name);
   GLsizei stride = 9 * sizeof(float);
   glVertexPointer(3, GL_FLOAT, stride, (void*)0);
   glNormalPointer(GL_FLOAT, stride, (void*)(3 * sizeof(float)));
@@ -122,7 +118,7 @@ void Object3d::setData(const std::vector<glm::vec3>& vertices,
     vertex_attributes.push_back(colors[i].z);
   }
   
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_buffer_vertex_attribs_);
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertex_attribs_buffer_.name);
   glBufferData(GL_ARRAY_BUFFER, vertex_attributes.size() * sizeof(float), vertex_attributes.data(), GL_STATIC_DRAW);
 
   vertices_buffer_ = vertices;

@@ -11,7 +11,7 @@
 class Object3d {
 public:
   Object3d(const std::string& name);
-  ~Object3d();
+  ~Object3d() = default;
   // color: 3 components
   void setData(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::vector<glm::vec3>& colors);
   int getNumberTriangles() const { return (int)vertices_buffer_.size() / 3; }
@@ -25,7 +25,7 @@ private:
   std::vector<glm::vec3> normals_buffer_;
   std::vector<glm::vec3> colors_buffer_;
   std::string name_;
-  GLuint ogl_buffer_vertex_attribs_ = 0;
+  OpenGlBuffer ogl_vertex_attribs_buffer_;
 };
 
 class Object3dHolder {

@@ -26,8 +26,13 @@ void BitmapFont::render(const std::string& text, int x, int y, int size) {
   ogl_program->use();
   glActiveTexture(GL_TEXTURE0);
   ogl_program->setUniform1i("texture_unit", 0);
-  glColor3f(1.f, 1.f, 1.f);  // The color is affected by glColor, unless glTexEnv is set with magic params
-  glBegin(GL_QUADS);
+
+  std::array<glm::vec2, 4> vertices;
+  std::array<glm::vec2, 4> tex_coords;
+   
+  // The color is affected by glColor, unless glTexEnv is set with magic params
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
   for (auto character : text) {
     CharInfo* char_info = &(chars_[character]);
@@ -42,15 +47,32 @@ void BitmapFont::render(const std::string& text, int x, int y, int size) {
     y_rect = y_cursor + scale_factor * char_info->yoffset;
     w_rect = scale_factor * char_info->width;
     h_rect = scale_factor * char_info->height;
+    
+    vertices[0] = glm::vec2(x_rect, y_rect);
+    vertices[1] = glm::vec2(x_rect + w_rect, y_rect);
+    vertices[2] = glm::vec2(x_rect + w_rect, y_rect + h_rect);
+    vertices[3] = glm::vec2(x_rect, y_rect + h_rect);
 
-    glTexCoord2f(x_texture, y_texture);               glVertex2f(x_rect, y_rect );
-    glTexCoord2f(x_texture + w_texture, y_texture);   glVertex2f(x_rect + w_rect, y_rect);
-    glTexCoord2f(x_texture + w_texture, y_texture + h_texture); glVertex2f(x_rect + w_rect, y_rect + h_rect);
-    glTexCoord2f(x_texture, y_texture + h_texture); glVertex2f(x_rect, y_rect + h_rect);
+    tex_coords[0] = glm::vec2(x_texture, y_texture);
+    tex_coords[1] = glm::vec2(x_texture + w_texture, y_texture);
+    tex_coords[2] = glm::vec2(x_texture + w_texture, y_texture + h_texture);
+    tex_coords[3] = glm::vec2(x_texture, y_texture + h_texture);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_.name);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
+    glVertexPointer(2, GL_FLOAT, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, tex_coords_buffer_.name);
+    glBufferData(GL_ARRAY_BUFFER, tex_coords.size() * sizeof(decltype(tex_coords)::value_type), &tex_coords[0], GL_STATIC_DRAW);
+    glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
     
     x_cursor += (scale_factor * char_info->xadvance);
   }
-  glEnd();
+
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 bool BitmapFont::load(const std::string& xml_description) {

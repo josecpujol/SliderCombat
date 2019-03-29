@@ -43,11 +43,9 @@ public:
   static void printShaderLog(GLuint shader);
   static void printProgramLog(GLuint program);
   static void drawAxis();
-  static void drawCircle(float radius, int segments);
+  static void drawCircle(float radius, int segments, const glm::vec3& color = glm::vec3(0.f, 0.f, 0.5f));
+  static void drawPolygon(const std::vector<glm::vec2>& vertices , const glm::vec3& color = glm::vec3(0.f, 0.f, 0.5f));
   static void drawSphere(float radius);
   static void drawVector(const glm::vec3& origin, const glm::vec3& end, const glm::vec3& color);
   static void drawVector(const glm::vec2& origin, const glm::vec2& end, const glm::vec3& color);
-  static inline void setColor(const glm::vec3& color) {
-    glColor3f(color.r, color.g, color.b);
-  }
 };

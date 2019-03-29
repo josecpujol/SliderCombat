@@ -27,7 +27,7 @@ void Hud::drawHealthBar() {
   int bar_height = 40;
   
   // Two bars
-  float coords1[8] = {
+  GLint coords1[8] = {
     distance_from_left, screen_height - distance_from_bottom, 
     distance_from_left + length, screen_height - distance_from_bottom, 
     distance_from_left + length, screen_height - distance_from_bottom - bar_height,
@@ -43,7 +43,7 @@ void Hud::drawHealthBar() {
 
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_.name);
   glBufferData(GL_ARRAY_BUFFER, sizeof(coords1), coords1, GL_STATIC_DRAW);
-  glVertexPointer(2, GL_FLOAT, 0, 0);
+  glVertexPointer(2, GL_INT, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, color_buffer_.name);
   glBufferData(GL_ARRAY_BUFFER, sizeof(colors1), colors1, GL_STATIC_DRAW);
@@ -55,7 +55,7 @@ void Hud::drawHealthBar() {
   int lenght_health = (health.getValue() * length) / health.getMaxValue();
   int reduction = 5;
 
-  float coords2[8] = {
+  GLint coords2[8] = {
     distance_from_left, screen_height - distance_from_bottom - reduction,
     distance_from_left + lenght_health, screen_height - distance_from_bottom - reduction,
     distance_from_left + lenght_health, screen_height - distance_from_bottom - bar_height + reduction,
@@ -71,7 +71,7 @@ void Hud::drawHealthBar() {
 
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_.name);
   glBufferData(GL_ARRAY_BUFFER, sizeof(coords2), coords2, GL_STATIC_DRAW);
-  glVertexPointer(2, GL_FLOAT, 0, 0);
+  glVertexPointer(2, GL_INT, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, color_buffer_.name);
   glBufferData(GL_ARRAY_BUFFER, sizeof(colors2), colors2, GL_STATIC_DRAW);

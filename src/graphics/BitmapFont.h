@@ -35,4 +35,6 @@ private:
   int textures_width_;
   int textures_height_;
   int line_height_;
+  OpenGlBuffer vertices_buffer_;
+  OpenGlBuffer tex_coords_buffer_;
 };

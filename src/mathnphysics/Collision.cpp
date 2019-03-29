@@ -47,11 +47,8 @@ void DrawCircle(const Circle& c, int num_segments) {
 void DrawRectangle(const Rectangle& r) {
   std::array<glm::vec2, 4> vertices;
   r.getVertices(&vertices);
-  glBegin(GL_LINE_LOOP);
-  for (auto& v : vertices) {
-    glVertex3f(v.x, v.y, 0.0f);
-  }
-  glEnd();
+  std::vector<glm::vec2> vertices_vector{ vertices.begin(), vertices.end() };
+  OpenGlResources::drawPolygon(vertices_vector);
 }
 
 void CollisionArea::setCollisionPrimivite(const Rectangle& rect) {

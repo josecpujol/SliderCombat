@@ -198,6 +198,8 @@ void Level::setOpenGlLights() {
 }
 
 void Level::drawSkyDome() {
+
+  // TODO: have this as an object. Preallocate mesh
   ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d)->use();
   glDepthMask(false);
   glDisable(GL_DEPTH_TEST);
@@ -208,24 +210,49 @@ void Level::drawSkyDome() {
   glm::vec3 color_top = glm::vec3(1.f, 1.f, 1.f);
   glm::vec3 color_bottom = glm::vec3(137.f / 255.f, 165.f / 255.f, 237.f / 255.f);
 
-  // Draw cilinder
-  float radius = 1.f;
+  OpenGlBuffer vertices_buffer;
+  OpenGlBuffer colors_buffer;
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
+
   int segments = 30;
+  int num_vertices = (segments + 1) * 2;
+
+  std::vector<glm::vec3> vertices;
+  std::vector<glm::vec3> colors;
+  vertices.reserve(num_vertices);
+  colors.reserve(num_vertices);
+
+   // Draw cilinder
+  float radius = 1.f;
   float top = 0.5f;
   float bottom = -0.05f;
-  glBegin(GL_TRIANGLE_STRIP);
-  for (int i = 0; i <= segments; i++) {
+
+  for (int i = 0, index = 0; i <= segments; i++, index++) {
     float x = sin((6.28318f * i) / segments);
     float y = cos((6.28318f * i) / segments);
-    OpenGlResources::setColor(color_bottom);
-    glVertex3f(x, y, bottom);
-    OpenGlResources::setColor(color_top);
-    glVertex3f(x, y, top);
+    colors.push_back(color_bottom);
+    vertices.push_back(glm::vec3(x, y, bottom));
+    colors.push_back(color_top);
+    vertices.push_back(glm::vec3(x, y, top));
   }
-  glEnd();
+
+  glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer.name);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
+  glVertexPointer(3, GL_FLOAT, 0, 0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, colors_buffer.name);
+  glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(decltype(colors)::value_type), &colors[0], GL_STATIC_DRAW);
+  glColorPointer(3, GL_FLOAT, 0, 0);
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size());
  
   glEnable(GL_DEPTH_TEST);
   glDepthMask(true);
+
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void Level::render() {
