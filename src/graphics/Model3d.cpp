@@ -2,6 +2,7 @@
 #include "utils/Logger.h"
 #include "utils/Stats.h"
 #include "graphics/OpenGlState.h"
+#include "graphics/OpenGlProgram.h"
 
 Object3d::Object3d(const std::string& name) : name_(name) {
 }
@@ -23,7 +24,15 @@ void Object3dHolder::render(bool render_shadow) {
   OpenGlState::getInstance().multMatrix(model_mat_);
   assert(ogl_program_);
   ogl_program_->use();
-  object_->render();
+
+  // Load matrix
+  ogl_program_->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
+
+  object_->render(
+    ogl_program_->getAttribLocation("a_position"), 
+    ogl_program_->getAttribLocation("a_color"),
+    ogl_program_->getAttribLocation("a_normal")
+  );
   if (render_shadow) {
   //  object_->renderVolumeShadow(model_mat_, glm::vec4(20, 20, 20, 1));
   }
@@ -67,32 +76,32 @@ void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& l
 }
 
 // Dont push the matrix!!
-void Object3d::render() {
+void Object3d::render(GLint vertex_attrib_location, GLint colors_attrib_location, GLint normals_attrib_location) {
+  OpenGlResources::checkGlError();
   int num_triangles = getNumberTriangles();
   Stats::getInstance().num_objects++;
   Stats::getInstance().num_triangles += num_triangles;
 
-  
-  glEnable(GL_COLOR_MATERIAL);
+  glEnableVertexAttribArray(vertex_attrib_location);
+  glEnableVertexAttribArray(colors_attrib_location);
+ // glEnableVertexAttribArray(normals_attrib_location);
+  OpenGlResources::checkGlError();
 
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertex_attribs_buffer_.name);
-  GLsizei stride = 9 * sizeof(float);
-  glVertexPointer(3, GL_FLOAT, stride, (void*)0);
-  glNormalPointer(GL_FLOAT, stride, (void*)(3 * sizeof(float)));
-  glColorPointer(3, GL_FLOAT, stride, (void*)(6 * sizeof(float)));
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertices_buffer_.name);
+  glVertexAttribPointer(vertex_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  OpenGlResources::checkGlError();
 
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_colors_buffer_.name);
+  glVertexAttribPointer(colors_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  OpenGlResources::checkGlError();
+  /*
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_normals_buffer_.name);
+  glVertexAttribPointer(normals_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  OpenGlResources::checkGlError();
+  */
   glDrawArrays(GL_TRIANGLES, 0, num_triangles * 3);
   //glDrawArrays(GL_POINTS, 0, num_triangles * 3);
-
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisable(GL_COLOR_MATERIAL);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  
+  OpenGlResources::checkGlError();
 }
 
 void Object3d::setData(const std::vector<glm::vec3>& vertices,
@@ -102,24 +111,14 @@ void Object3d::setData(const std::vector<glm::vec3>& vertices,
   assert(vertices.size() == colors.size());
   assert(vertices.size() % 3 == 0);
   
-  std::vector<float> vertex_attributes;  // coordinates0, normals0, colors0, coordinates1, ...
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertices_buffer_.name);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
 
-  for (int i = 0; i < vertices.size(); i++) {
-    vertex_attributes.push_back(vertices[i].x);
-    vertex_attributes.push_back(vertices[i].y);
-    vertex_attributes.push_back(vertices[i].z);
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_colors_buffer_.name);
+  glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(std::remove_reference<decltype(colors)>::type::value_type), &colors[0], GL_STATIC_DRAW);
 
-    vertex_attributes.push_back(normals[i].x);
-    vertex_attributes.push_back(normals[i].y);
-    vertex_attributes.push_back(normals[i].z);
-
-    vertex_attributes.push_back(colors[i].x);
-    vertex_attributes.push_back(colors[i].y);
-    vertex_attributes.push_back(colors[i].z);
-  }
-  
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertex_attribs_buffer_.name);
-  glBufferData(GL_ARRAY_BUFFER, vertex_attributes.size() * sizeof(float), vertex_attributes.data(), GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, ogl_normals_buffer_.name);
+  glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(std::remove_reference<decltype(normals)>::type::value_type), &normals[0], GL_STATIC_DRAW);
 
   vertices_buffer_ = vertices;
   normals_buffer_ = normals;

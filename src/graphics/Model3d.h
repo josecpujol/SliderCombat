@@ -4,8 +4,11 @@
 #include "mathnphysics/Math.h"
 #include "OpenGlResources.h"
 
+
 #include <map>
 #include <memory>
+
+class OpenGlProgram;
 
 // It should be instantiated with a Object3dHolder
 class Object3d {
@@ -17,7 +20,7 @@ public:
   int getNumberTriangles() const { return (int)vertices_buffer_.size() / 3; }
   std::string getName() const { return name_; }
 
-  void render();
+  void render(GLint vertex_attrib_location, GLint colors_attrib_location, GLint normals_attrib_location);
   void renderVolumeShadow(const glm::mat4& model, const glm::vec4& light_pos);
 
 private:
@@ -25,7 +28,10 @@ private:
   std::vector<glm::vec3> normals_buffer_;
   std::vector<glm::vec3> colors_buffer_;
   std::string name_;
-  OpenGlBuffer ogl_vertex_attribs_buffer_;
+  OpenGlBuffer ogl_vertices_buffer_;
+  OpenGlBuffer ogl_colors_buffer_;
+  OpenGlBuffer ogl_normals_buffer_;
+
 };
 
 class Object3dHolder {

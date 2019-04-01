@@ -26,6 +26,8 @@ public:
   void loadMatrix(const glm::mat4& m);
   void multMatrix(const glm::mat4& m);
 
+  glm::mat4 getModelViewProjectionMatrix() const;
+
 private:
   OpenGlState() = default;
   GLuint program_in_use_ = 0;  // invalid program id

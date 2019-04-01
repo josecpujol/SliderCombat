@@ -4,6 +4,7 @@
 #include "utils/Logger.h"
 
 
+
 void ResourcesManager::setWindowDimensions(int w, int h) {
   window_width_ = w;
   window_height_ = h;
@@ -33,15 +34,19 @@ bool ResourcesManager::loadOpenGlPrograms() {
   // pair: vertex and fragment shader
   std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
     {OpenGlProgramType::kModel3d, std::make_pair(R"(
-    varying vec4 vertex_color;
+    attribute vec4 a_color;
+    attribute vec3 a_normal;
+    attribute vec4 a_position;
+    uniform mat4 u_MVPmatrix;
+    varying vec4 v_color;
     void main() {
-      gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-      vertex_color = gl_Color;
+      gl_Position = u_MVPmatrix * a_position;
+      v_color = a_color;
     }
   )", R"(
-    varying vec4 vertex_color;
+    varying vec4 v_color;
     void main() {
-      gl_FragColor = vertex_color;
+      gl_FragColor = v_color;
     }
   )")},
   {OpenGlProgramType::kLogger, std::make_pair(R"(

@@ -6,6 +6,8 @@
 #include "graphics/BitmapFont.h"
 #include "graphics/OpenGlResources.h"
 #include "graphics/Model3d.h"
+#include "graphics/OpenGlProgram.h"
+
 
 enum class ModelType {
   kTiles,

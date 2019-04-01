@@ -3,6 +3,7 @@
 void OpenGlState::useProgram(GLuint program_id) {
   if (program_in_use_ != program_id) {
     glUseProgram(program_id);
+    OpenGlResources::checkGlError();
     program_in_use_ = program_id;
   }
 }
@@ -22,24 +23,23 @@ void OpenGlState::loadIdentity() {
 
 void OpenGlState::loadMatrix(const glm::mat4& m) {
   active_stack_->load(m);
-  glLoadMatrixf(glm::value_ptr(m));
 }
 
 void OpenGlState::multMatrix(const glm::mat4& m) {
   active_stack_->mult(m);
-  auto res = active_stack_->get();
-  glLoadMatrixf(glm::value_ptr(res));
+}
+
+glm::mat4 OpenGlState::getModelViewProjectionMatrix() const {
+  return projection_matrix_stack_.get() * modelview_matrix_stack_.get();
 }
 
 void OpenGlState::matrixMode(MatrixMode mode) {
   switch (mode) {
     case MatrixMode::kProjection:
       active_stack_ = &projection_matrix_stack_;
-      glMatrixMode(GL_PROJECTION);
       return;
     case MatrixMode::kModelView:
       active_stack_ = &modelview_matrix_stack_;
-      glMatrixMode(GL_MODELVIEW);
       return;
   }
 }

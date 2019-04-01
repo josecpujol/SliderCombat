@@ -198,35 +198,20 @@ void Level::setOpenGlLights() {
 }
 
 void Level::drawSkyDome() {
-
-  // TODO: have this as an object. Preallocate mesh
-  ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d)->use();
-  glDepthMask(false);
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_COLOR_MATERIAL);
-  glDisable(GL_LIGHTING);
-  glShadeModel(GL_SMOOTH);
+  int segments = 30;
+  int num_vertices = (segments + 1) * 2;
 
   glm::vec3 color_top = glm::vec3(1.f, 1.f, 1.f);
   glm::vec3 color_bottom = glm::vec3(137.f / 255.f, 165.f / 255.f, 237.f / 255.f);
-
-  OpenGlBuffer vertices_buffer;
-  OpenGlBuffer colors_buffer;
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
-
-  int segments = 30;
-  int num_vertices = (segments + 1) * 2;
 
   std::vector<glm::vec3> vertices;
   std::vector<glm::vec3> colors;
   vertices.reserve(num_vertices);
   colors.reserve(num_vertices);
 
-   // Draw cilinder
+  // Draw cilinder
   float radius = 1.f;
-  float top = 0.5f;
+  float top = 1.f;
   float bottom = -0.05f;
 
   for (int i = 0, index = 0; i <= segments; i++, index++) {
@@ -238,28 +223,43 @@ void Level::drawSkyDome() {
     vertices.push_back(glm::vec3(x, y, top));
   }
 
+  // TODO: have this as an object. Preallocate mesh
+  ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d)->use();
+  glDepthMask(false);
+  glDisable(GL_DEPTH_TEST);
+
+  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d);
+  ogl_program->use();
+
+  ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
+
+  GLuint vertex_attrib_location = ogl_program->getAttribLocation("a_position");
+  GLuint colors_attrib_location = ogl_program->getAttribLocation("a_color");
+
+  glEnableVertexAttribArray(vertex_attrib_location);
+  glEnableVertexAttribArray(colors_attrib_location);
+
+  OpenGlBuffer vertices_buffer;
+  OpenGlBuffer colors_buffer;
+  
   glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer.name);
   glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
-  glVertexPointer(3, GL_FLOAT, 0, 0);
+  glVertexAttribPointer(vertex_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, colors_buffer.name);
   glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(decltype(colors)::value_type), &colors[0], GL_STATIC_DRAW);
-  glColorPointer(3, GL_FLOAT, 0, 0);
+  glVertexAttribPointer(colors_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size());
  
   glEnable(GL_DEPTH_TEST);
   glDepthMask(true);
-
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void Level::render() {
   int width = 0;
   int height = 0;
   ResourcesManager::getInstance().getWindowDimensions(&width, &height);
-  glShadeModel(GL_FLAT);
   glClearColor(83.f/255.f, 134.f/255.f, 1.f, 0.0f);
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
@@ -274,7 +274,7 @@ void Level::render() {
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
 
   OpenGlState::getInstance().matrixMode(MatrixMode::kProjection);
-  glm::mat4 perspective = glm::perspective(45.0f, ratio, 0.5f, 130.0f);
+  glm::mat4 perspective = glm::perspective(45.0f, ratio, 0.2f, 130.0f);
   OpenGlState::getInstance().loadMatrix(perspective);
 
   OpenGlState::getInstance().matrixMode(MatrixMode::kModelView);
@@ -282,7 +282,6 @@ void Level::render() {
   camera_.applyRotationOnly();
   drawSkyDome();
 
-  glShadeModel(GL_FLAT);
   OpenGlState::getInstance().loadIdentity();
   camera_.apply();
 
@@ -290,7 +289,7 @@ void Level::render() {
 //  setOpenGlLights();
 #endif
 
-  OpenGlResources::drawAxis();
+//  OpenGlResources::drawAxis();
   /*
   for (auto &point : collision_points_) {
     glPushMatrix();
@@ -312,5 +311,5 @@ void Level::render() {
   }
 
   // Draw overlay: health, status
-  hud_->display();
+//  hud_->display();
 }

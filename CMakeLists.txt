@@ -7,7 +7,7 @@ MESSAGE("CMAKE_SYSTEM_NAME: " ${CMAKE_SYSTEM_NAME})
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
   message("Emscripten detected")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s LEGACY_GL_EMULATION=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='[\"png\"]'")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='[\"png\"]'")
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --embed-file ../data")
 else () 

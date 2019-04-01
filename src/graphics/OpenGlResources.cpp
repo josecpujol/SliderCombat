@@ -3,80 +3,18 @@
 
 #include "utils/Logger.h"
 
-OpenGlProgram::~OpenGlProgram() {
-  if (is_program_created_) {
-    glDeleteProgram(program_id_);
+
+#if defined(_DEBUG) || defined(DEBUG)
+void OpenGlResources::checkGlError() {
+  GLenum err;
+  while ((err = glGetError()) != GL_NO_ERROR) {
+    LOG_DEBUG(err);
+    assert(false);
   }
 }
-
-bool OpenGlProgram::load(const std::string& vertex_shader_source, const std::string& fragment_shader_source) {
-  assert(!is_program_created_);
-  GLuint vertex_shader_id = loadShader(vertex_shader_source, GL_VERTEX_SHADER);
-  GLuint fragment_shader_id = loadShader(fragment_shader_source, GL_FRAGMENT_SHADER);
-     
-  program_id_ = glCreateProgram();
-  glAttachShader(program_id_, vertex_shader_id);
-  glAttachShader(program_id_, fragment_shader_id);
-  glLinkProgram(program_id_);
-
-  //Note the different functions here: glGetProgram* instead of glGetShader*.
-  GLint is_linked = 0;
-  glGetProgramiv(program_id_, GL_LINK_STATUS, (int *)&is_linked);
-  if (!is_linked) {
-    LOG_ERROR("Could not link program: " << program_id_);
-
-    glDeleteProgram(program_id_);
-    glDeleteShader(vertex_shader_id);
-    glDeleteShader(fragment_shader_id);
-
-    return false;
-  }
-
-  glDetachShader(program_id_, vertex_shader_id);
-  glDetachShader(program_id_, fragment_shader_id);
-
-  glDeleteShader(vertex_shader_id);
-  glDeleteShader(fragment_shader_id);
-
-  is_program_created_ = true;
-  return true;
-}
-
-void OpenGlProgram::setUniform1i(const std::string& name, int value) {
-  if (uniform_locations_.count(name) == 0) {
-    GLint location = glGetUniformLocation(program_id_, name.c_str());
-    assert(location != -1);
-    uniform_locations_[name] = location;
-  }
-  glUniform1i(uniform_locations_[name], value);
-}
-
-GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
-  GLint shader_compiled;
-	GLuint shader_id = glCreateShader(type);
-  const char* c_str = source.c_str();
-	glShaderSource(shader_id, 1, &c_str, nullptr);
-	glCompileShader(shader_id);
-	shader_compiled = GL_FALSE;
-	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader_compiled);
-	if (!shader_compiled) {
-		LOG_ERROR("Unable to compile shader type: " << type << ", id: " << shader_id);
-		GLint max_length = 0;
-		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
-
-		// The maxLength includes the NULL character
-		std::vector<GLchar> error_log(max_length);
-		glGetShaderInfoLog(shader_id, max_length, &max_length, &error_log[0]);
-    LOG_ERROR(error_log.data());
-		return shader_id;
-	}
-  return shader_id;
-}
-
-void OpenGlProgram::use() {
-  assert(is_program_created_);
-  OpenGlState::getInstance().useProgram(program_id_);
-}
+#else
+void OpenGlResources::checkGlError() {}
+#endif
 
 void OpenGlResources::drawCircle(float radius, int num_segments, const glm::vec3& color) {
   std::vector<glm::vec2> vertices;
@@ -98,8 +36,16 @@ void OpenGlResources::drawPolygon(const std::vector<glm::vec2>& vertices, const 
   OpenGlBuffer vertices_buffer;
   OpenGlBuffer colors_buffer;
 
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
+  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d);
+  ogl_program->use();
+
+  ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
+
+  GLuint vertex_attrib_location = ogl_program->getAttribLocation("a_position");
+  GLuint colors_attrib_location = ogl_program->getAttribLocation("a_color");
+
+  glEnableVertexAttribArray(vertex_attrib_location);
+  glEnableVertexAttribArray(colors_attrib_location);
 
   std::vector<glm::vec3> colors;
   colors.resize(vertices.size());
@@ -107,16 +53,14 @@ void OpenGlResources::drawPolygon(const std::vector<glm::vec2>& vertices, const 
 
   glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer.name);
   glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
-  glVertexPointer(2, GL_FLOAT, 0, 0);
+  glVertexAttribPointer(vertex_attrib_location, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, colors_buffer.name);
   glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(decltype(colors)::value_type), &colors[0], GL_STATIC_DRAW);
-  glColorPointer(3, GL_FLOAT, 0, 0);
+  glVertexAttribPointer(colors_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glDrawArrays(GL_LINE_LOOP, 0, vertices.size());
-
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
+  OpenGlResources::checkGlError();
 }
 
 

@@ -8,20 +8,7 @@
 #include <GL/glu.h>
 #include "mathnphysics/Math.h"
 
-class OpenGlProgram {
-public:
-  OpenGlProgram() = default;
-  ~OpenGlProgram();
-  bool load(const std::string& vertex_shader_source, const std::string& fragment_shader_source);
-  void use();
-  void setUniform1i(const std::string& name, int value);
 
-private:
-  GLuint loadShader(const std::string& source, GLenum type);
-  GLint program_id_;
-  bool is_program_created_ = false;
-  std::map<std::string, GLint> uniform_locations_;
-};
 
 class OpenGlBuffer {
 public:
@@ -39,6 +26,8 @@ class OpenGlResources {
 public:
   OpenGlResources() {}
   bool init();
+
+  static void checkGlError();
 
   static void printShaderLog(GLuint shader);
   static void printProgramLog(GLuint program);
