@@ -33,7 +33,10 @@ public:
   static void printProgramLog(GLuint program);
   static void drawAxis();
   static void drawCircle(float radius, int segments, const glm::vec3& color = glm::vec3(0.f, 0.f, 0.5f));
-  static void drawPolygon(const std::vector<glm::vec2>& vertices , const glm::vec3& color = glm::vec3(0.f, 0.f, 0.5f));
+  static void drawPolygon(const std::vector<glm::vec2>& vertices, const glm::vec3& color = glm::vec3(0.f, 0.f, 0.5f));
+  static void drawPolygon(const std::vector<glm::vec2>& vertices, const std::vector<glm::vec3>& colors, GLenum mode);
+  static void drawMesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& colors, GLenum mode);
+
   static void drawSphere(float radius);
   static void drawVector(const glm::vec3& origin, const glm::vec3& end, const glm::vec3& color);
   static void drawVector(const glm::vec2& origin, const glm::vec2& end, const glm::vec3& color);

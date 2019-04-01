@@ -193,8 +193,6 @@ void Level::setOpenGlLights() {
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
 }
 
 void Level::drawSkyDome() {
@@ -223,34 +221,11 @@ void Level::drawSkyDome() {
     vertices.push_back(glm::vec3(x, y, top));
   }
 
-  // TODO: have this as an object. Preallocate mesh
-  ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d)->use();
   glDepthMask(false);
   glDisable(GL_DEPTH_TEST);
 
-  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d);
-  ogl_program->use();
-
-  ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
-
-  GLuint vertex_attrib_location = ogl_program->getAttribLocation("a_position");
-  GLuint colors_attrib_location = ogl_program->getAttribLocation("a_color");
-
-  glEnableVertexAttribArray(vertex_attrib_location);
-  glEnableVertexAttribArray(colors_attrib_location);
-
-  OpenGlBuffer vertices_buffer;
-  OpenGlBuffer colors_buffer;
-  
-  glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer.name);
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
-  glVertexAttribPointer(vertex_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, colors_buffer.name);
-  glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(decltype(colors)::value_type), &colors[0], GL_STATIC_DRAW);
-  glVertexAttribPointer(colors_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size());
+  // TODO: have this as an object. Preallocate mesh
+  OpenGlResources::drawMesh(vertices, colors, GL_TRIANGLE_STRIP);
  
   glEnable(GL_DEPTH_TEST);
   glDepthMask(true);
@@ -289,7 +264,7 @@ void Level::render() {
 //  setOpenGlLights();
 #endif
 
-//  OpenGlResources::drawAxis();
+  OpenGlResources::drawAxis();
   /*
   for (auto &point : collision_points_) {
     glPushMatrix();
@@ -311,5 +286,5 @@ void Level::render() {
   }
 
   // Draw overlay: health, status
-//  hud_->display();
+  hud_->display();
 }
