@@ -40,6 +40,9 @@ void LoggerOpenGl::render() {
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  OpenGlResources::checkGlError();
+
   int line_number = 0;
   int font_size = 32;
   int line_height = font_size + 2;

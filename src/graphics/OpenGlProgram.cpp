@@ -69,23 +69,23 @@ void OpenGlProgram::setUniform1i(const std::string& name, int value) {
 
 GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
   GLint shader_compiled;
-	GLuint shader_id = glCreateShader(type);
+  GLuint shader_id = glCreateShader(type);
   const char* c_str = source.c_str();
-	glShaderSource(shader_id, 1, &c_str, nullptr);
-	glCompileShader(shader_id);
-	shader_compiled = GL_FALSE;
-	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader_compiled);
-	if (!shader_compiled) {
-		LOG_ERROR("Unable to compile shader type: " << type << ", id: " << shader_id);
-		GLint max_length = 0;
-		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
+  glShaderSource(shader_id, 1, &c_str, nullptr);
+  glCompileShader(shader_id);
+  shader_compiled = GL_FALSE;
+  glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader_compiled);
+  if (!shader_compiled) {
+    LOG_ERROR("Unable to compile shader type: " << type << ", id: " << shader_id);
+    GLint max_length = 0;
+    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
 
-		// The maxLength includes the NULL character
-		std::vector<GLchar> error_log(max_length);
-		glGetShaderInfoLog(shader_id, max_length, &max_length, &error_log[0]);
+    // The maxLength includes the NULL character
+    std::vector<GLchar> error_log(max_length);
+    glGetShaderInfoLog(shader_id, max_length, &max_length, &error_log[0]);
     LOG_ERROR(error_log.data());
-		return shader_id;
-	}
+    return shader_id;
+  }
   return shader_id;
 }
 

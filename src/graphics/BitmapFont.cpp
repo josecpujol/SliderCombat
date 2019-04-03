@@ -24,6 +24,8 @@ void BitmapFont::render(const std::string& text, int x, int y, int size) {
 
   OpenGlProgram * ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kLogger);
   ogl_program->use();
+
+  ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
   glActiveTexture(GL_TEXTURE0);
   ogl_program->setUniform1i("texture_unit", 0);
 
@@ -31,13 +33,19 @@ void BitmapFont::render(const std::string& text, int x, int y, int size) {
   std::array<glm::vec2, 4> tex_coords;
    
   // The color is affected by glColor, unless glTexEnv is set with magic params
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  GLuint vertex_attrib_location = ogl_program->getAttribLocation("a_position");
+  GLuint texcoords_attrib_location = ogl_program->getAttribLocation("a_texcoord");
+
+  glEnableVertexAttribArray(vertex_attrib_location);
+  glEnableVertexAttribArray(texcoords_attrib_location);
 
   for (auto character : text) {
     CharInfo* char_info = &(chars_[character]);
     
     glBindTexture(GL_TEXTURE_2D, char_info->texture);
+
+    OpenGlResources::checkGlError();
+
     x_texture = ((float)char_info->x) / textures_width_;
     y_texture = ((float)char_info->y) / textures_height_;
     w_texture = ((float)char_info->width) / textures_width_;
@@ -60,19 +68,18 @@ void BitmapFont::render(const std::string& text, int x, int y, int size) {
 
     glBindBuffer(GL_ARRAY_BUFFER, vertices_buffer_.name);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(std::remove_reference<decltype(vertices)>::type::value_type), &vertices[0], GL_STATIC_DRAW);
-    glVertexPointer(2, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(vertex_attrib_location, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, tex_coords_buffer_.name);
     glBufferData(GL_ARRAY_BUFFER, tex_coords.size() * sizeof(decltype(tex_coords)::value_type), &tex_coords[0], GL_STATIC_DRAW);
-    glTexCoordPointer(2, GL_FLOAT, 0, 0);
+    glVertexAttribPointer(texcoords_attrib_location, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
-    
+
     x_cursor += (scale_factor * char_info->xadvance);
   }
 
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  OpenGlResources::checkGlError();
 }
 
 bool BitmapFont::load(const std::string& xml_description) {

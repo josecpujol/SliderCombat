@@ -50,10 +50,13 @@ bool ResourcesManager::loadOpenGlPrograms() {
     }
   )")},
   {OpenGlProgramType::kLogger, std::make_pair(R"(
+    attribute vec4 a_position;
+    attribute vec2 a_texcoord;
+    uniform mat4 u_MVPmatrix;
     varying vec2 vTexCoord;
     void main() {
-      gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-      vTexCoord = gl_MultiTexCoord0.xy;;
+      gl_Position = u_MVPmatrix * a_position;
+      vTexCoord = a_texcoord;;
     }
   )", R"(
     uniform sampler2D texture_unit;
