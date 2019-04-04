@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-project (SliderCombar)
+project (SliderCombat)
 
 set (CMAKE_CXX_FLAGS "--std=c++14 ${CMAKE_CXX_FLAGS} -DUSE_MINIZ")
 

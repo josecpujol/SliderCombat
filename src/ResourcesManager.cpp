@@ -3,8 +3,6 @@
 #include "SDL_image.h"
 #include "utils/Logger.h"
 
-
-
 void ResourcesManager::setWindowDimensions(int w, int h) {
   window_width_ = w;
   window_height_ = h;
@@ -34,6 +32,7 @@ bool ResourcesManager::loadOpenGlPrograms() {
   // pair: vertex and fragment shader
   std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
     {OpenGlProgramType::kModel3d, std::make_pair(R"(
+    precision mediump float;
     attribute vec4 a_color;
     attribute vec3 a_normal;
     attribute vec4 a_position;
@@ -44,12 +43,14 @@ bool ResourcesManager::loadOpenGlPrograms() {
       v_color = a_color;
     }
   )", R"(
+    precision mediump float;
     varying vec4 v_color;
     void main() {
       gl_FragColor = v_color;
     }
   )")},
   {OpenGlProgramType::kLogger, std::make_pair(R"(
+    precision mediump float;
     attribute vec4 a_position;
     attribute vec2 a_texcoord;
     uniform mat4 u_MVPmatrix;
@@ -59,6 +60,7 @@ bool ResourcesManager::loadOpenGlPrograms() {
       vTexCoord = a_texcoord;;
     }
   )", R"(
+    precision mediump float;
     uniform sampler2D texture_unit;
     varying vec2 vTexCoord;
     void main() {
