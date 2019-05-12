@@ -3,7 +3,9 @@
 #include "Tmx.h"
 #include "mathnphysics/Math.h"
 #include "graphics/Model3d.h"
+#include "graphics/Scene.h"
 #include "mathnphysics/Collision.h"
+
 #include "Pose.h"
 
 class GameObject;
@@ -19,7 +21,7 @@ struct Tile {
   }
   CollisionArea collision_area;
   Object3dHolder object3d;
-  void render() { object3d.render(false); }
+  void render(Scene& scene) { scene.render(object3d); }
 };
 
 /**
@@ -33,7 +35,7 @@ public:
   std::string serialize();
   Pose getPlayerInitialPose();
   std::vector<Pose> getInitialPoses(const std::string&);
-  void render();
+  void render(Scene& scene);
   void renderCollisionArea();
   bool isCollision(const CollisionArea& collision_area, glm::vec2* collision_point, glm::vec2* normal);
 

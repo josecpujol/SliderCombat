@@ -10,6 +10,7 @@ public:
   void use();
   void setUniform1i(const std::string& name, int value);
   void setUniformMatrix4fv(const std::string& name, const glm::mat4& value);
+  void setUniform3fv(const std::string& name, const glm::vec3& value);
   GLint getAttribLocation(const std::string& name);
 
 private:

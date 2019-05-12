@@ -174,27 +174,6 @@ void Level::checkCollisions() {
   }
 }
 
-void Level::setOpenGlLights() {
-  float light_position[] = {0.f, 0.0f, 1.f, 0.f};  // w=0-> vector
-  float light_diffuse[] = {0.f, 0.f, 0.f, 1.f};
-  float light_ambient[] = {0.f, 0.f, 0.f, 1.f};
-  float light_specular[] = {0.f, 0.f, 0.f, 1.f};
-  diffuse_coeff_ = 0.25f;
-  ambient_coeff_ = 0.75f;
-  for (int i = 0; i < 3; i++) {
-    light_diffuse[i] = diffuse_coeff_;
-    light_ambient[i] = ambient_coeff_;
-  }
-
-  GLfloat lmodel_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-
-  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-}
-
 void Level::drawSkyDome() {
   int segments = 30;
   int num_vertices = (segments + 1) * 2;
@@ -260,9 +239,9 @@ void Level::render() {
   OpenGlState::getInstance().loadIdentity();
   camera_.apply();
 
-#ifndef __EMSCRIPTEN__
-//  setOpenGlLights();
-#endif
+  // Lights
+  scene_.setAmbientLight(glm::vec3(0.25f));
+  scene_.setDiffuseLight(glm::vec4(0.f, 0.0f, 1.f, 0.f), glm::vec3(0.25f));
 
   OpenGlResources::drawAxis();
   /*
@@ -276,13 +255,13 @@ void Level::render() {
   collision_points_.erase(std::remove_if(collision_points_.begin(), collision_points_.end(),
     [](const VectorWithTimer& o) {return o.expiration < Clock::now(); }), collision_points_.end());
 
-  if (render_objects_) map_->render();
+  if (render_objects_) map_->render(scene_);
   if (render_collision_area_) map_->renderCollisionArea();
 
   // Draw objects
   for (auto obj : objects_) {
     if (render_collision_area_) obj->renderCollisionArea();
-    if (render_objects_) obj->render();
+    if (render_objects_) obj->render(scene_);
   }
 
   // Draw overlay: health, status

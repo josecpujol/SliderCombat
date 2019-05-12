@@ -8,6 +8,7 @@
 #include "EventManager.h"
 #include "Camera.h"
 #include "gameobjects/Slider.h"
+#include "graphics/Scene.h"
 #include "Hud.h"
 //#include "EventListener.h"
 
@@ -61,5 +62,7 @@ private:
     TimePoint expiration;
   };
   std::vector<VectorWithTimer> collision_points_;
+
+  Scene scene_;
 
 };

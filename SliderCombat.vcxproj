@@ -160,7 +160,9 @@
     <ClCompile Include="ext\tmxparser\TmxUtil.cpp" />
     <ClCompile Include="src\graphics\MatrixStack.cpp" />
     <ClCompile Include="src\graphics\OpenGlProgram.cpp" />
+    <ClCompile Include="src\graphics\OpenGlRenderer.cpp" />
     <ClCompile Include="src\graphics\OpenGlState.cpp" />
+    <ClCompile Include="src\graphics\Scene.cpp" />
     <ClCompile Include="src\mathnphysics\Collision.cpp" />
     <ClCompile Include="src\mathnphysics\Physics.cpp" />
     <ClCompile Include="src\mathnphysics\Math.cpp" />

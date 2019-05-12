@@ -10,7 +10,7 @@ public:
   Projectile(glm::vec3 pos, float rot);
   ~Projectile() {}
   void update(uint32_t elapsed_us) override;
-  void render() override;
+  void render(Scene&) override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override;
   int getDamage() { return damage_; }
   float getVelocity() const { return vel_; }

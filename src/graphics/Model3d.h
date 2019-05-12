@@ -20,10 +20,9 @@ public:
   int getNumberTriangles() const { return (int)vertices_buffer_.size() / 3; }
   std::string getName() const { return name_; }
 
-  void render(GLint vertex_attrib_location, GLint colors_attrib_location, GLint normals_attrib_location);
-  void renderVolumeShadow(const glm::mat4& model, const glm::vec4& light_pos);
+  //void renderVolumeShadow(const glm::mat4& model, const glm::vec4& light_pos);
 
-private:
+
   std::vector<glm::vec3> vertices_buffer_;
   std::vector<glm::vec3> normals_buffer_;
   std::vector<glm::vec3> colors_buffer_;
@@ -49,21 +48,26 @@ public:
     valid_model_mat_ = false;
   }
   void setObject3d(Object3d* obj) { object_ = obj;  }
+  Object3d* getObject3d() const { return object_; }
+
   void setOpenGlProgram(OpenGlProgram* ogl_program) { ogl_program_ = ogl_program; }
+  OpenGlProgram* getOpenGlProgram() const { return ogl_program_; }
   void setScale(glm::vec3 scale) { 
     scale_ = scale;
     valid_model_mat_ = false;
   }
-  void render(bool render_shadow);
+
+
+  glm::mat4 getTransformationMatrix() const;
+
 private:
-  void calculateModelMatrix();
 
   Object3d* object_ = nullptr;
   glm::vec3 rotation_ = glm::vec3(0.f);
   glm::vec3 translation_ = glm::vec3(0.f);
   glm::vec3 scale_ = glm::vec3(1.0);
-  glm::mat4 model_mat_;
-  bool valid_model_mat_ = false;
+  mutable glm::mat4 model_mat_;
+  mutable bool valid_model_mat_ = false;
   OpenGlProgram* ogl_program_ = nullptr;
 };
 

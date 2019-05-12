@@ -148,7 +148,7 @@ void Slider::update(uint32_t elapsed_us) {
   }
 };
 
-void Slider::render() {
+void Slider::render(Scene& scene) {
   // hit animation
 #ifndef __EMSCRIPTEN__
   if (is_hit_) {
@@ -162,7 +162,8 @@ void Slider::render() {
 
   model_.setTranslation(getPosition());
   model_.setRotationZ(getRotation());
-  model_.render(true);
+  //model_.render(true);
+  scene.render(model_);
 
 #ifndef __EMSCRIPTEN__
   if (is_hit_) {

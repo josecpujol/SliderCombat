@@ -50,9 +50,9 @@ void Projectile::onCollision(GameObject* with, const glm::vec2& collision_point,
   event2.send();
 }
 
-void Projectile::render() {
+void Projectile::render(Scene& scene) {
   model_.setTranslation(getPosition());
   model_.setRotationZ(getRotation());
   model_.setScale(glm::vec3(0.15f));
-  model_.render(true);
+  scene.render(model_);
 }

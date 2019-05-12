@@ -20,12 +20,12 @@ Explosion::Explosion(const glm::vec3& pos, Duration duration, float max_speed, O
   }
 }
 
-void Explosion::render() {
+void Explosion::render(Scene& scene) {
   for (auto& pose : particles_poses_) {
     particle_.setTranslation(pose.pos);
     particle_.setRotation(pose.rotation);
     particle_.setScale(glm::vec3(pose.scale));
-    particle_.render(true);  // will save and restore the modelview matrices
+    scene.render(particle_);  // will save and restore the modelview matrices
   }
 }
 

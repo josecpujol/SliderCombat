@@ -62,6 +62,12 @@ void OpenGlProgram::setUniformMatrix4fv(const std::string& name, const glm::mat4
   glUniformMatrix4fv(uniform_locations_[name], 1, GL_FALSE, glm::value_ptr(value));
 }
 
+void OpenGlProgram::setUniform3fv(const std::string& name, const glm::vec3& value) {
+  getAndStoreUniformLocation(name);
+  glUniform3fv(uniform_locations_[name], 1, glm::value_ptr(value));
+}
+
+
 void OpenGlProgram::setUniform1i(const std::string& name, int value) {
   getAndStoreUniformLocation(name);
   glUniform1i(uniform_locations_[name], value);

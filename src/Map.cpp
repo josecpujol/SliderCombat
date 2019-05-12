@@ -159,14 +159,14 @@ bool Map::isCollision(const CollisionArea& collision_area, glm::vec2* collision_
   return false;
 }
 
-void Map::render() {
+void Map::render(Scene& scene) {
   for (int x = 0; x < tile_map_.size(); x++) {
     for (int y = 0; y < tile_map_[x].size(); y++) {
       Tile* gametile = &(tile_map_[x][y]);
       if (!gametile->exists) {
         continue;
       }
-      gametile->render();
+      gametile->render(scene);
     }
   }
 }

@@ -33,20 +33,31 @@ bool ResourcesManager::loadOpenGlPrograms() {
   std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
     {OpenGlProgramType::kModel3d, std::make_pair(R"(
     precision mediump float;
+
     attribute vec4 a_color;
-    attribute vec3 a_normal;
+    //attribute vec3 a_normal;
     attribute vec4 a_position;
+
     uniform mat4 u_MVPmatrix;
+
     varying vec4 v_color;
+    //varying vec3 v_normal;
+
     void main() {
       gl_Position = u_MVPmatrix * a_position;
       v_color = a_color;
+      //v_normal = a_normal;
     }
   )", R"(
     precision mediump float;
+
     varying vec4 v_color;
+   // varying vec3 v_normal;
+
+    uniform vec3 u_ambient_light = vec3(1.0, 1.0, 1.0);
+
     void main() {
-      gl_FragColor = v_color;
+      gl_FragColor = v_color * vec4(u_ambient_light, 1.0);
     }
   )")},
   {OpenGlProgramType::kLogger, std::make_pair(R"(
@@ -100,6 +111,11 @@ bool ResourcesManager::loadResources() {
     return false;
   }
 
+  if (!loadFonts()) {
+    LOG_ERROR("Could not load fonts");
+    return false;
+  }
+
   if (!loadModels()) {
     LOG_ERROR("Could not load models");
     return false;
@@ -108,10 +124,7 @@ bool ResourcesManager::loadResources() {
     LOG_ERROR("Could not load maps");
     return false;
   }
-  if (!loadFonts()) {
-    LOG_ERROR("Could not load fonts");
-    return false;
-  }
+
 
 
   return true;

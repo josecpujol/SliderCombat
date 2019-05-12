@@ -31,7 +31,7 @@ public:
   Explosion(const glm::vec3& pos, Duration duration, float speed, Object3d* particle);
   ~Explosion() = default;
 
-  void render() override;
+  void render(Scene&) override;
   void update(uint32_t elapsed_us) override;
   void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) override { assert(false); };
 

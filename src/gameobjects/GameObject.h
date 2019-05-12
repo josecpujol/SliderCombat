@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include "mathnphysics/Math.h"
 #include "mathnphysics/Collision.h"
+#include "graphics/Scene.h"
 #include "Pose.h"
 
 enum class GameObjectType {Undefined, Projectile, LocalPlayer, ComputerEnemy, Explosion, HealthPowerup};
@@ -26,7 +27,7 @@ public:
 
   virtual ~GameObject() {}
 
-  virtual void render() = 0;
+  virtual void render(Scene&) = 0;
   void renderCollisionArea();
   virtual void update(uint32_t elapsed_us) = 0;
   virtual void onCollision(GameObject* with, const glm::vec2& collision_point, glm::vec2* normal) = 0;

@@ -56,9 +56,9 @@ void PowerUp::update(uint32_t elapsed_us) {
   powerup_model_.setTranslation(pos);
 }
 
-void PowerUp::render() {
+void PowerUp::render(Scene& scene) {
   if (is_visible_) {
-    base_model_.render(false);
-    powerup_model_.render(false);
+    scene.render(base_model_);
+    scene.render(powerup_model_);
   }
 }

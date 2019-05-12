@@ -7,40 +7,25 @@
 Object3d::Object3d(const std::string& name) : name_(name) {
 }
 
-void Object3dHolder::calculateModelMatrix() {
-  if (valid_model_mat_) return;
+glm::mat4 Object3dHolder::getTransformationMatrix() const {
+  if (!valid_model_mat_) {
 
-  model_mat_ = glm::translate(translation_);
-  model_mat_ *= glm::scale(scale_);
-  model_mat_ *= glm::rotate(glm::radians(rotation_.x), glm::vec3(1.f, 0.f, 0.f));
-  model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.y), glm::vec3(0.f, 1.f, 0.f));
-  model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.z), glm::vec3(0.f, 0.f, 1.f));
-  valid_model_mat_ = true;
-}
 
-void Object3dHolder::render(bool render_shadow) {
-  OpenGlState::getInstance().pushMatrix();
-  calculateModelMatrix();
-  OpenGlState::getInstance().multMatrix(model_mat_);
-  assert(ogl_program_);
-  ogl_program_->use();
-
-  // Load matrix
-  ogl_program_->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
-
-  object_->render(
-    ogl_program_->getAttribLocation("a_position"), 
-    ogl_program_->getAttribLocation("a_color"),
-    ogl_program_->getAttribLocation("a_normal")
-  );
-  if (render_shadow) {
-  //  object_->renderVolumeShadow(model_mat_, glm::vec4(20, 20, 20, 1));
+    model_mat_ = glm::translate(translation_);
+    model_mat_ *= glm::scale(scale_);
+    model_mat_ *= glm::rotate(glm::radians(rotation_.x), glm::vec3(1.f, 0.f, 0.f));
+    model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.y), glm::vec3(0.f, 1.f, 0.f));
+    model_mat_ = glm::rotate(model_mat_, glm::radians(rotation_.z), glm::vec3(0.f, 0.f, 1.f));
+    valid_model_mat_ = true;
   }
-  OpenGlState::getInstance().popMatrix();
+
+  return model_mat_;
 }
 
-void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& ligth_pos) {
- /* // By now, model_mat_ has the correct value
+
+
+/*void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& ligth_pos) {
+  // By now, model_mat_ has the correct value
   // We are under the "model matrix" (M) influence, so we need to apply the inverse to the light, 
   // so it gets to "light_pos" after we apply M * (M^-1 * light_pos) 
   glm::vec4 new_light_pos =  glm::inverse(model_mat) * ligth_pos;
@@ -72,37 +57,9 @@ void Object3d::renderVolumeShadow(const glm::mat4& model_mat, const glm::vec4& l
     }   
   }
   glEnd();
-  */
+  
 }
-
-// Dont push the matrix!!
-void Object3d::render(GLint vertex_attrib_location, GLint colors_attrib_location, GLint normals_attrib_location) {
-  OpenGlResources::checkGlError();
-  int num_triangles = getNumberTriangles();
-  Stats::getInstance().num_objects++;
-  Stats::getInstance().num_triangles += num_triangles;
-
-  glEnableVertexAttribArray(vertex_attrib_location);
-  glEnableVertexAttribArray(colors_attrib_location);
- // glEnableVertexAttribArray(normals_attrib_location);
-  OpenGlResources::checkGlError();
-
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_vertices_buffer_.name);
-  glVertexAttribPointer(vertex_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  OpenGlResources::checkGlError();
-
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_colors_buffer_.name);
-  glVertexAttribPointer(colors_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  OpenGlResources::checkGlError();
-  /*
-  glBindBuffer(GL_ARRAY_BUFFER, ogl_normals_buffer_.name);
-  glVertexAttribPointer(normals_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  OpenGlResources::checkGlError();
-  */
-  glDrawArrays(GL_TRIANGLES, 0, num_triangles * 3);
-  //glDrawArrays(GL_POINTS, 0, num_triangles * 3);
-  OpenGlResources::checkGlError();
-}
+*/
 
 void Object3d::setData(const std::vector<glm::vec3>& vertices,
                        const std::vector<glm::vec3>& normals,
