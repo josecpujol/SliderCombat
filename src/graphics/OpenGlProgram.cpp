@@ -38,50 +38,70 @@ bool OpenGlProgram::load(const std::string& vertex_shader_source, const std::str
   glDeleteShader(vertex_shader_id);
   glDeleteShader(fragment_shader_id);
 
+  storeAllAttributes();
+  storeAllUniforms();
+  
   is_program_created_ = true;
   return true;
 }
 
-GLint OpenGlProgram::getAttribLocation(const std::string& name) {
-  GLint location = glGetAttribLocation(program_id_, name.c_str());
-  OpenGlResources::checkGlError();
-  return location;
+void OpenGlProgram::storeAllAttributes() {
+  GLint count;
+
+  GLint size; // size of the variable
+  GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+  const GLsizei bufSize = 16; // maximum name length
+  GLchar name[bufSize]; // variable name in GLSL
+  GLsizei length; // name length
+
+  glGetProgramiv(program_id_, GL_ACTIVE_ATTRIBUTES, &count);
+  for (GLint i = 0; i < count; i++) {
+    glGetActiveAttrib(program_id_, (GLuint)i, bufSize, &length, &size, &type, name);
+    attribute_locations_[name] = glGetAttribLocation(program_id_, name);
+  }
 }
 
-void OpenGlProgram::getAndStoreUniformLocation(const std::string& name) {
-  if (uniform_locations_.count(name) == 0) {
-    GLint location = glGetUniformLocation(program_id_, name.c_str());
-    OpenGlResources::checkGlError();
-    assert(location != -1);
-    uniform_locations_[name] = location;
-    uniform_exists_[name] = true;
+void OpenGlProgram::storeAllUniforms() {
+  GLint count;
+
+  GLint size; // size of the variable
+  GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+  const GLsizei bufSize = 16; // maximum name length
+  GLchar name[bufSize]; // variable name in GLSL
+  GLsizei length; // name length
+
+  glGetProgramiv(program_id_, GL_ACTIVE_UNIFORMS, &count);
+
+  for (GLint i = 0; i < count; i++) {
+    glGetActiveUniform(program_id_, (GLuint)i, bufSize, &length, &size, &type, name);
+    uniform_locations_[name] = glGetUniformLocation(program_id_, name);
   }
+}
+
+GLint OpenGlProgram::getAttribLocation(const std::string& name) const {
+  return attribute_locations_.at(name);
 }
 
 bool OpenGlProgram::hasUniform(const std::string& name) const {
-  if (uniform_exists_.count(name) == 0) {
-    GLint location = glGetUniformLocation(program_id_, name.c_str());
-    OpenGlResources::checkGlError();
-    uniform_exists_[name] = location != -1;
-  }
-  return uniform_exists_[name];
+  return uniform_locations_.count(name) != 0;
 }
 
 
 void OpenGlProgram::setUniformMatrix4fv(const std::string& name, const glm::mat4& value) {
-  getAndStoreUniformLocation(name);
-  glUniformMatrix4fv(uniform_locations_[name], 1, GL_FALSE, glm::value_ptr(value));
+  assert(hasUniform(name));
+  glUniformMatrix4fv(uniform_locations_.at(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void OpenGlProgram::setUniform3fv(const std::string& name, const glm::vec3& value) {
-  getAndStoreUniformLocation(name);
-  glUniform3fv(uniform_locations_[name], 1, glm::value_ptr(value));
+  assert(hasUniform(name));
+  glUniform3fv(uniform_locations_.at(name), 1, glm::value_ptr(value));
 }
 
-
 void OpenGlProgram::setUniform1i(const std::string& name, int value) {
-  getAndStoreUniformLocation(name);
-  glUniform1i(uniform_locations_[name], value);
+  assert(hasUniform(name));
+  glUniform1i(uniform_locations_.at(name), value);
 }
 
 GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {

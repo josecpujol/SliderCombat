@@ -16,13 +16,14 @@ public:
   void setUniformMatrix4fv(const std::string& name, const glm::mat4& value);
   void setUniform3fv(const std::string& name, const glm::vec3& value);
   bool hasUniform(const std::string& name) const;
-  GLint getAttribLocation(const std::string& name);
+  GLint getAttribLocation(const std::string& name) const;
 
 private:
-  void getAndStoreUniformLocation(const std::string& name);
+  void storeAllAttributes();
+  void storeAllUniforms();
   GLuint loadShader(const std::string& source, GLenum type);
-  GLint program_id_;
+  GLint program_id_ = -1;
   bool is_program_created_ = false;
   std::unordered_map<std::string, GLint> uniform_locations_;
-  mutable std::unordered_map<std::string, bool> uniform_exists_;
+  std::unordered_map<std::string, GLint> attribute_locations_;
 };
