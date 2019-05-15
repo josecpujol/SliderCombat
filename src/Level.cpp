@@ -41,6 +41,67 @@ Level::Level(Map* map) : map_(map) {
   Event::manager.subscribeToAddObjectEvent([this](GameObject* object) {
     this->addObject(object);
   });
+
+  createDomeMesh();
+}
+
+void Level::createDomeMesh() {
+  int num_segments = 30;
+  int num_vertices = num_segments * 6;
+
+  glm::vec3 color_top = glm::vec3(1.f, 1.f, 1.f);
+  glm::vec3 color_bottom = glm::vec3(137.f / 255.f, 165.f / 255.f, 237.f / 255.f);
+
+  std::vector<glm::vec3> vertices;
+  std::vector<glm::vec3> colors;
+  std::vector<glm::vec3> normals;
+  vertices.reserve(num_vertices);
+  colors.reserve(num_vertices);
+  normals.reserve(num_vertices);
+
+  // Draw cilinder
+  float radius = 1.f;
+  float top = 1.f;
+//  float top = 0.1;
+  float bottom = -0.05f;
+  float pi_times_2 = 6.28318f;
+
+  for (int i = 0; i < num_segments; i++) {
+    float x0 = sin((pi_times_2 * i) / num_segments);
+    float y0 = cos((pi_times_2 * i) / num_segments);
+
+    float x1 = sin((pi_times_2 * (i+1)) / num_segments);
+    float y1 = cos((pi_times_2 * (i+1)) / num_segments);
+   
+    vertices.push_back(glm::vec3(x0, y0, bottom));
+    vertices.push_back(glm::vec3(x0, y0, top));
+    vertices.push_back(glm::vec3(x1, y1, bottom));
+
+    vertices.push_back(glm::vec3(x1, y1, bottom));
+    vertices.push_back(glm::vec3(x0, y0, top));
+    vertices.push_back(glm::vec3(x1, y1, top));
+    
+    colors.push_back(color_bottom);
+    colors.push_back(color_top);
+    colors.push_back(color_bottom);
+    colors.push_back(color_bottom);
+    colors.push_back(color_top); 
+    colors.push_back(color_top);
+
+    normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+    normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+    normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+    normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+    normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+    normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+  }
+
+  dome_mesh_.setData(vertices, normals, colors);
+
+
+  dome_holder_.setScale(glm::vec3(1.001f));
+  dome_holder_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kMesh3dPlainColor));
+  dome_holder_.setObject3d(&dome_mesh_);
 }
 
 void Level::addObject(GameObject* object) {
@@ -174,42 +235,6 @@ void Level::checkCollisions() {
   }
 }
 
-void Level::drawSkyDome() {
-  int segments = 30;
-  int num_vertices = (segments + 1) * 2;
-
-  glm::vec3 color_top = glm::vec3(1.f, 1.f, 1.f);
-  glm::vec3 color_bottom = glm::vec3(137.f / 255.f, 165.f / 255.f, 237.f / 255.f);
-
-  std::vector<glm::vec3> vertices;
-  std::vector<glm::vec3> colors;
-  vertices.reserve(num_vertices);
-  colors.reserve(num_vertices);
-
-  // Draw cilinder
-  float radius = 1.f;
-  float top = 1.f;
-  float bottom = -0.05f;
-
-  for (int i = 0, index = 0; i <= segments; i++, index++) {
-    float x = sin((6.28318f * i) / segments);
-    float y = cos((6.28318f * i) / segments);
-    colors.push_back(color_bottom);
-    vertices.push_back(glm::vec3(x, y, bottom));
-    colors.push_back(color_top);
-    vertices.push_back(glm::vec3(x, y, top));
-  }
-
-  glDepthMask(false);
-  glDisable(GL_DEPTH_TEST);
-
-  // TODO: have this as an object. Preallocate mesh
-  OpenGlResources::drawMesh(vertices, colors, GL_TRIANGLE_STRIP);
- 
-  glEnable(GL_DEPTH_TEST);
-  glDepthMask(true);
-}
-
 void Level::render() {
   int width = 0;
   int height = 0;
@@ -222,7 +247,9 @@ void Level::render() {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glEnable(GL_NORMALIZE);
+  // Lights
+  scene_.setAmbientLight(glm::vec3(0.75f));
+  scene_.setDiffuseLight(glm::vec4(0.f, 0.0f, 1.f, 0.f), glm::vec3(0.25f));
 
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
   glViewport(0, 0, (GLsizei)width, (GLsizei)height);
@@ -231,17 +258,20 @@ void Level::render() {
   glm::mat4 perspective = glm::perspective(45.0f, ratio, 0.2f, 130.0f);
   OpenGlState::getInstance().loadMatrix(perspective);
 
+  // Draw sky dome
   OpenGlState::getInstance().matrixMode(MatrixMode::kModelView);
   OpenGlState::getInstance().loadIdentity();
   camera_.applyRotationOnly();
-  drawSkyDome();
+  glDepthMask(false);
+  glDisable(GL_DEPTH_TEST);
+  scene_.render(dome_holder_);
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(true);
 
   OpenGlState::getInstance().loadIdentity();
   camera_.apply();
 
-  // Lights
-  scene_.setAmbientLight(glm::vec3(0.25f));
-  scene_.setDiffuseLight(glm::vec4(0.f, 0.0f, 1.f, 0.f), glm::vec3(0.25f));
+ 
 
   OpenGlResources::drawAxis();
   /*

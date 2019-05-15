@@ -10,7 +10,7 @@ Hud::~Hud() {
 }
 
 void Hud::drawHealthBar() {
-  ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d)->use();
+  ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kMesh3dPlainColor)->use();
   
   std::shared_ptr<const SliderLocalPlayer> local_player = level_->getLocalPlayer();
   Meter health = local_player->getHealth();

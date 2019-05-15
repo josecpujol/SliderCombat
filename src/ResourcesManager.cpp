@@ -31,7 +31,7 @@ bool ResourcesManager::loadMaps() {
 bool ResourcesManager::loadOpenGlPrograms() {
   // pair: vertex and fragment shader
   std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
-    {OpenGlProgramType::kModel3d, std::make_pair(R"(
+    {OpenGlProgramType::kMesh3dLighting, std::make_pair(R"(
     precision mediump float;
 
     attribute vec4 a_color;
@@ -60,6 +60,30 @@ bool ResourcesManager::loadOpenGlPrograms() {
       gl_FragColor = v_color * vec4(u_ambient_light, 1.0);
     }
   )")},
+    {OpenGlProgramType::kMesh3dPlainColor, std::make_pair(R"(
+    precision mediump float;
+
+    attribute vec4 a_color;
+    attribute vec4 a_position;
+
+    uniform mat4 u_MVPmatrix;
+
+    varying vec4 v_color;
+
+    void main() {
+      gl_Position = u_MVPmatrix * a_position;
+      v_color = a_color;
+    }
+  )", R"(
+    precision mediump float;
+
+    varying vec4 v_color;
+
+    void main() {
+      gl_FragColor = v_color;
+    }
+  )")},
+
   {OpenGlProgramType::kLogger, std::make_pair(R"(
     precision mediump float;
     attribute vec4 a_position;

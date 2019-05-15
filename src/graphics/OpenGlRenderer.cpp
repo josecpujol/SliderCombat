@@ -9,10 +9,14 @@
 void OpenGlRenderer::render(Object3d* mesh, OpenGlProgram* ogl_program, Scene* scene) {
   ogl_program->use();
 
+ // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   // Load matrix
   ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
 
- // ogl_program->setUniform3fv("u_ambient_light", scene->getAmbientLight());
+  if (ogl_program->hasUniform("u_ambient_light")) {
+    ogl_program->setUniform3fv("u_ambient_light", scene->getAmbientLight());
+  }
+
 
   GLint vertex_attrib_location  = ogl_program->getAttribLocation("a_position");
   GLint colors_attrib_location  = ogl_program->getAttribLocation("a_color");
@@ -41,6 +45,5 @@ void OpenGlRenderer::render(Object3d* mesh, OpenGlProgram* ogl_program, Scene* s
   OpenGlResources::checkGlError();
   */
   glDrawArrays(GL_TRIANGLES, 0, num_triangles * 3);
-  //glDrawArrays(GL_POINTS, 0, num_triangles * 3);
   OpenGlResources::checkGlError();
 }

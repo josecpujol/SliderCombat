@@ -36,7 +36,7 @@ void OpenGlResources::drawMesh(const std::vector<glm::vec3>& vertices, const std
   OpenGlBuffer vertices_buffer;
   OpenGlBuffer colors_buffer;
 
-  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d);
+  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kMesh3dPlainColor);
   ogl_program->use();
 
   ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());
@@ -63,7 +63,7 @@ void OpenGlResources::drawPolygon(const std::vector<glm::vec2>& vertices, const 
   OpenGlBuffer vertices_buffer;
   OpenGlBuffer colors_buffer;
 
-  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d);
+  OpenGlProgram* ogl_program = ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kMesh3dPlainColor);
   ogl_program->use();
 
   ogl_program->setUniformMatrix4fv("u_MVPmatrix", OpenGlState::getInstance().getModelViewProjectionMatrix());

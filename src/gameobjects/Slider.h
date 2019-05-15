@@ -69,7 +69,7 @@ public:
     Circle circle(glm::vec2(pose.position), 1);
     setCollisionArea(CollisionArea(circle));
     model_.setObject3d(ResourcesManager::getInstance().getModel3d(ModelType::kTank)->getObject3d("tank"));
-    model_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kModel3d));
+    model_.setOpenGlProgram(ResourcesManager::getInstance().getOpenGlProgram(OpenGlProgramType::kMesh3dLighting));
   };
   void update(uint32_t elapsed_us) override;
   void render(Scene&) override;

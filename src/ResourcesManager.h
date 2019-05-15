@@ -21,7 +21,8 @@ enum class FontType {
 };
 
 enum class OpenGlProgramType {
-  kModel3d,
+  kMesh3dPlainColor,
+  kMesh3dLighting,
   kLogger,
 };
 

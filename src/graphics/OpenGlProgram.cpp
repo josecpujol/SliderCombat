@@ -54,8 +54,19 @@ void OpenGlProgram::getAndStoreUniformLocation(const std::string& name) {
     OpenGlResources::checkGlError();
     assert(location != -1);
     uniform_locations_[name] = location;
+    uniform_exists_[name] = true;
   }
 }
+
+bool OpenGlProgram::hasUniform(const std::string& name) const {
+  if (uniform_exists_.count(name) == 0) {
+    GLint location = glGetUniformLocation(program_id_, name.c_str());
+    OpenGlResources::checkGlError();
+    uniform_exists_[name] = location != -1;
+  }
+  return uniform_exists_[name];
+}
+
 
 void OpenGlProgram::setUniformMatrix4fv(const std::string& name, const glm::mat4& value) {
   getAndStoreUniformLocation(name);
