@@ -1,10 +1,12 @@
 #pragma once
 
+#include "mathnphysics/Math.h"
+
 class Object3d;
 class OpenGlProgram;
 class Scene;
 
 class OpenGlRenderer {
 public:
-  void render(Object3d*, OpenGlProgram*, Scene*);
+  void render(Object3d*, const glm::mat3& model_matrix, OpenGlProgram*, Scene*);
 };

@@ -57,7 +57,6 @@ public:
     valid_model_mat_ = false;
   }
 
-
   glm::mat4 getTransformationMatrix() const;
 
 private:

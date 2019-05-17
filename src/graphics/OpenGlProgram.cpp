@@ -38,6 +38,7 @@ bool OpenGlProgram::load(const std::string& vertex_shader_source, const std::str
   glDeleteShader(vertex_shader_id);
   glDeleteShader(fragment_shader_id);
 
+  use();
   storeAllAttributes();
   storeAllUniforms();
   
@@ -51,7 +52,7 @@ void OpenGlProgram::storeAllAttributes() {
   GLint size; // size of the variable
   GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-  const GLsizei bufSize = 16; // maximum name length
+  const GLsizei bufSize = 100; // maximum name length
   GLchar name[bufSize]; // variable name in GLSL
   GLsizei length; // name length
 
@@ -59,6 +60,7 @@ void OpenGlProgram::storeAllAttributes() {
   for (GLint i = 0; i < count; i++) {
     glGetActiveAttrib(program_id_, (GLuint)i, bufSize, &length, &size, &type, name);
     attribute_locations_[name] = glGetAttribLocation(program_id_, name);
+    LOG_INFO("Attribute: " << name);
   }
 }
 
@@ -68,7 +70,7 @@ void OpenGlProgram::storeAllUniforms() {
   GLint size; // size of the variable
   GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-  const GLsizei bufSize = 16; // maximum name length
+  const GLsizei bufSize = 100; // maximum name length
   GLchar name[bufSize]; // variable name in GLSL
   GLsizei length; // name length
 
@@ -77,6 +79,7 @@ void OpenGlProgram::storeAllUniforms() {
   for (GLint i = 0; i < count; i++) {
     glGetActiveUniform(program_id_, (GLuint)i, bufSize, &length, &size, &type, name);
     uniform_locations_[name] = glGetUniformLocation(program_id_, name);
+    LOG_INFO("Uniform: " << name);
   }
 }
 
@@ -99,9 +102,19 @@ void OpenGlProgram::setUniform3fv(const std::string& name, const glm::vec3& valu
   glUniform3fv(uniform_locations_.at(name), 1, glm::value_ptr(value));
 }
 
+void OpenGlProgram::setUniform4fv(const std::string& name, const glm::vec4& value) {
+  assert(hasUniform(name));
+  glUniform4fv(uniform_locations_.at(name), 1, glm::value_ptr(value));
+}
+
 void OpenGlProgram::setUniform1i(const std::string& name, int value) {
   assert(hasUniform(name));
   glUniform1i(uniform_locations_.at(name), value);
+}
+
+void OpenGlProgram::setUniformMatrix3fv(const std::string& name, const glm::mat3& value) {
+  assert(hasUniform(name));
+  glUniformMatrix3fv(uniform_locations_.at(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
@@ -112,16 +125,16 @@ GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
   glCompileShader(shader_id);
   shader_compiled = GL_FALSE;
   glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader_compiled);
+
+  // Get any messages after compilation
+  GLint max_length = 0;
+  glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
+  std::vector<GLchar> compilation_log(max_length);  // The maxLength includes the NULL character
+  glGetShaderInfoLog(shader_id, max_length, &max_length, &compilation_log[0]);
+  LOG_INFO(compilation_log.data());
+
   if (!shader_compiled) {
     LOG_ERROR("Unable to compile shader type: " << type << ", id: " << shader_id);
-    GLint max_length = 0;
-    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
-
-    // The maxLength includes the NULL character
-    std::vector<GLchar> error_log(max_length);
-    glGetShaderInfoLog(shader_id, max_length, &max_length, &error_log[0]);
-    LOG_ERROR(error_log.data());
-    return shader_id;
   }
   return shader_id;
 }

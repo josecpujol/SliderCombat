@@ -8,9 +8,20 @@
 #include "graphics/OpenGlProgram.h"
 
 
-void Scene::setDiffuseLight(const glm::vec4& position, const glm::vec3& diffuse_color) {
-  diffuse_light_position_ = position;
-  diffuse_light_color_ = diffuse_color;
+void Scene::setDiffuseLight(const DiffuseLight& light) {
+  diffuse_light_ = light;
+}
+
+DiffuseLight Scene::getDiffuseLight() const {
+  return diffuse_light_;
+}
+
+bool Scene::isDiffuseLightEnabled() const {
+  return enable_diffuse_light_;
+}
+
+void Scene::enableDiffuseLight(bool enable) {
+  enable_diffuse_light_ = enable;
 }
 
 void Scene::render(const Object3dHolder& object3d_holder) {
@@ -22,7 +33,7 @@ void Scene::render(const Object3dHolder& object3d_holder) {
   OpenGlState::getInstance().pushMatrix();
   OpenGlState::getInstance().multMatrix(object3d_holder.getTransformationMatrix());
 
-  ogl_renderer_.render(mesh, ogl_program, this);
+  ogl_renderer_.render(mesh, object3d_holder.getTransformationMatrix(), ogl_program, this);
   
   OpenGlState::getInstance().popMatrix();
 }

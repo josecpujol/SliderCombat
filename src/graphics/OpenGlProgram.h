@@ -15,6 +15,8 @@ public:
   void setUniform1i(const std::string& name, int value);
   void setUniformMatrix4fv(const std::string& name, const glm::mat4& value);
   void setUniform3fv(const std::string& name, const glm::vec3& value);
+  void setUniform4fv(const std::string& name, const glm::vec4& value);
+  void setUniformMatrix3fv(const std::string& name, const glm::mat3& value);
   bool hasUniform(const std::string& name) const;
   GLint getAttribLocation(const std::string& name) const;
 
