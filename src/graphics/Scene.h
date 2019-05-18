@@ -6,7 +6,7 @@
 class Object3dHolder;
 
 struct DiffuseLight {
-  glm::vec4 position;
+  glm::vec3 direction;
   glm::vec3 color = glm::vec3(0.0);
 };
 

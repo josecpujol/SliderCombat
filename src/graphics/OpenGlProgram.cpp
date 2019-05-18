@@ -38,7 +38,6 @@ bool OpenGlProgram::load(const std::string& vertex_shader_source, const std::str
   glDeleteShader(vertex_shader_id);
   glDeleteShader(fragment_shader_id);
 
-  use();
   storeAllAttributes();
   storeAllUniforms();
   

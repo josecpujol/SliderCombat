@@ -35,29 +35,43 @@ bool ResourcesManager::loadOpenGlPrograms() {
     precision mediump float;
 
     attribute vec4 a_color;
-    //attribute vec3 a_normal;
+    attribute vec3 a_normal;
     attribute vec4 a_position;
 
     uniform mat4 u_MVPmatrix;
 
     varying vec4 v_color;
-    //varying vec3 v_normal;
+    varying vec3 v_normal;
+    varying vec3 v_position_before_model;
 
     void main() {
       gl_Position = u_MVPmatrix * a_position;
       v_color = a_color;
-      //v_normal = a_normal;
+      v_normal = a_normal;
+      v_position_before_model =  a_position;
     }
   )", R"(
     precision mediump float;
 
     varying vec4 v_color;
-   // varying vec3 v_normal;
+    varying vec3 v_normal;
+    varying vec3 v_position_before_model;
 
-    uniform vec3 u_ambient_light = vec3(1.0, 1.0, 1.0);
+    uniform mat3 u_modelMatrix;
+    uniform mat3 u_normalMatrix;  // transpose(inverse(u_modelMatrix)); computed outside
+
+    uniform vec3 u_ambient_color;
+    uniform vec3 u_diffuse_dir;
+    uniform vec3 u_diffuse_color;
+    uniform vec3 u_emissive_color;
 
     void main() {
-      gl_FragColor = v_color * vec4(u_ambient_light, 1.0);
+      vec3 position = u_modelMatrix * v_position_before_model;
+      vec3 normal = normalize(u_normalMatrix * v_normal);
+      float diff = max(dot(normal, u_diffuse_dir), 0.0);
+      vec3 diffuse_component = clamp(diff * u_diffuse_color, 0.0, 1.0);
+
+      gl_FragColor = v_color * vec4(u_ambient_color + diffuse_component, 1.0) + vec4(u_emissive_color, 1.0);
     }
   )")},
     {OpenGlProgramType::kMesh3dPlainColor, std::make_pair(R"(

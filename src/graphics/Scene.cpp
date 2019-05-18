@@ -33,7 +33,7 @@ void Scene::render(const Object3dHolder& object3d_holder) {
   OpenGlState::getInstance().pushMatrix();
   OpenGlState::getInstance().multMatrix(object3d_holder.getTransformationMatrix());
 
-  ogl_renderer_.render(mesh, object3d_holder.getTransformationMatrix(), ogl_program, this);
+  ogl_renderer_.render(mesh, object3d_holder.getTransformationMatrix(), object3d_holder.getEmissiveColor(), ogl_program, this);
   
   OpenGlState::getInstance().popMatrix();
 }

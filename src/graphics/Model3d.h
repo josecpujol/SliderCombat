@@ -50,6 +50,9 @@ public:
   void setObject3d(Object3d* obj) { object_ = obj;  }
   Object3d* getObject3d() const { return object_; }
 
+  void setEmissiveColor(const glm::vec3& emissive_color);
+  glm::vec3 getEmissiveColor() const;
+
   void setOpenGlProgram(OpenGlProgram* ogl_program) { ogl_program_ = ogl_program; }
   OpenGlProgram* getOpenGlProgram() const { return ogl_program_; }
   void setScale(glm::vec3 scale) { 
@@ -68,6 +71,8 @@ private:
   mutable glm::mat4 model_mat_;
   mutable bool valid_model_mat_ = false;
   OpenGlProgram* ogl_program_ = nullptr;
+
+  glm::vec3 emissive_color_ = glm::vec3(0.0);
 };
 
 /* 

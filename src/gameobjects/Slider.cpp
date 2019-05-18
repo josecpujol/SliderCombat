@@ -150,25 +150,17 @@ void Slider::update(uint32_t elapsed_us) {
 
 void Slider::render(Scene& scene) {
   // hit animation
-#ifndef __EMSCRIPTEN__
+
   if (is_hit_) {
     int period_ms = 100;
-
     float factor = (cos(6.28f * hit_duration_.count() / period_ms) + 1) / 2;
-    GLfloat color[] = {factor, factor, factor, 1.f};
-    glMaterialfv(GL_FRONT, GL_EMISSION, color);
+    model_.setEmissiveColor(glm::vec3(factor));
   }
-#endif
-
   model_.setTranslation(getPosition());
   model_.setRotationZ(getRotation());
-  //model_.render(true);
   scene.render(model_);
 
-#ifndef __EMSCRIPTEN__
   if (is_hit_) {
-    GLfloat color[] = {0.0f, 0.0f, 0.0f, 1.f};
-    glMaterialfv(GL_FRONT, GL_EMISSION, color);
+    model_.setEmissiveColor(glm::vec3(0.0));
   }
-#endif
 }

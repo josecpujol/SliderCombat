@@ -248,12 +248,12 @@ void Level::render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Lights
-  //scene_.setAmbientLight(glm::vec3(0.75f));
-  scene_.setAmbientLight(glm::vec3(0.15f));
+  scene_.setAmbientLight(glm::vec3(0.75f));
+
 
   DiffuseLight diffuse_light;
   diffuse_light.color = glm::vec3(0.25f);
-  diffuse_light.position = glm::vec4(0.f, 0.0f, 1.f, 0.f);
+  diffuse_light.direction = glm::vec3(0.f, 0.0f, 1.f);
   scene_.setDiffuseLight(diffuse_light);
 
   GLfloat ratio = (GLfloat)width / (GLfloat)height;
@@ -280,7 +280,7 @@ void Level::render() {
 
  
 
-  OpenGlResources::drawAxis();
+  //OpenGlResources::drawAxis();
   /*
   for (auto &point : collision_points_) {
     glPushMatrix();

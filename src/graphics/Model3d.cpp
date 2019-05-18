@@ -7,10 +7,16 @@
 Object3d::Object3d(const std::string& name) : name_(name) {
 }
 
+void Object3dHolder::setEmissiveColor(const glm::vec3& emissive_color) {
+  emissive_color_ = emissive_color;
+}
+
+glm::vec3 Object3dHolder::getEmissiveColor() const {
+  return emissive_color_;
+}
+
 glm::mat4 Object3dHolder::getTransformationMatrix() const {
   if (!valid_model_mat_) {
-
-
     model_mat_ = glm::translate(translation_);
     model_mat_ *= glm::scale(scale_);
     model_mat_ *= glm::rotate(glm::radians(rotation_.x), glm::vec3(1.f, 0.f, 0.f));

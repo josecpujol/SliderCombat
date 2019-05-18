@@ -7,7 +7,7 @@
 #include "graphics/OpenGlState.h"
 #include "utils/Logger.h"
 
-void OpenGlRenderer::render(Object3d* mesh, const glm::mat3& model_matrix, OpenGlProgram* ogl_program, Scene* scene) {
+void OpenGlRenderer::render(Object3d* mesh, const glm::mat3& model_matrix, const glm::vec3& emissive_color, OpenGlProgram* ogl_program, Scene* scene) {
   ogl_program->use();
 
  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -28,12 +28,16 @@ void OpenGlRenderer::render(Object3d* mesh, const glm::mat3& model_matrix, OpenG
 
   if (scene->isDiffuseLightEnabled()) {
     diffuse_light = scene->getDiffuseLight();
-    if (ogl_program->hasUniform("u_diffuse_pos")) {
-      ogl_program->setUniform4fv("u_diffuse_pos", diffuse_light.position);
+    if (ogl_program->hasUniform("u_diffuse_dir")) {
+      ogl_program->setUniform3fv("u_diffuse_dir", diffuse_light.direction);
     }
   }
   if (ogl_program->hasUniform("u_diffuse_color")) {
     ogl_program->setUniform3fv("u_diffuse_color", diffuse_light.color);
+  }
+
+  if (ogl_program->hasUniform("u_emissive_color")) {
+    ogl_program->setUniform3fv("u_emissive_color", emissive_color);
   }
 
 
