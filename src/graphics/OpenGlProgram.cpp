@@ -128,9 +128,12 @@ GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
   // Get any messages after compilation
   GLint max_length = 0;
   glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &max_length);
-  std::vector<GLchar> compilation_log(max_length);  // The maxLength includes the NULL character
-  glGetShaderInfoLog(shader_id, max_length, &max_length, &compilation_log[0]);
-  LOG_INFO(compilation_log.data());
+  if (max_length > 0) {
+    std::vector<GLchar> compilation_log(max_length);  // The maxLength includes the NULL character
+    glGetShaderInfoLog(shader_id, max_length, &max_length, &compilation_log[0]);
+    LOG_INFO(compilation_log.data());
+    LOG_DEBUG("Source: " << source);
+  }
 
   if (!shader_compiled) {
     LOG_ERROR("Unable to compile shader type: " << type << ", id: " << shader_id);

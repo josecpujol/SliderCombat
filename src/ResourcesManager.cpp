@@ -32,8 +32,6 @@ bool ResourcesManager::loadOpenGlPrograms() {
   // pair: vertex and fragment shader
   std::map<OpenGlProgramType, std::pair<std::string, std::string>> programs = {
     {OpenGlProgramType::kMesh3dLighting, std::make_pair(R"(
-    precision mediump float;
-
     attribute vec4 a_color;
     attribute vec3 a_normal;
     attribute vec4 a_position;
@@ -48,11 +46,9 @@ bool ResourcesManager::loadOpenGlPrograms() {
       gl_Position = u_MVPmatrix * a_position;
       v_color = a_color;
       v_normal = a_normal;
-      v_position_before_model =  a_position;
+      v_position_before_model =  vec3(a_position);
     }
   )", R"(
-    precision mediump float;
-
     varying vec4 v_color;
     varying vec3 v_normal;
     varying vec3 v_position_before_model;
@@ -75,8 +71,6 @@ bool ResourcesManager::loadOpenGlPrograms() {
     }
   )")},
     {OpenGlProgramType::kMesh3dPlainColor, std::make_pair(R"(
-    precision mediump float;
-
     attribute vec4 a_color;
     attribute vec4 a_position;
 
@@ -89,8 +83,6 @@ bool ResourcesManager::loadOpenGlPrograms() {
       v_color = a_color;
     }
   )", R"(
-    precision mediump float;
-
     varying vec4 v_color;
 
     void main() {
@@ -99,7 +91,6 @@ bool ResourcesManager::loadOpenGlPrograms() {
   )")},
 
   {OpenGlProgramType::kLogger, std::make_pair(R"(
-    precision mediump float;
     attribute vec4 a_position;
     attribute vec2 a_texcoord;
     uniform mat4 u_MVPmatrix;
@@ -109,7 +100,6 @@ bool ResourcesManager::loadOpenGlPrograms() {
       vTexCoord = a_texcoord;;
     }
   )", R"(
-    precision mediump float;
     uniform sampler2D texture_unit;
     varying vec2 vTexCoord;
     void main() {
