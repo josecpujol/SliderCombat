@@ -119,7 +119,13 @@ void OpenGlProgram::setUniformMatrix3fv(const std::string& name, const glm::mat3
 GLuint OpenGlProgram::loadShader(const std::string& source, GLenum type) {
   GLint shader_compiled;
   GLuint shader_id = glCreateShader(type);
-  const char* c_str = source.c_str();
+  std::string new_source = source;
+#ifdef __EMSCRIPTEN__
+  new_source = std::string("precision mediump float;");
+  new_source += source;
+
+#endif
+  const char* c_str = new_source.c_str();
   glShaderSource(shader_id, 1, &c_str, nullptr);
   glCompileShader(shader_id);
   shader_compiled = GL_FALSE;

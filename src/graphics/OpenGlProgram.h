@@ -26,6 +26,6 @@ private:
   GLuint loadShader(const std::string& source, GLenum type);
   GLint program_id_ = -1;
   bool is_program_created_ = false;
-  std::unordered_map<std::string, GLint> uniform_locations_;
-  std::unordered_map<std::string, GLint> attribute_locations_;
+  std::map<std::string, GLint> uniform_locations_;  // emscripten does not like unorered map
+  std::map<std::string, GLint> attribute_locations_;
 };
